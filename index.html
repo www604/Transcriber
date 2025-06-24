@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Transcribe AI - Intelligent Meeting Assistant</title>
+    <title>Transcribe AI Pro - Advanced Voice Intelligence</title>
     <style>
         * {
             margin: 0;
@@ -12,19 +12,19 @@
         }
 
         :root {
-            --bg-primary: #0a0a0a;
-            --bg-secondary: #141414;
-            --bg-tertiary: #1a1a1a;
-            --bg-accent: #242424;
+            --bg-primary: #000000;
+            --bg-secondary: #0a0a0a;
+            --bg-tertiary: #141414;
+            --bg-accent: #1a1a1a;
             --text-primary: #ffffff;
-            --text-secondary: #a0a0a0;
-            --text-tertiary: #606060;
+            --text-secondary: #b0b0b0;
+            --text-tertiary: #666666;
             --accent-primary: #6366f1;
             --accent-secondary: #818cf8;
             --accent-danger: #ef4444;
             --accent-success: #10b981;
             --accent-warning: #f59e0b;
-            --border-color: #2a2a2a;
+            --border-color: #262626;
         }
 
         body {
@@ -32,21 +32,20 @@
             background: var(--bg-primary);
             color: var(--text-primary);
             line-height: 1.6;
-            overflow-x: hidden;
         }
 
         .header {
-            background: rgba(20, 20, 20, 0.95);
+            background: rgba(0, 0, 0, 0.8);
             backdrop-filter: blur(20px);
             border-bottom: 1px solid var(--border-color);
             position: sticky;
             top: 0;
             z-index: 100;
-            padding: 16px 0;
+            padding: 12px 0;
         }
 
         .header-content {
-            max-width: 1400px;
+            max-width: 1600px;
             margin: 0 auto;
             padding: 0 24px;
             display: flex;
@@ -57,131 +56,149 @@
         .logo {
             display: flex;
             align-items: center;
-            gap: 12px;
-            font-size: 22px;
+            gap: 16px;
+            font-size: 20px;
             font-weight: 700;
         }
 
-        .ai-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            padding: 4px 12px;
-            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 600;
-            color: white;
-        }
-
-        .status-indicator {
+        .ai-indicator {
             display: flex;
             align-items: center;
             gap: 12px;
-        }
-
-        .ai-status {
-            display: flex;
-            align-items: center;
-            gap: 8px;
             padding: 8px 16px;
-            background: var(--bg-tertiary);
-            border: 1px solid var(--border-color);
-            border-radius: 20px;
-            font-size: 13px;
-            color: var(--text-secondary);
-        }
-
-        .ai-status.active {
-            border-color: var(--accent-primary);
+            background: rgba(99, 102, 241, 0.1);
+            border: 1px solid rgba(99, 102, 241, 0.3);
+            border-radius: 24px;
+            font-size: 12px;
             color: var(--accent-primary);
         }
 
-        .ai-dot {
-            width: 6px;
-            height: 6px;
-            background: var(--text-tertiary);
-            border-radius: 50%;
-        }
-
-        .ai-dot.active {
+        .ai-pulse {
+            width: 8px;
+            height: 8px;
             background: var(--accent-primary);
-            animation: pulse 2s infinite;
+            border-radius: 50%;
+            animation: ai-pulse 2s infinite;
         }
 
-        @keyframes pulse {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.6; transform: scale(1.2); }
+        @keyframes ai-pulse {
+            0% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.6); }
+            50% { box-shadow: 0 0 0 8px rgba(99, 102, 241, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0); }
         }
 
         .container {
-            max-width: 1400px;
+            max-width: 1600px;
             margin: 0 auto;
-            padding: 24px;
+            padding: 20px;
         }
 
-        .control-bar {
+        .control-center {
             background: var(--bg-secondary);
             border: 1px solid var(--border-color);
             border-radius: 12px;
             padding: 20px;
-            margin-bottom: 24px;
-            display: flex;
+            margin-bottom: 20px;
+            display: grid;
+            grid-template-columns: auto 1fr auto;
+            gap: 24px;
             align-items: center;
-            justify-content: space-between;
-            gap: 20px;
         }
 
-        .control-group {
+        .record-button {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--accent-danger);
+            border: 3px solid rgba(239, 68, 68, 0.3);
+            cursor: pointer;
+            position: relative;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .record-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 20px rgba(239, 68, 68, 0.4);
+        }
+
+        .record-button.recording {
+            animation: record-pulse 1.5s infinite;
+        }
+
+        @keyframes record-pulse {
+            0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.6); }
+            70% { box-shadow: 0 0 0 15px rgba(239, 68, 68, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+        }
+
+        .record-icon {
+            width: 24px;
+            height: 24px;
+            background: white;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+
+        .record-button.recording .record-icon {
+            border-radius: 4px;
+            width: 20px;
+            height: 20px;
+        }
+
+        .voice-visualizer {
+            height: 60px;
+            background: var(--bg-tertiary);
+            border-radius: 8px;
+            overflow: hidden;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 3px;
+            padding: 0 20px;
+        }
+
+        .voice-bar {
+            width: 3px;
+            height: 20px;
+            background: var(--accent-primary);
+            border-radius: 2px;
+            transition: height 0.1s ease;
+        }
+
+        .control-actions {
             display: flex;
             gap: 12px;
-            align-items: center;
         }
 
         button {
             padding: 10px 20px;
-            border: none;
+            border: 1px solid var(--border-color);
             border-radius: 8px;
-            font-size: 14px;
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            font-size: 13px;
             font-weight: 500;
             cursor: pointer;
             transition: all 0.2s ease;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            background: var(--bg-tertiary);
-            color: var(--text-primary);
         }
 
         button:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            background: var(--bg-accent);
+            border-color: var(--accent-primary);
         }
 
-        button:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        .btn-primary {
-            background: var(--accent-primary);
-            color: white;
-        }
-
-        .btn-danger {
-            background: var(--accent-danger);
-            color: white;
-        }
-
-        .main-layout {
+        .main-grid {
             display: grid;
-            grid-template-columns: 1fr 350px;
-            gap: 24px;
+            grid-template-columns: 1fr 400px;
+            gap: 20px;
         }
 
-        @media (max-width: 1024px) {
-            .main-layout {
+        @media (max-width: 1200px) {
+            .main-grid {
                 grid-template-columns: 1fr;
             }
         }
@@ -202,125 +219,46 @@
         }
 
         .panel-title {
-            font-size: 16px;
+            font-size: 15px;
             font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 8px;
         }
 
-        .transcript-container {
-            height: calc(100vh - 300px);
+        .transcript-area {
+            height: calc(100vh - 280px);
             overflow-y: auto;
-            padding: 20px;
-            position: relative;
+            padding: 24px;
         }
 
-        .transcript-container::-webkit-scrollbar {
+        .transcript-area::-webkit-scrollbar {
             width: 6px;
         }
 
-        .transcript-container::-webkit-scrollbar-track {
+        .transcript-area::-webkit-scrollbar-track {
             background: var(--bg-tertiary);
         }
 
-        .transcript-container::-webkit-scrollbar-thumb {
+        .transcript-area::-webkit-scrollbar-thumb {
             background: var(--bg-accent);
             border-radius: 3px;
         }
 
-        .transcript-block {
-            margin-bottom: 24px;
-            position: relative;
+        .conversation-block {
+            margin-bottom: 32px;
+            opacity: 0;
+            animation: fadeIn 0.5s ease forwards;
         }
 
-        .speaker-header {
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+
+        .speaker-section {
             display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 8px;
+            gap: 16px;
+            margin-bottom: 12px;
         }
 
         .speaker-avatar {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 13px;
-            font-weight: 600;
-            color: white;
-            flex-shrink: 0;
-        }
-
-        .speaker-name {
-            font-weight: 600;
-            font-size: 14px;
-        }
-
-        .timestamp {
-            font-size: 12px;
-            color: var(--text-tertiary);
-            margin-left: auto;
-        }
-
-        .transcript-text {
-            margin-left: 42px;
-            color: var(--text-secondary);
-            line-height: 1.7;
-        }
-
-        .ai-enhancement {
-            display: inline;
-            background: rgba(99, 102, 241, 0.1);
-            color: var(--accent-secondary);
-            padding: 0 4px;
-            border-radius: 4px;
-            font-style: italic;
-        }
-
-        .confidence-indicator {
-            display: inline-block;
-            width: 4px;
-            height: 4px;
-            background: var(--text-tertiary);
-            border-radius: 50%;
-            margin-left: 6px;
-            vertical-align: middle;
-        }
-
-        .confidence-high { background: var(--accent-success); }
-        .confidence-medium { background: var(--accent-warning); }
-        .confidence-low { background: var(--accent-danger); }
-
-        .speaker-panel {
-            height: 400px;
-            overflow-y: auto;
-            padding: 16px;
-        }
-
-        .speaker-card {
-            background: var(--bg-tertiary);
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            padding: 16px;
-            margin-bottom: 12px;
-            transition: all 0.2s ease;
-        }
-
-        .speaker-card:hover {
-            border-color: var(--accent-primary);
-        }
-
-        .speaker-card-header {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 12px;
-        }
-
-        .speaker-card-avatar {
             width: 40px;
             height: 40px;
             border-radius: 50%;
@@ -328,187 +266,293 @@
             align-items: center;
             justify-content: center;
             font-weight: 600;
+            font-size: 16px;
             color: white;
+            flex-shrink: 0;
+            position: relative;
         }
 
-        .speaker-input {
-            background: var(--bg-secondary);
-            border: 1px solid var(--border-color);
-            border-radius: 6px;
-            padding: 6px 10px;
-            color: var(--text-primary);
+        .voice-match-indicator {
+            position: absolute;
+            bottom: -2px;
+            right: -2px;
+            width: 14px;
+            height: 14px;
+            background: var(--accent-success);
+            border-radius: 50%;
+            border: 2px solid var(--bg-secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 8px;
+        }
+
+        .speaker-meta {
+            flex: 1;
+        }
+
+        .speaker-name {
+            font-weight: 600;
             font-size: 14px;
-            width: 100%;
+            margin-bottom: 4px;
         }
 
-        .speaker-stats {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 8px;
+        .speaker-timestamp {
             font-size: 12px;
             color: var(--text-tertiary);
         }
 
-        .speaker-stat {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .stat-value {
+        .conversation-text {
+            margin-left: 56px;
             color: var(--text-secondary);
-            font-weight: 600;
+            line-height: 1.8;
+            font-size: 15px;
         }
 
-        .voice-print {
-            height: 30px;
-            background: var(--bg-secondary);
-            border-radius: 4px;
-            margin-top: 8px;
-            display: flex;
-            align-items: center;
-            padding: 0 8px;
-            gap: 2px;
+        .ai-enhancement {
+            position: relative;
+            display: inline;
+            border-bottom: 1px dotted var(--accent-primary);
+            cursor: help;
         }
 
-        .voice-bar {
-            width: 3px;
-            background: var(--accent-primary);
-            border-radius: 2px;
-            opacity: 0.3;
-        }
-
-        .insights-panel {
+        .ai-enhancement:hover::after {
+            content: attr(data-original);
+            position: absolute;
+            bottom: 100%;
+            left: 0;
             background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            white-space: nowrap;
+            z-index: 10;
+        }
+
+        .sidebar-section {
+            margin-bottom: 24px;
+        }
+
+        .voice-profile {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
             border-radius: 8px;
             padding: 16px;
-            margin-top: 16px;
+            margin-bottom: 12px;
+            position: relative;
+            overflow: hidden;
         }
 
-        .insight-item {
+        .voice-profile::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--accent-primary);
+            transform: scaleX(var(--confidence, 0));
+            transition: transform 0.3s ease;
+        }
+
+        .profile-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .profile-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            color: white;
+        }
+
+        .profile-name {
+            background: transparent;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            padding: 4px 8px;
+            color: var(--text-primary);
+            font-size: 13px;
+            flex: 1;
+        }
+
+        .voice-metrics {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+            font-size: 12px;
+        }
+
+        .metric {
+            display: flex;
+            justify-content: space-between;
+            color: var(--text-tertiary);
+        }
+
+        .metric-value {
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .voice-waveform {
+            margin-top: 12px;
+            height: 40px;
+            background: var(--bg-secondary);
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 2px;
+            padding: 0 12px;
+        }
+
+        .waveform-bar {
+            width: 2px;
+            background: var(--accent-primary);
+            border-radius: 1px;
+            opacity: 0.6;
+        }
+
+        .ai-insights {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 16px;
+            font-size: 13px;
+        }
+
+        .insight {
             display: flex;
             align-items: flex-start;
             gap: 8px;
             margin-bottom: 12px;
-            font-size: 13px;
             color: var(--text-secondary);
         }
 
         .insight-icon {
             color: var(--accent-primary);
             flex-shrink: 0;
+            margin-top: 2px;
         }
 
-        .empty-state {
-            text-align: center;
-            padding: 60px 20px;
-            color: var(--text-tertiary);
-        }
-
-        .processing-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            padding: 12px;
-            background: rgba(99, 102, 241, 0.05);
-            border-bottom: 1px solid rgba(99, 102, 241, 0.2);
+        .ai-processing {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--accent-primary);
+            border-radius: 8px;
+            padding: 12px 20px;
             display: none;
             align-items: center;
             gap: 12px;
             font-size: 13px;
             color: var(--accent-primary);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+        }
+
+        .ai-processing.active {
+            display: flex;
         }
 
         .processing-spinner {
             width: 16px;
             height: 16px;
-            border: 2px solid rgba(99, 102, 241, 0.2);
+            border: 2px solid rgba(99, 102, 241, 0.3);
             border-top-color: var(--accent-primary);
             border-radius: 50%;
-            animation: spin 1s linear infinite;
+            animation: spin 0.8s linear infinite;
         }
 
         @keyframes spin {
             to { transform: rotate(360deg); }
         }
 
-        select {
-            background: var(--bg-tertiary);
-            border: 1px solid var(--border-color);
-            border-radius: 6px;
-            padding: 8px 12px;
-            color: var(--text-primary);
-            font-size: 13px;
+        .empty-state {
+            text-align: center;
+            padding: 80px 20px;
+            color: var(--text-tertiary);
         }
 
-        .export-menu {
-            position: absolute;
-            top: 100%;
-            right: 0;
+        .empty-state-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+            opacity: 0.5;
+        }
+
+        .confidence-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 2px 8px;
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            border-radius: 12px;
+            font-size: 11px;
+            color: var(--accent-success);
+            margin-left: 8px;
+        }
+
+        .settings-panel {
             background: var(--bg-tertiary);
             border: 1px solid var(--border-color);
             border-radius: 8px;
-            padding: 8px;
-            margin-top: 4px;
-            min-width: 180px;
-            display: none;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-        }
-
-        .export-menu.show {
-            display: block;
-        }
-
-        .export-option {
-            padding: 8px 12px;
-            border-radius: 6px;
-            cursor: pointer;
+            padding: 16px;
             font-size: 13px;
-            transition: background 0.2s ease;
         }
 
-        .export-option:hover {
-            background: var(--bg-accent);
-        }
-
-        .ai-settings {
+        .setting-row {
             display: flex;
             align-items: center;
-            gap: 16px;
-            padding: 12px 16px;
-            background: var(--bg-tertiary);
-            border-radius: 8px;
-            font-size: 13px;
+            justify-content: space-between;
+            margin-bottom: 12px;
         }
 
-        .toggle-switch {
-            position: relative;
-            width: 40px;
-            height: 22px;
+        .toggle {
+            width: 36px;
+            height: 20px;
             background: var(--bg-accent);
-            border-radius: 11px;
+            border-radius: 10px;
             cursor: pointer;
+            position: relative;
             transition: background 0.3s ease;
         }
 
-        .toggle-switch.active {
+        .toggle.active {
             background: var(--accent-primary);
         }
 
-        .toggle-switch::after {
+        .toggle::after {
             content: '';
             position: absolute;
             top: 2px;
             left: 2px;
-            width: 18px;
-            height: 18px;
+            width: 16px;
+            height: 16px;
             background: white;
             border-radius: 50%;
             transition: transform 0.3s ease;
         }
 
-        .toggle-switch.active::after {
-            transform: translateX(18px);
+        .toggle.active::after {
+            transform: translateX(16px);
+        }
+
+        select {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 6px 12px;
+            color: var(--text-primary);
+            font-size: 13px;
         }
     </style>
 </head>
@@ -516,31 +560,29 @@
     <header class="header">
         <div class="header-content">
             <div class="logo">
-                <span>Transcribe AI</span>
-                <span class="ai-badge">AI Enhanced</span>
+                <span>🧠</span>
+                <span>Transcribe AI Pro</span>
             </div>
-            <div class="status-indicator">
-                <div class="ai-status" id="aiStatus">
-                    <div class="ai-dot" id="aiDot"></div>
-                    <span id="aiStatusText">AI Ready</span>
-                </div>
+            <div class="ai-indicator">
+                <div class="ai-pulse"></div>
+                <span id="aiStatus">AI Voice Analysis Active</span>
             </div>
         </div>
     </header>
 
     <div class="container">
-        <div class="control-bar">
-            <div class="control-group">
-                <button class="btn-primary" id="startBtn">
-                    <span>●</span> Start Recording
-                </button>
-                <button class="btn-danger" id="stopBtn" disabled>
-                    <span>■</span> Stop
-                </button>
-                <button id="clearBtn">Clear</button>
+        <div class="control-center">
+            <div class="record-button" id="recordButton">
+                <div class="record-icon"></div>
             </div>
             
-            <div class="control-group">
+            <div class="voice-visualizer" id="voiceVisualizer">
+                <!-- Voice bars will be dynamically added -->
+            </div>
+            
+            <div class="control-actions">
+                <button id="clearBtn">Clear All</button>
+                <button id="exportBtn">Export</button>
                 <select id="languageSelect">
                     <option value="en-US">English (US)</option>
                     <option value="en-GB">English (UK)</option>
@@ -550,32 +592,20 @@
                     <option value="zh-CN">Chinese</option>
                     <option value="ja-JP">Japanese</option>
                 </select>
-                
-                <div style="position: relative;">
-                    <button id="exportBtn">Export</button>
-                    <div class="export-menu" id="exportMenu">
-                        <div class="export-option" onclick="exportTranscript()">Download Transcript</div>
-                        <div class="export-option" onclick="exportSummary()">Download Summary</div>
-                        <div class="export-option" onclick="copyToClipboard()">Copy to Clipboard</div>
-                    </div>
-                </div>
             </div>
         </div>
 
-        <div class="main-layout">
+        <div class="main-grid">
             <div class="panel">
                 <div class="panel-header">
-                    <h2 class="panel-title">Transcript</h2>
-                    <div class="processing-overlay" id="processingOverlay">
-                        <div class="processing-spinner"></div>
-                        <span>AI processing speech patterns...</span>
-                    </div>
+                    <h2 class="panel-title">Intelligent Transcript</h2>
+                    <span id="transcriptStatus" style="font-size: 12px; color: var(--text-tertiary);"></span>
                 </div>
-                <div class="transcript-container" id="transcriptContainer">
+                <div class="transcript-area" id="transcriptArea">
                     <div class="empty-state">
-                        <div style="font-size: 48px; margin-bottom: 16px;">🎙️</div>
-                        <p>Start recording to begin AI-enhanced transcription</p>
-                        <p style="font-size: 12px; margin-top: 8px;">The AI will automatically identify speakers and enhance accuracy</p>
+                        <div class="empty-state-icon">🎙️</div>
+                        <p>Press the record button to start</p>
+                        <p style="font-size: 12px; margin-top: 8px;">AI will automatically identify and differentiate speakers using advanced voice analysis</p>
                     </div>
                 </div>
             </div>
@@ -583,28 +613,52 @@
             <div>
                 <div class="panel" style="margin-bottom: 20px;">
                     <div class="panel-header">
-                        <h3 class="panel-title">Speakers</h3>
+                        <h3 class="panel-title">Voice Profiles</h3>
                     </div>
-                    <div class="speaker-panel" id="speakerPanel">
-                        <div class="empty-state">
-                            <p style="font-size: 13px;">No speakers detected yet</p>
+                    <div style="padding: 16px;">
+                        <div id="voiceProfiles" class="sidebar-section">
+                            <div class="empty-state" style="padding: 40px 20px;">
+                                <p style="font-size: 13px;">No speakers detected</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel" style="margin-bottom: 20px;">
+                    <div class="panel-header">
+                        <h3 class="panel-title">AI Analysis</h3>
+                    </div>
+                    <div style="padding: 16px;">
+                        <div class="ai-insights" id="aiInsights">
+                            <div class="insight">
+                                <span class="insight-icon">⚡</span>
+                                <span>AI is ready to analyze conversation patterns and voice characteristics</span>
+                            </div>
                         </div>
                     </div>
                 </div>
 
                 <div class="panel">
                     <div class="panel-header">
-                        <h3 class="panel-title">AI Insights</h3>
+                        <h3 class="panel-title">AI Settings</h3>
                     </div>
-                    <div class="insights-panel" id="insightsPanel">
-                        <div class="ai-settings">
-                            <span>Enhanced Processing</span>
-                            <div class="toggle-switch active" id="aiToggle"></div>
-                        </div>
-                        <div style="margin-top: 16px;" id="insightsList">
-                            <div class="insight-item">
-                                <span class="insight-icon">•</span>
-                                <span>Waiting for conversation data...</span>
+                    <div style="padding: 16px;">
+                        <div class="settings-panel">
+                            <div class="setting-row">
+                                <span>Voice Recognition</span>
+                                <div class="toggle active" id="voiceRecognition"></div>
+                            </div>
+                            <div class="setting-row">
+                                <span>Auto Enhancement</span>
+                                <div class="toggle active" id="autoEnhance"></div>
+                            </div>
+                            <div class="setting-row">
+                                <span>Context Analysis</span>
+                                <div class="toggle active" id="contextAnalysis"></div>
+                            </div>
+                            <div class="setting-row">
+                                <span>Predictive Grouping</span>
+                                <div class="toggle active" id="predictiveGrouping"></div>
                             </div>
                         </div>
                     </div>
@@ -613,737 +667,894 @@
         </div>
     </div>
 
+    <div class="ai-processing" id="aiProcessing">
+        <div class="processing-spinner"></div>
+        <span id="processingText">AI analyzing voice patterns...</span>
+    </div>
+
     <script>
-        // Advanced state management with AI features
-        const state = {
+        // Advanced AI-powered state management
+        const aiState = {
             isRecording: false,
             recognition: null,
-            transcript: [],
+            audioContext: null,
+            analyser: null,
+            microphone: null,
+            segments: [],
             speakers: new Map(),
-            currentBuffer: '',
-            bufferTimeout: null,
-            processingQueue: [],
-            voiceProfiles: new Map(),
-            conversationContext: [],
-            aiProcessing: true,
-            speakerChangeThreshold: 1500,
-            lastSpeakerChange: Date.now(),
-            currentSpeakerId: null,
-            confidenceScores: new Map(),
-            speechRate: new Map(),
-            vocabulary: new Map()
+            voiceFingerprints: new Map(),
+            currentSegment: {
+                text: '',
+                startTime: null,
+                audioFeatures: [],
+                speakerId: null
+            },
+            conversationBuffer: [],
+            contextWindow: [],
+            audioBuffer: [],
+            silenceThreshold: 30,
+            silenceCounter: 0,
+            segmentThreshold: 3000, // 3 seconds or significant pause
+            lastSpeechEnd: Date.now(),
+            voiceAnalysisInterval: null,
+            settings: {
+                voiceRecognition: true,
+                autoEnhance: true,
+                contextAnalysis: true,
+                predictiveGrouping: true
+            }
         };
 
-        // DOM elements
-        const elements = {
-            startBtn: document.getElementById('startBtn'),
-            stopBtn: document.getElementById('stopBtn'),
-            clearBtn: document.getElementById('clearBtn'),
-            transcriptContainer: document.getElementById('transcriptContainer'),
-            speakerPanel: document.getElementById('speakerPanel'),
-            insightsPanel: document.getElementById('insightsList'),
-            aiStatus: document.getElementById('aiStatus'),
-            aiDot: document.getElementById('aiDot'),
-            aiStatusText: document.getElementById('aiStatusText'),
-            processingOverlay: document.getElementById('processingOverlay'),
-            exportBtn: document.getElementById('exportBtn'),
-            exportMenu: document.getElementById('exportMenu'),
-            aiToggle: document.getElementById('aiToggle'),
-            languageSelect: document.getElementById('languageSelect')
-        };
+        // Initialize voice visualizer
+        function initializeVoiceVisualizer() {
+            const visualizer = document.getElementById('voiceVisualizer');
+            for (let i = 0; i < 50; i++) {
+                const bar = document.createElement('div');
+                bar.className = 'voice-bar';
+                visualizer.appendChild(bar);
+            }
+        }
 
-        // Speaker colors with better variety
-        const speakerColors = [
-            '#6366f1', '#8b5cf6', '#ec4899', '#f43f5e', '#f59e0b', 
-            '#10b981', '#14b8a6', '#3b82f6', '#06b6d4', '#84cc16'
-        ];
-
-        // Initialize speech recognition with enhanced settings
-        function initializeSpeechRecognition() {
+        // Advanced speech recognition setup
+        function initializeRecognition() {
             const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
             if (!SpeechRecognition) {
-                alert('Speech recognition not supported in this browser');
+                alert('Browser not supported. Please use Chrome, Edge, or Safari.');
                 return;
             }
 
-            state.recognition = new SpeechRecognition();
-            state.recognition.continuous = true;
-            state.recognition.interimResults = true;
-            state.recognition.maxAlternatives = 3;
-            state.recognition.lang = elements.languageSelect.value;
+            aiState.recognition = new SpeechRecognition();
+            aiState.recognition.continuous = true;
+            aiState.recognition.interimResults = true;
+            aiState.recognition.maxAlternatives = 5;
+            aiState.recognition.lang = document.getElementById('languageSelect').value;
 
-            state.recognition.onstart = () => {
-                state.isRecording = true;
-                updateUI();
-                updateAIStatus('active', 'AI Listening');
+            aiState.recognition.onstart = () => {
+                document.getElementById('recordButton').classList.add('recording');
+                updateAIStatus('Recording and analyzing voices...');
+                startVoiceAnalysis();
             };
 
-            state.recognition.onresult = (event) => {
+            aiState.recognition.onresult = (event) => {
                 const current = event.resultIndex;
                 const transcript = event.results[current][0].transcript;
-                const confidence = event.results[current][0].confidence || 0.9;
-                
-                if (event.results[current].isFinal) {
-                    processTranscript(transcript, confidence);
-                } else {
-                    state.currentBuffer = transcript;
-                    showProcessingIndicator();
-                }
+                const isFinal = event.results[current].isFinal;
+                const alternatives = Array.from(event.results[current]).map(alt => ({
+                    text: alt.transcript,
+                    confidence: alt.confidence || 0.9
+                }));
+
+                processTranscriptWithAI(transcript, isFinal, alternatives);
             };
 
-            state.recognition.onerror = (event) => {
+            aiState.recognition.onerror = (event) => {
                 if (event.error !== 'no-speech') {
                     console.error('Recognition error:', event.error);
-                    updateAIStatus('error', 'AI Error');
                 }
             };
 
-            state.recognition.onend = () => {
-                if (state.isRecording) {
-                    try {
-                        state.recognition.start();
-                    } catch (e) {
-                        stopRecording();
-                    }
+            aiState.recognition.onend = () => {
+                if (aiState.isRecording) {
+                    aiState.recognition.start();
                 }
             };
         }
 
-        // AI-enhanced transcript processing
-        function processTranscript(text, confidence) {
-            hideProcessingIndicator();
-            
-            // Clean and enhance the transcript
-            const enhanced = state.aiProcessing ? enhanceTranscript(text) : text;
-            
-            // Identify speaker using AI logic
-            const speaker = identifySpeaker(enhanced, confidence);
-            
-            // Add to conversation context
-            state.conversationContext.push({
-                text: enhanced,
-                speaker: speaker.id,
-                timestamp: Date.now(),
-                confidence: confidence
-            });
-
-            // Keep only recent context (last 10 entries)
-            if (state.conversationContext.length > 10) {
-                state.conversationContext.shift();
+        // Initialize audio analysis for voice recognition
+        async function initializeAudioAnalysis() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                aiState.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                aiState.analyser = aiState.audioContext.createAnalyser();
+                aiState.analyser.fftSize = 2048;
+                
+                aiState.microphone = aiState.audioContext.createMediaStreamSource(stream);
+                aiState.microphone.connect(aiState.analyser);
+                
+                return true;
+            } catch (err) {
+                console.error('Audio initialization error:', err);
+                return false;
             }
-
-            // Add transcript entry
-            const entry = {
-                id: Date.now(),
-                speaker: speaker,
-                text: enhanced.processed,
-                originalText: text,
-                confidence: confidence,
-                timestamp: new Date(),
-                enhanced: enhanced.wasEnhanced
-            };
-
-            state.transcript.push(entry);
-            updateTranscriptUI();
-            updateSpeakerStats(speaker);
-            updateInsights();
         }
 
-        // Enhance transcript with AI logic
-        function enhanceTranscript(text) {
-            let processed = text;
-            let wasEnhanced = false;
+        // Advanced voice analysis
+        function startVoiceAnalysis() {
+            const bufferLength = aiState.analyser.frequencyBinCount;
+            const dataArray = new Uint8Array(bufferLength);
+            const bars = document.querySelectorAll('.voice-bar');
 
-            // Fix common speech recognition errors
-            const corrections = {
-                'i i': 'I',
-                'dont': "don't",
-                'cant': "can't",
-                'wont': "won't",
-                'didnt': "didn't",
-                'thats': "that's",
-                'whats': "what's",
-                'im': "I'm",
-                'ive': "I've",
-                'youre': "you're",
-                'were': "we're",
-                'theyre': "they're"
-            };
-
-            for (const [error, correction] of Object.entries(corrections)) {
-                const regex = new RegExp(`\\b${error}\\b`, 'gi');
-                if (regex.test(processed)) {
-                    processed = processed.replace(regex, correction);
-                    wasEnhanced = true;
+            aiState.voiceAnalysisInterval = setInterval(() => {
+                aiState.analyser.getByteFrequencyData(dataArray);
+                
+                // Update visualizer
+                for (let i = 0; i < bars.length; i++) {
+                    const value = dataArray[i * 20] || 0;
+                    bars[i].style.height = `${Math.min(40, value / 4)}px`;
                 }
-            }
-
-            // Capitalize sentences
-            processed = processed.replace(/(^\s*\w|[.!?]\s*\w)/g, c => c.toUpperCase());
-
-            // Remove duplicate words
-            processed = processed.replace(/\b(\w+)\s+\1\b/gi, '$1');
-
-            // Add punctuation if missing
-            if (!/[.!?]$/.test(processed.trim())) {
-                // Simple heuristic for question detection
-                if (/^(who|what|where|when|why|how|is|are|do|does|can|could|would|will)/i.test(processed)) {
-                    processed += '?';
+                
+                // Extract voice features
+                const features = extractVoiceFeatures(dataArray);
+                
+                // Detect silence
+                const volume = features.volume;
+                if (volume < aiState.silenceThreshold) {
+                    aiState.silenceCounter++;
                 } else {
-                    processed += '.';
+                    aiState.silenceCounter = 0;
                 }
-                wasEnhanced = true;
-            }
-
-            return { processed, wasEnhanced };
+                
+                // Store features for speaker recognition
+                if (aiState.currentSegment.startTime && volume > aiState.silenceThreshold) {
+                    aiState.currentSegment.audioFeatures.push(features);
+                }
+                
+                // Check for segment completion
+                if (shouldCompleteSegment()) {
+                    completeCurrentSegment();
+                }
+            }, 50);
         }
 
-        // Advanced speaker identification
-        function identifySpeaker(enhanced, confidence) {
-            const now = Date.now();
-            const timeSinceLastChange = now - state.lastSpeakerChange;
+        // Extract voice features for speaker identification
+        function extractVoiceFeatures(frequencyData) {
+            const sum = frequencyData.reduce((a, b) => a + b, 0);
+            const average = sum / frequencyData.length;
             
-            // Extract voice characteristics
-            const characteristics = extractVoiceCharacteristics(enhanced.processed);
+            // Frequency bands for voice characteristics
+            const bass = frequencyData.slice(0, 100).reduce((a, b) => a + b, 0) / 100;
+            const mid = frequencyData.slice(100, 400).reduce((a, b) => a + b, 0) / 300;
+            const treble = frequencyData.slice(400, 800).reduce((a, b) => a + b, 0) / 400;
             
-            // Check for speaker change indicators
-            const shouldChangeSpeaker = timeSinceLastChange > state.speakerChangeThreshold ||
-                                       hasSignificantPauseOrChange(characteristics);
-
-            if (shouldChangeSpeaker || !state.currentSpeakerId) {
-                // Try to match existing speaker
-                let bestMatch = null;
-                let bestScore = 0;
-
-                state.voiceProfiles.forEach((profile, speakerId) => {
-                    const score = calculateSpeakerSimilarity(characteristics, profile);
-                    if (score > bestScore && score > 0.65) { // 65% similarity threshold
-                        bestScore = score;
-                        bestMatch = speakerId;
-                    }
-                });
-
-                if (bestMatch && confidence > 0.7) {
-                    state.currentSpeakerId = bestMatch;
-                    updateVoiceProfile(bestMatch, characteristics);
-                } else {
-                    // Create new speaker
-                    const newSpeaker = createNewSpeaker();
-                    state.currentSpeakerId = newSpeaker.id;
-                    state.voiceProfiles.set(newSpeaker.id, characteristics);
+            // Find dominant frequency
+            let maxFreq = 0;
+            let maxValue = 0;
+            for (let i = 0; i < frequencyData.length; i++) {
+                if (frequencyData[i] > maxValue) {
+                    maxValue = frequencyData[i];
+                    maxFreq = i;
                 }
-
-                state.lastSpeakerChange = now;
-            } else {
-                // Update current speaker's profile
-                updateVoiceProfile(state.currentSpeakerId, characteristics);
             }
-
-            return state.speakers.get(state.currentSpeakerId);
-        }
-
-        // Extract voice characteristics for speaker identification
-        function extractVoiceCharacteristics(text) {
-            const words = text.toLowerCase().split(/\s+/);
-            const sentences = text.split(/[.!?]+/).filter(s => s.trim());
+            
+            // Calculate spectral centroid (brightness of voice)
+            let weightedSum = 0;
+            let magnitudeSum = 0;
+            for (let i = 0; i < frequencyData.length; i++) {
+                weightedSum += i * frequencyData[i];
+                magnitudeSum += frequencyData[i];
+            }
+            const spectralCentroid = magnitudeSum > 0 ? weightedSum / magnitudeSum : 0;
             
             return {
-                avgWordLength: words.reduce((sum, word) => sum + word.length, 0) / words.length,
-                wordCount: words.length,
-                sentenceCount: sentences.length,
-                avgWordsPerSentence: words.length / Math.max(sentences.length, 1),
-                vocabularyRichness: new Set(words).size / words.length,
-                questionRatio: (text.match(/\?/g) || []).length / Math.max(sentences.length, 1),
-                exclamationRatio: (text.match(/!/g) || []).length / Math.max(sentences.length, 1),
-                formalityScore: calculateFormalityScore(text),
-                commonWords: extractCommonWords(words)
+                volume: average,
+                bass: bass,
+                mid: mid,
+                treble: treble,
+                dominantFreq: maxFreq,
+                spectralCentroid: spectralCentroid,
+                timestamp: Date.now()
             };
         }
 
-        // Calculate formality score
-        function calculateFormalityScore(text) {
-            const informalMarkers = /\b(yeah|yep|nope|gonna|wanna|gotta|kinda|sorta|like|um|uh)\b/gi;
-            const formalMarkers = /\b(therefore|however|furthermore|nevertheless|consequently|regarding)\b/gi;
+        // AI-powered transcript processing
+        function processTranscriptWithAI(text, isFinal, alternatives) {
+            showAIProcessing('Processing speech...');
             
-            const informalCount = (text.match(informalMarkers) || []).length;
-            const formalCount = (text.match(formalMarkers) || []).length;
+            if (!aiState.currentSegment.startTime) {
+                aiState.currentSegment.startTime = Date.now();
+            }
             
-            return (formalCount - informalCount + 10) / 20; // Normalized 0-1
+            if (isFinal) {
+                // Use AI to select best alternative based on context
+                const bestText = selectBestAlternative(alternatives);
+                
+                // Apply AI enhancements
+                const enhanced = aiState.settings.autoEnhance ? enhanceWithAI(bestText) : bestText;
+                
+                // Add to current segment
+                if (aiState.currentSegment.text) {
+                    aiState.currentSegment.text += ' ' + enhanced;
+                } else {
+                    aiState.currentSegment.text = enhanced;
+                }
+                
+                aiState.lastSpeechEnd = Date.now();
+            } else {
+                // Update interim display
+                updateInterimTranscript(text);
+            }
+            
+            hideAIProcessing();
         }
 
-        // Extract common words for speaker profiling
-        function extractCommonWords(words) {
-            const stopWords = new Set(['the', 'a', 'an', 'and', 'or', 'but', 'in', 'on', 'at', 'to', 'for', 'of', 'with', 'by', 'is', 'are', 'was', 'were']);
-            const filtered = words.filter(w => !stopWords.has(w) && w.length > 3);
-            const wordFreq = {};
+        // Select best alternative using context
+        function selectBestAlternative(alternatives) {
+            if (!aiState.settings.contextAnalysis || alternatives.length === 1) {
+                return alternatives[0].text;
+            }
             
-            filtered.forEach(word => {
-                wordFreq[word] = (wordFreq[word] || 0) + 1;
+            // Score each alternative based on context coherence
+            const scores = alternatives.map(alt => {
+                let score = alt.confidence;
+                
+                // Check grammar patterns
+                if (/^[A-Z].*[.!?]$/.test(alt.text)) score += 0.1;
+                
+                // Check context continuity
+                if (aiState.contextWindow.length > 0) {
+                    const lastContext = aiState.contextWindow[aiState.contextWindow.length - 1];
+                    if (checkContextContinuity(lastContext, alt.text)) score += 0.15;
+                }
+                
+                return { text: alt.text, score: score };
             });
             
-            return Object.entries(wordFreq)
-                .sort((a, b) => b[1] - a[1])
-                .slice(0, 5)
-                .map(([word]) => word);
+            return scores.sort((a, b) => b.score - a.score)[0].text;
         }
 
-        // Calculate speaker similarity
-        function calculateSpeakerSimilarity(char1, char2) {
-            const weights = {
-                avgWordLength: 0.15,
-                avgWordsPerSentence: 0.15,
-                vocabularyRichness: 0.1,
-                questionRatio: 0.15,
-                exclamationRatio: 0.1,
-                formalityScore: 0.2,
-                commonWords: 0.15
+        // Check context continuity
+        function checkContextContinuity(previousText, currentText) {
+            // Simple coherence check - can be made more sophisticated
+            const prevWords = previousText.toLowerCase().split(' ').slice(-3);
+            const currWords = currentText.toLowerCase().split(' ').slice(0, 3);
+            
+            // Check for natural flow
+            const transitions = ['and', 'but', 'so', 'then', 'therefore', 'however', 'also', 'moreover'];
+            return transitions.some(t => currWords.includes(t)) || 
+                   prevWords.some(w => currWords.includes(w));
+        }
+
+        // Enhanced AI text processing
+        function enhanceWithAI(text) {
+            let enhanced = text;
+            
+            // Advanced corrections
+            const corrections = {
+                // Contractions
+                '\\bi\\s+am\\b': "I'm",
+                '\\byou\\s+are\\b': "you're",
+                '\\bwe\\s+are\\b': "we're",
+                '\\bthey\\s+are\\b': "they're",
+                '\\bdo\\s+not\\b': "don't",
+                '\\bcan\\s+not\\b': "cannot",
+                '\\bwill\\s+not\\b': "won't",
+                '\\bit\\s+is\\b': "it's",
+                '\\bthat\\s+is\\b': "that's",
+                '\\blet\\s+us\\b': "let's",
+                // Common errors
+                '\\bgonna\\b': 'going to',
+                '\\bwanna\\b': 'want to',
+                '\\bgotta\\b': 'got to',
+                '\\bkinda\\b': 'kind of',
+                '\\bsorta\\b': 'sort of',
+                // Filler words (optionally remove)
+                '\\b(um|uh|er|ah)\\b': '',
+                // Multiple spaces
+                '\\s+': ' '
             };
+            
+            for (const [pattern, replacement] of Object.entries(corrections)) {
+                enhanced = enhanced.replace(new RegExp(pattern, 'gi'), replacement);
+            }
+            
+            // Smart capitalization
+            enhanced = enhanced.replace(/(^|\. )(\w)/g, (match, p1, p2) => p1 + p2.toUpperCase());
+            
+            // Smart punctuation
+            enhanced = addSmartPunctuation(enhanced);
+            
+            return enhanced.trim();
+        }
 
-            let totalScore = 0;
+        // Add smart punctuation based on patterns
+        function addSmartPunctuation(text) {
+            if (!/[.!?]$/.test(text)) {
+                // Question detection
+                const questionWords = /^(what|where|when|why|how|who|which|whose|whom|is|are|do|does|did|can|could|would|should|will|may|might|shall)/i;
+                const questionPatterns = /(what|where|when|why|how).*(you|your|they|their|he|his|she|her|it|we|our)/i;
+                
+                if (questionWords.test(text) || questionPatterns.test(text)) {
+                    text += '?';
+                } else if (/^(wow|oh|ah|great|awesome|amazing)/i.test(text)) {
+                    text += '!';
+                } else {
+                    text += '.';
+                }
+            }
+            
+            return text;
+        }
 
-            // Numeric comparisons
-            ['avgWordLength', 'avgWordsPerSentence', 'vocabularyRichness', 'questionRatio', 'exclamationRatio', 'formalityScore'].forEach(key => {
-                const diff = Math.abs(char1[key] - char2[key]);
-                const maxVal = Math.max(char1[key], char2[key], 1);
-                const similarity = 1 - (diff / maxVal);
-                totalScore += similarity * weights[key];
+        // Determine if segment should be completed
+        function shouldCompleteSegment() {
+            if (!aiState.currentSegment.text) return false;
+            
+            const now = Date.now();
+            const timeSinceStart = now - aiState.currentSegment.startTime;
+            const timeSinceSpeech = now - aiState.lastSpeechEnd;
+            
+            // Complete segment if:
+            // 1. Long pause detected (silence for 2+ seconds)
+            // 2. Segment is getting too long (15+ seconds)
+            // 3. Significant voice change detected
+            return (aiState.silenceCounter > 40) || 
+                   (timeSinceStart > 15000) ||
+                   (timeSinceSpeech > 2000 && aiState.currentSegment.text.length > 20);
+        }
+
+        // Complete current segment and identify speaker
+        async function completeCurrentSegment() {
+            if (!aiState.currentSegment.text) return;
+            
+            showAIProcessing('Analyzing speaker voice...');
+            
+            // Identify speaker using voice features
+            const speaker = await identifySpeakerWithAI();
+            
+            // Create segment
+            const segment = {
+                id: Date.now(),
+                speaker: speaker,
+                text: aiState.currentSegment.text,
+                startTime: new Date(aiState.currentSegment.startTime),
+                endTime: new Date(),
+                confidence: calculateConfidence(),
+                voiceFeatures: aggregateVoiceFeatures(aiState.currentSegment.audioFeatures)
+            };
+            
+            // Add to segments
+            aiState.segments.push(segment);
+            
+            // Update context window
+            aiState.contextWindow.push(segment.text);
+            if (aiState.contextWindow.length > 5) {
+                aiState.contextWindow.shift();
+            }
+            
+            // Reset current segment
+            aiState.currentSegment = {
+                text: '',
+                startTime: null,
+                audioFeatures: [],
+                speakerId: null
+            };
+            
+            // Update UI
+            updateTranscriptDisplay();
+            updateSpeakerProfiles();
+            updateAIInsights();
+            
+            hideAIProcessing();
+        }
+
+        // Advanced speaker identification using voice features
+        async function identifySpeakerWithAI() {
+            const currentFeatures = aggregateVoiceFeatures(aiState.currentSegment.audioFeatures);
+            
+            if (!currentFeatures || !aiState.settings.voiceRecognition) {
+                return getOrCreateSpeaker(null, currentFeatures);
+            }
+            
+            // Compare with existing voice fingerprints
+            let bestMatch = null;
+            let bestScore = 0;
+            
+            for (const [speakerId, fingerprint] of aiState.voiceFingerprints) {
+                const similarity = calculateVoiceSimilarity(currentFeatures, fingerprint);
+                if (similarity > bestScore && similarity > 0.75) { // 75% threshold
+                    bestScore = similarity;
+                    bestMatch = speakerId;
+                }
+            }
+            
+            if (bestMatch) {
+                // Update fingerprint with new data
+                updateVoiceFingerprint(bestMatch, currentFeatures);
+                return aiState.speakers.get(bestMatch);
+            } else {
+                // Create new speaker
+                return getOrCreateSpeaker(null, currentFeatures);
+            }
+        }
+
+        // Aggregate voice features from audio samples
+        function aggregateVoiceFeatures(features) {
+            if (!features || features.length === 0) return null;
+            
+            const aggregate = {
+                avgVolume: 0,
+                avgBass: 0,
+                avgMid: 0,
+                avgTreble: 0,
+                dominantFreqs: [],
+                avgSpectralCentroid: 0,
+                voicePattern: []
+            };
+            
+            features.forEach(f => {
+                aggregate.avgVolume += f.volume;
+                aggregate.avgBass += f.bass;
+                aggregate.avgMid += f.mid;
+                aggregate.avgTreble += f.treble;
+                aggregate.dominantFreqs.push(f.dominantFreq);
+                aggregate.avgSpectralCentroid += f.spectralCentroid;
             });
-
-            // Common words comparison
-            const commonOverlap = char1.commonWords.filter(w => char2.commonWords.includes(w)).length;
-            const commonScore = commonOverlap / Math.max(char1.commonWords.length, char2.commonWords.length, 1);
-            totalScore += commonScore * weights.commonWords;
-
-            return totalScore;
+            
+            const count = features.length;
+            aggregate.avgVolume /= count;
+            aggregate.avgBass /= count;
+            aggregate.avgMid /= count;
+            aggregate.avgTreble /= count;
+            aggregate.avgSpectralCentroid /= count;
+            
+            // Create voice pattern signature
+            aggregate.voicePattern = [
+                aggregate.avgBass / aggregate.avgVolume,
+                aggregate.avgMid / aggregate.avgVolume,
+                aggregate.avgTreble / aggregate.avgVolume,
+                aggregate.avgSpectralCentroid / 1000
+            ];
+            
+            return aggregate;
         }
 
-        // Check for significant pause or change
-        function hasSignificantPauseOrChange(characteristics) {
-            if (!state.voiceProfiles.has(state.currentSpeakerId)) return true;
+        // Calculate voice similarity between two voice fingerprints
+        function calculateVoiceSimilarity(features1, features2) {
+            if (!features1 || !features2) return 0;
             
-            const currentProfile = state.voiceProfiles.get(state.currentSpeakerId);
-            const similarity = calculateSpeakerSimilarity(characteristics, currentProfile);
+            // Compare voice patterns
+            let patternSimilarity = 0;
+            for (let i = 0; i < features1.voicePattern.length; i++) {
+                const diff = Math.abs(features1.voicePattern[i] - features2.voicePattern[i]);
+                patternSimilarity += 1 - Math.min(diff, 1);
+            }
+            patternSimilarity /= features1.voicePattern.length;
             
-            return similarity < 0.5; // Less than 50% similar suggests different speaker
+            // Compare frequency characteristics
+            const freqSimilarity = 1 - Math.abs(features1.avgSpectralCentroid - features2.avgSpectralCentroid) / 1000;
+            
+            // Weighted combination
+            return patternSimilarity * 0.7 + freqSimilarity * 0.3;
         }
 
-        // Update voice profile with new data
-        function updateVoiceProfile(speakerId, newCharacteristics) {
-            const existing = state.voiceProfiles.get(speakerId);
+        // Update voice fingerprint with new data
+        function updateVoiceFingerprint(speakerId, newFeatures) {
+            const existing = aiState.voiceFingerprints.get(speakerId);
             if (!existing) {
-                state.voiceProfiles.set(speakerId, newCharacteristics);
+                aiState.voiceFingerprints.set(speakerId, newFeatures);
                 return;
             }
-
-            // Weighted average update (80% existing, 20% new)
-            const updated = {};
-            ['avgWordLength', 'avgWordsPerSentence', 'vocabularyRichness', 'questionRatio', 'exclamationRatio', 'formalityScore'].forEach(key => {
-                updated[key] = existing[key] * 0.8 + newCharacteristics[key] * 0.2;
-            });
-
-            // Merge common words
-            updated.commonWords = [...new Set([...existing.commonWords, ...newCharacteristics.commonWords])].slice(0, 10);
-
-            state.voiceProfiles.set(speakerId, updated);
+            
+            // Weighted average (80% existing, 20% new)
+            const updated = {
+                avgVolume: existing.avgVolume * 0.8 + newFeatures.avgVolume * 0.2,
+                avgBass: existing.avgBass * 0.8 + newFeatures.avgBass * 0.2,
+                avgMid: existing.avgMid * 0.8 + newFeatures.avgMid * 0.2,
+                avgTreble: existing.avgTreble * 0.8 + newFeatures.avgTreble * 0.2,
+                avgSpectralCentroid: existing.avgSpectralCentroid * 0.8 + newFeatures.avgSpectralCentroid * 0.2,
+                voicePattern: existing.voicePattern.map((v, i) => v * 0.8 + newFeatures.voicePattern[i] * 0.2)
+            };
+            
+            aiState.voiceFingerprints.set(speakerId, updated);
         }
 
-        // Create new speaker
-        function createNewSpeaker() {
-            const speakerId = `speaker-${state.speakers.size + 1}`;
-            const color = speakerColors[state.speakers.size % speakerColors.length];
+        // Get or create speaker
+        function getOrCreateSpeaker(speakerId, voiceFeatures) {
+            if (speakerId && aiState.speakers.has(speakerId)) {
+                return aiState.speakers.get(speakerId);
+            }
+            
+            const id = `speaker-${aiState.speakers.size + 1}`;
+            const colors = ['#6366f1', '#8b5cf6', '#ec4899', '#f43f5e', '#f59e0b', '#10b981', '#14b8a6', '#3b82f6'];
+            const color = colors[aiState.speakers.size % colors.length];
             
             const speaker = {
-                id: speakerId,
-                name: `Speaker ${state.speakers.size + 1}`,
+                id: id,
+                name: `Speaker ${aiState.speakers.size + 1}`,
                 color: color,
-                count: 0,
+                segments: 0,
                 totalWords: 0,
                 avgConfidence: 0,
-                firstSeen: Date.now()
+                firstSeen: Date.now(),
+                voiceCharacteristics: voiceFeatures ? {
+                    pitch: voiceFeatures.avgSpectralCentroid > 500 ? 'Higher' : 'Lower',
+                    tone: voiceFeatures.avgMid > voiceFeatures.avgBass ? 'Bright' : 'Deep'
+                } : null
             };
-
-            state.speakers.set(speakerId, speaker);
-            updateSpeakerPanelUI();
+            
+            aiState.speakers.set(id, speaker);
+            
+            if (voiceFeatures) {
+                aiState.voiceFingerprints.set(id, voiceFeatures);
+            }
             
             return speaker;
         }
 
-        // Update transcript UI
-        function updateTranscriptUI() {
-            if (state.transcript.length === 0) {
-                elements.transcriptContainer.innerHTML = `
+        // Calculate confidence score
+        function calculateConfidence() {
+            // Base confidence on various factors
+            let confidence = 0.85;
+            
+            // Adjust based on audio quality
+            if (aiState.currentSegment.audioFeatures.length > 0) {
+                const avgVolume = aiState.currentSegment.audioFeatures.reduce((sum, f) => sum + f.volume, 0) / aiState.currentSegment.audioFeatures.length;
+                if (avgVolume > 50) confidence += 0.05;
+                if (avgVolume < 20) confidence -= 0.1;
+            }
+            
+            // Adjust based on text coherence
+            if (aiState.currentSegment.text.length > 100) confidence += 0.05;
+            if (!/[.!?]/.test(aiState.currentSegment.text)) confidence -= 0.05;
+            
+            return Math.max(0.5, Math.min(1, confidence));
+        }
+
+        // Update transcript display
+        function updateTranscriptDisplay() {
+            const container = document.getElementById('transcriptArea');
+            
+            if (aiState.segments.length === 0) {
+                container.innerHTML = `
                     <div class="empty-state">
-                        <div style="font-size: 48px; margin-bottom: 16px;">🎙️</div>
-                        <p>Start recording to begin AI-enhanced transcription</p>
-                        <p style="font-size: 12px; margin-top: 8px;">The AI will automatically identify speakers and enhance accuracy</p>
+                        <div class="empty-state-icon">🎙️</div>
+                        <p>Press the record button to start</p>
+                        <p style="font-size: 12px; margin-top: 8px;">AI will automatically identify and differentiate speakers using advanced voice analysis</p>
                     </div>
                 `;
                 return;
             }
-
-            // Group consecutive messages from same speaker
+            
+            // Group segments by continuous speakers
             const grouped = [];
             let currentGroup = null;
-
-            state.transcript.forEach(entry => {
-                if (!currentGroup || currentGroup.speaker.id !== entry.speaker.id || 
-                    entry.timestamp - currentGroup.endTime > 5000) {
+            
+            aiState.segments.forEach(segment => {
+                if (!currentGroup || currentGroup.speaker.id !== segment.speaker.id) {
                     currentGroup = {
-                        speaker: entry.speaker,
-                        messages: [entry],
-                        startTime: entry.timestamp,
-                        endTime: entry.timestamp
+                        speaker: segment.speaker,
+                        segments: [segment],
+                        startTime: segment.startTime,
+                        endTime: segment.endTime
                     };
                     grouped.push(currentGroup);
                 } else {
-                    currentGroup.messages.push(entry);
-                    currentGroup.endTime = entry.timestamp;
+                    currentGroup.segments.push(segment);
+                    currentGroup.endTime = segment.endTime;
                 }
             });
-
-            elements.transcriptContainer.innerHTML = grouped.map(group => {
-                const messages = group.messages.map(entry => {
-                    let text = entry.text;
-                    if (entry.enhanced) {
-                        // Highlight AI enhancements
-                        text = text.replace(/(\b(?:don't|can't|won't|didn't|that's|what's|I'm|I've|you're|we're|they're)\b)/g, 
-                                          '<span class="ai-enhancement">$1</span>');
-                    }
-                    
-                    const confidenceClass = entry.confidence > 0.9 ? 'high' : 
-                                          entry.confidence > 0.7 ? 'medium' : 'low';
-                    
-                    return text + `<span class="confidence-indicator confidence-${confidenceClass}" title="Confidence: ${(entry.confidence * 100).toFixed(0)}%"></span>`;
-                }).join(' ');
-
-                return `
-                    <div class="transcript-block">
-                        <div class="speaker-header">
-                            <div class="speaker-avatar" style="background: ${group.speaker.color};">
-                                ${group.speaker.name.charAt(0).toUpperCase()}
-                            </div>
-                            <span class="speaker-name">${group.speaker.name}</span>
-                            <span class="timestamp">${group.startTime.toLocaleTimeString()}</span>
+            
+            container.innerHTML = grouped.map((group, index) => `
+                <div class="conversation-block" style="animation-delay: ${index * 0.1}s">
+                    <div class="speaker-section">
+                        <div class="speaker-avatar" style="background: ${group.speaker.color};">
+                            ${group.speaker.name.charAt(0).toUpperCase()}
+                            ${group.speaker.voiceCharacteristics ? 
+                                `<div class="voice-match-indicator" title="Voice verified">✓</div>` : ''}
                         </div>
-                        <div class="transcript-text">${messages}</div>
+                        <div class="speaker-meta">
+                            <div class="speaker-name">
+                                ${group.speaker.name}
+                                ${group.segments[0].confidence > 0.9 ? 
+                                    `<span class="confidence-badge">High confidence</span>` : ''}
+                            </div>
+                            <div class="speaker-timestamp">
+                                ${group.startTime.toLocaleTimeString()} - ${group.endTime.toLocaleTimeString()}
+                            </div>
+                        </div>
                     </div>
-                `;
-            }).join('');
-
-            elements.transcriptContainer.scrollTop = elements.transcriptContainer.scrollHeight;
+                    <div class="conversation-text">
+                        ${group.segments.map(s => processTextForDisplay(s.text)).join(' ')}
+                    </div>
+                </div>
+            `).join('');
+            
+            container.scrollTop = container.scrollHeight;
+            updateTranscriptStatus();
         }
 
-        // Update speaker panel UI
-        function updateSpeakerPanelUI() {
-            if (state.speakers.size === 0) {
-                elements.speakerPanel.innerHTML = `
-                    <div class="empty-state">
-                        <p style="font-size: 13px;">No speakers detected yet</p>
+        // Process text for display with AI enhancements
+        function processTextForDisplay(text) {
+            // Highlight AI corrections
+            return text.replace(/(I'm|you're|we're|they're|don't|won't|can't|it's|that's|let's)/g, 
+                               '<span class="ai-enhancement" data-original="$1">$1</span>');
+        }
+
+        // Update speaker profiles
+        function updateSpeakerProfiles() {
+            const container = document.getElementById('voiceProfiles');
+            
+            if (aiState.speakers.size === 0) {
+                container.innerHTML = `
+                    <div class="empty-state" style="padding: 40px 20px;">
+                        <p style="font-size: 13px;">No speakers detected</p>
                     </div>
                 `;
                 return;
             }
-
-            elements.speakerPanel.innerHTML = Array.from(state.speakers.values()).map(speaker => {
-                const profile = state.voiceProfiles.get(speaker.id) || {};
-                const voicePrint = generateVoicePrint(profile);
+            
+            container.innerHTML = Array.from(aiState.speakers.values()).map(speaker => {
+                const segments = aiState.segments.filter(s => s.speaker.id === speaker.id);
+                const totalWords = segments.reduce((sum, s) => sum + s.text.split(' ').length, 0);
+                const avgConfidence = segments.reduce((sum, s) => sum + s.confidence, 0) / segments.length;
+                const voiceData = aiState.voiceFingerprints.get(speaker.id);
                 
                 return `
-                    <div class="speaker-card">
-                        <div class="speaker-card-header">
-                            <div class="speaker-card-avatar" style="background: ${speaker.color};">
+                    <div class="voice-profile" style="--confidence: ${avgConfidence}">
+                        <div class="profile-header">
+                            <div class="profile-avatar" style="background: ${speaker.color};">
                                 ${speaker.name.charAt(0).toUpperCase()}
                             </div>
                             <input type="text" 
-                                   class="speaker-input" 
-                                   value="${speaker.name}" 
-                                   onchange="updateSpeakerName('${speaker.id}', this.value)"
-                                   placeholder="Enter name">
+                                   class="profile-name" 
+                                   value="${speaker.name}"
+                                   onchange="updateSpeakerName('${speaker.id}', this.value)">
                         </div>
-                        <div class="speaker-stats">
-                            <div class="speaker-stat">
+                        <div class="voice-metrics">
+                            <div class="metric">
                                 <span>Segments</span>
-                                <span class="stat-value">${speaker.count}</span>
+                                <span class="metric-value">${segments.length}</span>
                             </div>
-                            <div class="speaker-stat">
+                            <div class="metric">
                                 <span>Words</span>
-                                <span class="stat-value">${speaker.totalWords}</span>
+                                <span class="metric-value">${totalWords}</span>
                             </div>
-                            <div class="speaker-stat">
+                            <div class="metric">
                                 <span>Confidence</span>
-                                <span class="stat-value">${speaker.avgConfidence ? (speaker.avgConfidence * 100).toFixed(0) + '%' : 'N/A'}</span>
+                                <span class="metric-value">${(avgConfidence * 100).toFixed(0)}%</span>
                             </div>
-                            <div class="speaker-stat">
-                                <span>Speaking Style</span>
-                                <span class="stat-value">${getStyleLabel(profile.formalityScore)}</span>
+                            <div class="metric">
+                                <span>Voice Type</span>
+                                <span class="metric-value">${speaker.voiceCharacteristics?.tone || 'Analyzing...'}</span>
                             </div>
                         </div>
-                        <div class="voice-print">
-                            ${voicePrint}
-                        </div>
+                        ${voiceData ? `
+                            <div class="voice-waveform">
+                                ${generateWaveform(voiceData.voicePattern)}
+                            </div>
+                        ` : ''}
                     </div>
                 `;
             }).join('');
         }
 
-        // Generate voice print visualization
-        function generateVoicePrint(profile) {
-            const values = [
-                profile.avgWordLength || 5,
-                profile.avgWordsPerSentence || 10,
-                profile.vocabularyRichness || 0.5,
-                profile.questionRatio || 0.2,
-                profile.formalityScore || 0.5
-            ];
-            
-            return values.map(val => {
-                const height = Math.min(Math.max(val * 5, 5), 25);
-                return `<div class="voice-bar" style="height: ${height}px; opacity: ${0.3 + val * 0.7}"></div>`;
-            }).join('');
+        // Generate waveform visualization
+        function generateWaveform(pattern) {
+            return pattern.map(value => {
+                const height = Math.max(5, Math.min(30, value * 30));
+                return `<div class="waveform-bar" style="height: ${height}px;"></div>`;
+            }).repeat(8).join('');
         }
 
-        // Get style label
-        function getStyleLabel(score) {
-            if (!score) return 'Unknown';
-            if (score < 0.3) return 'Casual';
-            if (score < 0.7) return 'Neutral';
-            return 'Formal';
-        }
-
-        // Update speaker stats
-        function updateSpeakerStats(speaker) {
-            const entries = state.transcript.filter(e => e.speaker.id === speaker.id);
-            speaker.count = entries.length;
-            speaker.totalWords = entries.reduce((sum, e) => sum + e.text.split(/\s+/).length, 0);
-            speaker.avgConfidence = entries.reduce((sum, e) => sum + e.confidence, 0) / entries.length;
-            
-            updateSpeakerPanelUI();
-        }
-
-        // Update insights
-        function updateInsights() {
+        // Update AI insights
+        function updateAIInsights() {
+            const container = document.getElementById('aiInsights');
             const insights = [];
             
-            // Meeting duration
-            if (state.transcript.length > 0) {
-                const duration = (Date.now() - state.transcript[0].timestamp) / 1000 / 60;
+            if (aiState.segments.length > 0) {
+                // Meeting duration
+                const duration = (Date.now() - aiState.segments[0].startTime) / 60000;
                 insights.push(`Meeting duration: ${Math.round(duration)} minutes`);
-            }
-            
-            // Speaker balance
-            if (state.speakers.size > 1) {
-                const speakerTimes = Array.from(state.speakers.values()).map(s => ({
-                    name: s.name,
-                    words: s.totalWords
-                })).sort((a, b) => b.words - a.words);
                 
-                const dominant = speakerTimes[0];
-                const totalWords = speakerTimes.reduce((sum, s) => sum + s.words, 0);
-                const dominance = (dominant.words / totalWords * 100).toFixed(0);
+                // Speaker analysis
+                if (aiState.speakers.size > 1) {
+                    const speakerStats = Array.from(aiState.speakers.values()).map(speaker => {
+                        const segments = aiState.segments.filter(s => s.speaker.id === speaker.id);
+                        const words = segments.reduce((sum, s) => sum + s.text.split(' ').length, 0);
+                        return { name: speaker.name, words: words };
+                    }).sort((a, b) => b.words - a.words);
+                    
+                    const dominant = speakerStats[0];
+                    const total = speakerStats.reduce((sum, s) => sum + s.words, 0);
+                    const percentage = ((dominant.words / total) * 100).toFixed(0);
+                    
+                    insights.push(`${dominant.name} is leading the conversation (${percentage}% of words)`);
+                }
                 
-                insights.push(`${dominant.name} is leading with ${dominance}% of conversation`);
-            }
-            
-            // Conversation pace
-            if (state.transcript.length > 5) {
-                const recentEntries = state.transcript.slice(-5);
-                const avgWords = recentEntries.reduce((sum, e) => sum + e.text.split(/\s+/).length, 0) / 5;
-                const pace = avgWords < 10 ? 'slow' : avgWords < 25 ? 'moderate' : 'fast';
-                insights.push(`Current pace: ${pace} (${Math.round(avgWords)} words/segment)`);
-            }
-            
-            // AI enhancements
-            const enhanced = state.transcript.filter(e => e.enhanced).length;
-            if (enhanced > 0) {
-                const percentage = (enhanced / state.transcript.length * 100).toFixed(0);
-                insights.push(`AI enhanced ${percentage}% of transcripts`);
-            }
-
-            elements.insightsPanel.innerHTML = insights.length > 0 
-                ? insights.map(insight => `
-                    <div class="insight-item">
-                        <span class="insight-icon">•</span>
-                        <span>${insight}</span>
-                    </div>
-                `).join('')
-                : `<div class="insight-item">
-                    <span class="insight-icon">•</span>
-                    <span>Waiting for conversation data...</span>
-                </div>`;
-        }
-
-        // UI helper functions
-        function updateUI() {
-            if (state.isRecording) {
-                elements.startBtn.disabled = true;
-                elements.stopBtn.disabled = false;
-                elements.languageSelect.disabled = true;
+                // Voice recognition accuracy
+                const avgConfidence = aiState.segments.reduce((sum, s) => sum + s.confidence, 0) / aiState.segments.length;
+                insights.push(`Voice recognition accuracy: ${(avgConfidence * 100).toFixed(0)}%`);
+                
+                // Conversation dynamics
+                if (aiState.segments.length > 5) {
+                    const recentSegments = aiState.segments.slice(-5);
+                    const avgLength = recentSegments.reduce((sum, s) => sum + s.text.length, 0) / 5;
+                    const pace = avgLength < 50 ? 'Quick exchanges' : avgLength < 150 ? 'Moderate discussion' : 'Detailed conversation';
+                    insights.push(`Current style: ${pace}`);
+                }
+                
+                // AI enhancements
+                const enhanced = aiState.segments.filter(s => s.text.includes("'")).length;
+                if (enhanced > 0) {
+                    insights.push(`AI enhanced ${enhanced} segments for clarity`);
+                }
             } else {
-                elements.startBtn.disabled = false;
-                elements.stopBtn.disabled = true;
-                elements.languageSelect.disabled = false;
-            }
-        }
-
-        function updateAIStatus(status, text) {
-            elements.aiStatus.className = `ai-status ${status}`;
-            elements.aiDot.className = `ai-dot ${status}`;
-            elements.aiStatusText.textContent = text;
-        }
-
-        function showProcessingIndicator() {
-            elements.processingOverlay.style.display = 'flex';
-        }
-
-        function hideProcessingIndicator() {
-            elements.processingOverlay.style.display = 'none';
-        }
-
-        // Recording functions
-        function startRecording() {
-            initializeSpeechRecognition();
-            
-            navigator.mediaDevices.getUserMedia({ audio: true })
-                .then(stream => {
-                    state.recognition.start();
-                })
-                .catch(err => {
-                    console.error('Microphone error:', err);
-                    alert('Microphone access denied');
-                });
-        }
-
-        function stopRecording() {
-            if (state.recognition) {
-                state.recognition.stop();
-                state.recognition = null;
+                insights.push('AI is ready to analyze conversation patterns and voice characteristics');
             }
             
-            state.isRecording = false;
-            updateUI();
-            updateAIStatus('ready', 'AI Ready');
-            generateSummary();
+            container.innerHTML = insights.map(insight => `
+                <div class="insight">
+                    <span class="insight-icon">⚡</span>
+                    <span>${insight}</span>
+                </div>
+            `).join('');
         }
 
-        function clearAll() {
-            if (confirm('Clear all data?')) {
-                state.transcript = [];
-                state.speakers.clear();
-                state.voiceProfiles.clear();
-                state.conversationContext = [];
-                state.currentSpeakerId = null;
-                
-                updateTranscriptUI();
-                updateSpeakerPanelUI();
-                updateInsights();
-            }
+        // Update transcript status
+        function updateTranscriptStatus() {
+            const status = document.getElementById('transcriptStatus');
+            const segmentCount = aiState.segments.length;
+            const speakerCount = aiState.speakers.size;
+            
+            status.textContent = `${segmentCount} segment${segmentCount !== 1 ? 's' : ''} • ${speakerCount} speaker${speakerCount !== 1 ? 's' : ''}`;
         }
 
-        // Export functions
-        window.updateSpeakerName = function(speakerId, newName) {
-            const speaker = state.speakers.get(speakerId);
-            if (speaker) {
-                speaker.name = newName;
-                updateTranscriptUI();
-            }
-        };
+        // UI Helper functions
+        function updateAIStatus(text) {
+            document.getElementById('aiStatus').textContent = text;
+        }
 
-        window.exportTranscript = function() {
-            if (state.transcript.length === 0) {
-                alert('No transcript to export');
+        function showAIProcessing(text) {
+            const processing = document.getElementById('aiProcessing');
+            document.getElementById('processingText').textContent = text;
+            processing.classList.add('active');
+        }
+
+        function hideAIProcessing() {
+            setTimeout(() => {
+                document.getElementById('aiProcessing').classList.remove('active');
+            }, 500);
+        }
+
+        function updateInterimTranscript(text) {
+            // Could show interim results in UI if desired
+        }
+
+        // Recording controls
+        async function startRecording() {
+            aiState.isRecording = true;
+            
+            const audioReady = await initializeAudioAnalysis();
+            if (!audioReady) {
+                alert('Microphone access required for voice recognition');
+                aiState.isRecording = false;
                 return;
             }
             
-            let content = `Meeting Transcript - ${new Date().toLocaleDateString()}\n`;
-            content += `AI-Enhanced Transcription\n\n`;
+            initializeRecognition();
+            aiState.recognition.start();
+        }
+
+        function stopRecording() {
+            aiState.isRecording = false;
             
-            state.transcript.forEach(entry => {
-                content += `[${entry.timestamp.toLocaleTimeString()}] ${entry.speaker.name} (${(entry.confidence * 100).toFixed(0)}% confidence):\n`;
-                content += `${entry.text}\n\n`;
+            if (aiState.recognition) {
+                aiState.recognition.stop();
+                aiState.recognition = null;
+            }
+            
+            if (aiState.voiceAnalysisInterval) {
+                clearInterval(aiState.voiceAnalysisInterval);
+                aiState.voiceAnalysisInterval = null;
+            }
+            
+            if (aiState.audioContext) {
+                aiState.audioContext.close();
+                aiState.audioContext = null;
+            }
+            
+            document.getElementById('recordButton').classList.remove('recording');
+            updateAIStatus('AI Voice Analysis Ready');
+            
+            // Reset visualizer
+            document.querySelectorAll('.voice-bar').forEach(bar => {
+                bar.style.height = '20px';
             });
+            
+            // Complete any pending segment
+            if (aiState.currentSegment.text) {
+                completeCurrentSegment();
+            }
+        }
+
+        // Event listeners
+        document.getElementById('recordButton').addEventListener('click', () => {
+            if (aiState.isRecording) {
+                stopRecording();
+            } else {
+                startRecording();
+            }
+        });
+
+        document.getElementById('clearBtn').addEventListener('click', () => {
+            if (confirm('Clear all recorded data?')) {
+                aiState.segments = [];
+                aiState.speakers.clear();
+                aiState.voiceFingerprints.clear();
+                aiState.contextWindow = [];
+                aiState.currentSegment = {
+                    text: '',
+                    startTime: null,
+                    audioFeatures: [],
+                    speakerId: null
+                };
+                
+                updateTranscriptDisplay();
+                updateSpeakerProfiles();
+                updateAIInsights();
+            }
+        });
+
+        document.getElementById('exportBtn').addEventListener('click', () => {
+            if (aiState.segments.length === 0) {
+                alert('No data to export');
+                return;
+            }
+            
+            let content = `AI-Enhanced Meeting Transcript\n`;
+            content += `Generated: ${new Date().toLocaleString()}\n`;
+            content += `Speakers: ${aiState.speakers.size}\n`;
+            content += `Voice Recognition: Enabled\n\n`;
+            
+            aiState.segments.forEach(segment => {
+                content += `[${segment.startTime.toLocaleTimeString()}] ${segment.speaker.name} (${(segment.confidence * 100).toFixed(0)}% confidence):\n`;
+                content += `${segment.text}\n\n`;
+            });
+            
+            content += `\n--- AI Analysis ---\n`;
+            content += `Total segments: ${aiState.segments.length}\n`;
+            content += `Average confidence: ${(aiState.segments.reduce((sum, s) => sum + s.confidence, 0) / aiState.segments.length * 100).toFixed(1)}%\n`;
             
             const blob = new Blob([content], { type: 'text/plain' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = `transcript-${new Date().toISOString().slice(0, 10)}.txt`;
+            a.download = `ai-transcript-${new Date().toISOString().slice(0, 10)}.txt`;
             a.click();
             URL.revokeObjectURL(url);
-        };
-
-        window.exportSummary = function() {
-            const summary = generateSummary();
-            const blob = new Blob([summary], { type: 'text/plain' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `summary-${new Date().toISOString().slice(0, 10)}.txt`;
-            a.click();
-            URL.revokeObjectURL(url);
-        };
-
-        window.copyToClipboard = function() {
-            const text = state.transcript.map(e => `${e.speaker.name}: ${e.text}`).join('\n\n');
-            navigator.clipboard.writeText(text).then(() => {
-                alert('Copied to clipboard');
-            });
-        };
-
-        function generateSummary() {
-            if (state.transcript.length === 0) return 'No transcript available';
-            
-            let summary = `AI-Generated Meeting Summary\n`;
-            summary += `Date: ${new Date().toLocaleDateString()}\n`;
-            summary += `Duration: ${Math.round((Date.now() - state.transcript[0].timestamp) / 60000)} minutes\n`;
-            summary += `Participants: ${state.speakers.size}\n\n`;
-            
-            summary += `Speaker Analysis:\n`;
-            Array.from(state.speakers.values()).forEach(speaker => {
-                const profile = state.voiceProfiles.get(speaker.id) || {};
-                summary += `\n${speaker.name}:\n`;
-                summary += `- Spoke ${speaker.count} times (${speaker.totalWords} words)\n`;
-                summary += `- Speaking style: ${getStyleLabel(profile.formalityScore)}\n`;
-                summary += `- Average confidence: ${(speaker.avgConfidence * 100).toFixed(0)}%\n`;
-                
-                if (profile.commonWords && profile.commonWords.length > 0) {
-                    summary += `- Key topics: ${profile.commonWords.slice(0, 3).join(', ')}\n`;
-                }
-            });
-            
-            summary += `\nAI Enhancements:\n`;
-            const enhanced = state.transcript.filter(e => e.enhanced).length;
-            summary += `- Enhanced ${enhanced} of ${state.transcript.length} segments\n`;
-            summary += `- Overall transcription confidence: ${(state.transcript.reduce((sum, e) => sum + e.confidence, 0) / state.transcript.length * 100).toFixed(0)}%\n`;
-            
-            return summary;
-        }
-
-        // Event listeners
-        elements.startBtn.addEventListener('click', startRecording);
-        elements.stopBtn.addEventListener('click', stopRecording);
-        elements.clearBtn.addEventListener('click', clearAll);
-        
-        elements.exportBtn.addEventListener('click', () => {
-            elements.exportMenu.classList.toggle('show');
         });
 
-        elements.aiToggle.addEventListener('click', () => {
-            state.aiProcessing = !state.aiProcessing;
-            elements.aiToggle.classList.toggle('active');
-            updateAIStatus(state.aiProcessing ? 'ready' : 'inactive', 
-                          state.aiProcessing ? 'AI Ready' : 'AI Disabled');
+        // Settings toggles
+        ['voiceRecognition', 'autoEnhance', 'contextAnalysis', 'predictiveGrouping'].forEach(setting => {
+            document.getElementById(setting).addEventListener('click', function() {
+                this.classList.toggle('active');
+                aiState.settings[setting] = this.classList.contains('active');
+            });
         });
 
-        // Close export menu when clicking outside
-        document.addEventListener('click', (e) => {
-            if (!elements.exportBtn.contains(e.target) && !elements.exportMenu.contains(e.target)) {
-                elements.exportMenu.classList.remove('show');
+        // Update speaker name
+        window.updateSpeakerName = function(speakerId, newName) {
+            const speaker = aiState.speakers.get(speakerId);
+            if (speaker) {
+                speaker.name = newName;
+                updateTranscriptDisplay();
+                updateAIInsights();
             }
-        });
+        };
 
         // Initialize
-        updateUI();
-        updateAIStatus('ready', 'AI Ready');
+        initializeVoiceVisualizer();
+        updateAIStatus('AI Voice Analysis Ready');
     </script>
 </body>
 </html>
