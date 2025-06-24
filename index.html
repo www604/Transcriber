@@ -1,0 +1,1349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transcribe AI - Intelligent Meeting Assistant</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-primary: #0a0a0a;
+            --bg-secondary: #141414;
+            --bg-tertiary: #1a1a1a;
+            --bg-accent: #242424;
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0a0;
+            --text-tertiary: #606060;
+            --accent-primary: #6366f1;
+            --accent-secondary: #818cf8;
+            --accent-danger: #ef4444;
+            --accent-success: #10b981;
+            --accent-warning: #f59e0b;
+            --border-color: #2a2a2a;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .header {
+            background: rgba(20, 20, 20, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            padding: 16px 0;
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 22px;
+            font-weight: 700;
+        }
+
+        .ai-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 12px;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            color: white;
+        }
+
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .ai-status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        .ai-status.active {
+            border-color: var(--accent-primary);
+            color: var(--accent-primary);
+        }
+
+        .ai-dot {
+            width: 6px;
+            height: 6px;
+            background: var(--text-tertiary);
+            border-radius: 50%;
+        }
+
+        .ai-dot.active {
+            background: var(--accent-primary);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.6; transform: scale(1.2); }
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 24px;
+        }
+
+        .control-bar {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+        }
+
+        .control-group {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+        }
+
+        button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-primary {
+            background: var(--accent-primary);
+            color: white;
+        }
+
+        .btn-danger {
+            background: var(--accent-danger);
+            color: white;
+        }
+
+        .main-layout {
+            display: grid;
+            grid-template-columns: 1fr 350px;
+            gap: 24px;
+        }
+
+        @media (max-width: 1024px) {
+            .main-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .panel {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .panel-header {
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .panel-title {
+            font-size: 16px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .transcript-container {
+            height: calc(100vh - 300px);
+            overflow-y: auto;
+            padding: 20px;
+            position: relative;
+        }
+
+        .transcript-container::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .transcript-container::-webkit-scrollbar-track {
+            background: var(--bg-tertiary);
+        }
+
+        .transcript-container::-webkit-scrollbar-thumb {
+            background: var(--bg-accent);
+            border-radius: 3px;
+        }
+
+        .transcript-block {
+            margin-bottom: 24px;
+            position: relative;
+        }
+
+        .speaker-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+        }
+
+        .speaker-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            font-weight: 600;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        .speaker-name {
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .timestamp {
+            font-size: 12px;
+            color: var(--text-tertiary);
+            margin-left: auto;
+        }
+
+        .transcript-text {
+            margin-left: 42px;
+            color: var(--text-secondary);
+            line-height: 1.7;
+        }
+
+        .ai-enhancement {
+            display: inline;
+            background: rgba(99, 102, 241, 0.1);
+            color: var(--accent-secondary);
+            padding: 0 4px;
+            border-radius: 4px;
+            font-style: italic;
+        }
+
+        .confidence-indicator {
+            display: inline-block;
+            width: 4px;
+            height: 4px;
+            background: var(--text-tertiary);
+            border-radius: 50%;
+            margin-left: 6px;
+            vertical-align: middle;
+        }
+
+        .confidence-high { background: var(--accent-success); }
+        .confidence-medium { background: var(--accent-warning); }
+        .confidence-low { background: var(--accent-danger); }
+
+        .speaker-panel {
+            height: 400px;
+            overflow-y: auto;
+            padding: 16px;
+        }
+
+        .speaker-card {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 12px;
+            transition: all 0.2s ease;
+        }
+
+        .speaker-card:hover {
+            border-color: var(--accent-primary);
+        }
+
+        .speaker-card-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .speaker-card-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            color: white;
+        }
+
+        .speaker-input {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 6px 10px;
+            color: var(--text-primary);
+            font-size: 14px;
+            width: 100%;
+        }
+
+        .speaker-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            font-size: 12px;
+            color: var(--text-tertiary);
+        }
+
+        .speaker-stat {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .stat-value {
+            color: var(--text-secondary);
+            font-weight: 600;
+        }
+
+        .voice-print {
+            height: 30px;
+            background: var(--bg-secondary);
+            border-radius: 4px;
+            margin-top: 8px;
+            display: flex;
+            align-items: center;
+            padding: 0 8px;
+            gap: 2px;
+        }
+
+        .voice-bar {
+            width: 3px;
+            background: var(--accent-primary);
+            border-radius: 2px;
+            opacity: 0.3;
+        }
+
+        .insights-panel {
+            background: var(--bg-tertiary);
+            border-radius: 8px;
+            padding: 16px;
+            margin-top: 16px;
+        }
+
+        .insight-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+            margin-bottom: 12px;
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        .insight-icon {
+            color: var(--accent-primary);
+            flex-shrink: 0;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-tertiary);
+        }
+
+        .processing-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            padding: 12px;
+            background: rgba(99, 102, 241, 0.05);
+            border-bottom: 1px solid rgba(99, 102, 241, 0.2);
+            display: none;
+            align-items: center;
+            gap: 12px;
+            font-size: 13px;
+            color: var(--accent-primary);
+        }
+
+        .processing-spinner {
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(99, 102, 241, 0.2);
+            border-top-color: var(--accent-primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        select {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 8px 12px;
+            color: var(--text-primary);
+            font-size: 13px;
+        }
+
+        .export-menu {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 8px;
+            margin-top: 4px;
+            min-width: 180px;
+            display: none;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .export-menu.show {
+            display: block;
+        }
+
+        .export-option {
+            padding: 8px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            transition: background 0.2s ease;
+        }
+
+        .export-option:hover {
+            background: var(--bg-accent);
+        }
+
+        .ai-settings {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 12px 16px;
+            background: var(--bg-tertiary);
+            border-radius: 8px;
+            font-size: 13px;
+        }
+
+        .toggle-switch {
+            position: relative;
+            width: 40px;
+            height: 22px;
+            background: var(--bg-accent);
+            border-radius: 11px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .toggle-switch.active {
+            background: var(--accent-primary);
+        }
+
+        .toggle-switch::after {
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 18px;
+            height: 18px;
+            background: white;
+            border-radius: 50%;
+            transition: transform 0.3s ease;
+        }
+
+        .toggle-switch.active::after {
+            transform: translateX(18px);
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">
+                <span>Transcribe AI</span>
+                <span class="ai-badge">AI Enhanced</span>
+            </div>
+            <div class="status-indicator">
+                <div class="ai-status" id="aiStatus">
+                    <div class="ai-dot" id="aiDot"></div>
+                    <span id="aiStatusText">AI Ready</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="control-bar">
+            <div class="control-group">
+                <button class="btn-primary" id="startBtn">
+                    <span>●</span> Start Recording
+                </button>
+                <button class="btn-danger" id="stopBtn" disabled>
+                    <span>■</span> Stop
+                </button>
+                <button id="clearBtn">Clear</button>
+            </div>
+            
+            <div class="control-group">
+                <select id="languageSelect">
+                    <option value="en-US">English (US)</option>
+                    <option value="en-GB">English (UK)</option>
+                    <option value="es-ES">Spanish</option>
+                    <option value="fr-FR">French</option>
+                    <option value="de-DE">German</option>
+                    <option value="zh-CN">Chinese</option>
+                    <option value="ja-JP">Japanese</option>
+                </select>
+                
+                <div style="position: relative;">
+                    <button id="exportBtn">Export</button>
+                    <div class="export-menu" id="exportMenu">
+                        <div class="export-option" onclick="exportTranscript()">Download Transcript</div>
+                        <div class="export-option" onclick="exportSummary()">Download Summary</div>
+                        <div class="export-option" onclick="copyToClipboard()">Copy to Clipboard</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="main-layout">
+            <div class="panel">
+                <div class="panel-header">
+                    <h2 class="panel-title">Transcript</h2>
+                    <div class="processing-overlay" id="processingOverlay">
+                        <div class="processing-spinner"></div>
+                        <span>AI processing speech patterns...</span>
+                    </div>
+                </div>
+                <div class="transcript-container" id="transcriptContainer">
+                    <div class="empty-state">
+                        <div style="font-size: 48px; margin-bottom: 16px;">🎙️</div>
+                        <p>Start recording to begin AI-enhanced transcription</p>
+                        <p style="font-size: 12px; margin-top: 8px;">The AI will automatically identify speakers and enhance accuracy</p>
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <div class="panel" style="margin-bottom: 20px;">
+                    <div class="panel-header">
+                        <h3 class="panel-title">Speakers</h3>
+                    </div>
+                    <div class="speaker-panel" id="speakerPanel">
+                        <div class="empty-state">
+                            <p style="font-size: 13px;">No speakers detected yet</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel">
+                    <div class="panel-header">
+                        <h3 class="panel-title">AI Insights</h3>
+                    </div>
+                    <div class="insights-panel" id="insightsPanel">
+                        <div class="ai-settings">
+                            <span>Enhanced Processing</span>
+                            <div class="toggle-switch active" id="aiToggle"></div>
+                        </div>
+                        <div style="margin-top: 16px;" id="insightsList">
+                            <div class="insight-item">
+                                <span class="insight-icon">•</span>
+                                <span>Waiting for conversation data...</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Advanced state management with AI features
+        const state = {
+            isRecording: false,
+            recognition: null,
+            transcript: [],
+            speakers: new Map(),
+            currentBuffer: '',
+            bufferTimeout: null,
+            processingQueue: [],
+            voiceProfiles: new Map(),
+            conversationContext: [],
+            aiProcessing: true,
+            speakerChangeThreshold: 1500,
+            lastSpeakerChange: Date.now(),
+            currentSpeakerId: null,
+            confidenceScores: new Map(),
+            speechRate: new Map(),
+            vocabulary: new Map()
+        };
+
+        // DOM elements
+        const elements = {
+            startBtn: document.getElementById('startBtn'),
+            stopBtn: document.getElementById('stopBtn'),
+            clearBtn: document.getElementById('clearBtn'),
+            transcriptContainer: document.getElementById('transcriptContainer'),
+            speakerPanel: document.getElementById('speakerPanel'),
+            insightsPanel: document.getElementById('insightsList'),
+            aiStatus: document.getElementById('aiStatus'),
+            aiDot: document.getElementById('aiDot'),
+            aiStatusText: document.getElementById('aiStatusText'),
+            processingOverlay: document.getElementById('processingOverlay'),
+            exportBtn: document.getElementById('exportBtn'),
+            exportMenu: document.getElementById('exportMenu'),
+            aiToggle: document.getElementById('aiToggle'),
+            languageSelect: document.getElementById('languageSelect')
+        };
+
+        // Speaker colors with better variety
+        const speakerColors = [
+            '#6366f1', '#8b5cf6', '#ec4899', '#f43f5e', '#f59e0b', 
+            '#10b981', '#14b8a6', '#3b82f6', '#06b6d4', '#84cc16'
+        ];
+
+        // Initialize speech recognition with enhanced settings
+        function initializeSpeechRecognition() {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (!SpeechRecognition) {
+                alert('Speech recognition not supported in this browser');
+                return;
+            }
+
+            state.recognition = new SpeechRecognition();
+            state.recognition.continuous = true;
+            state.recognition.interimResults = true;
+            state.recognition.maxAlternatives = 3;
+            state.recognition.lang = elements.languageSelect.value;
+
+            state.recognition.onstart = () => {
+                state.isRecording = true;
+                updateUI();
+                updateAIStatus('active', 'AI Listening');
+            };
+
+            state.recognition.onresult = (event) => {
+                const current = event.resultIndex;
+                const transcript = event.results[current][0].transcript;
+                const confidence = event.results[current][0].confidence || 0.9;
+                
+                if (event.results[current].isFinal) {
+                    processTranscript(transcript, confidence);
+                } else {
+                    state.currentBuffer = transcript;
+                    showProcessingIndicator();
+                }
+            };
+
+            state.recognition.onerror = (event) => {
+                if (event.error !== 'no-speech') {
+                    console.error('Recognition error:', event.error);
+                    updateAIStatus('error', 'AI Error');
+                }
+            };
+
+            state.recognition.onend = () => {
+                if (state.isRecording) {
+                    try {
+                        state.recognition.start();
+                    } catch (e) {
+                        stopRecording();
+                    }
+                }
+            };
+        }
+
+        // AI-enhanced transcript processing
+        function processTranscript(text, confidence) {
+            hideProcessingIndicator();
+            
+            // Clean and enhance the transcript
+            const enhanced = state.aiProcessing ? enhanceTranscript(text) : text;
+            
+            // Identify speaker using AI logic
+            const speaker = identifySpeaker(enhanced, confidence);
+            
+            // Add to conversation context
+            state.conversationContext.push({
+                text: enhanced,
+                speaker: speaker.id,
+                timestamp: Date.now(),
+                confidence: confidence
+            });
+
+            // Keep only recent context (last 10 entries)
+            if (state.conversationContext.length > 10) {
+                state.conversationContext.shift();
+            }
+
+            // Add transcript entry
+            const entry = {
+                id: Date.now(),
+                speaker: speaker,
+                text: enhanced.processed,
+                originalText: text,
+                confidence: confidence,
+                timestamp: new Date(),
+                enhanced: enhanced.wasEnhanced
+            };
+
+            state.transcript.push(entry);
+            updateTranscriptUI();
+            updateSpeakerStats(speaker);
+            updateInsights();
+        }
+
+        // Enhance transcript with AI logic
+        function enhanceTranscript(text) {
+            let processed = text;
+            let wasEnhanced = false;
+
+            // Fix common speech recognition errors
+            const corrections = {
+                'i i': 'I',
+                'dont': "don't",
+                'cant': "can't",
+                'wont': "won't",
+                'didnt': "didn't",
+                'thats': "that's",
+                'whats': "what's",
+                'im': "I'm",
+                'ive': "I've",
+                'youre': "you're",
+                'were': "we're",
+                'theyre': "they're"
+            };
+
+            for (const [error, correction] of Object.entries(corrections)) {
+                const regex = new RegExp(`\\b${error}\\b`, 'gi');
+                if (regex.test(processed)) {
+                    processed = processed.replace(regex, correction);
+                    wasEnhanced = true;
+                }
+            }
+
+            // Capitalize sentences
+            processed = processed.replace(/(^\s*\w|[.!?]\s*\w)/g, c => c.toUpperCase());
+
+            // Remove duplicate words
+            processed = processed.replace(/\b(\w+)\s+\1\b/gi, '$1');
+
+            // Add punctuation if missing
+            if (!/[.!?]$/.test(processed.trim())) {
+                // Simple heuristic for question detection
+                if (/^(who|what|where|when|why|how|is|are|do|does|can|could|would|will)/i.test(processed)) {
+                    processed += '?';
+                } else {
+                    processed += '.';
+                }
+                wasEnhanced = true;
+            }
+
+            return { processed, wasEnhanced };
+        }
+
+        // Advanced speaker identification
+        function identifySpeaker(enhanced, confidence) {
+            const now = Date.now();
+            const timeSinceLastChange = now - state.lastSpeakerChange;
+            
+            // Extract voice characteristics
+            const characteristics = extractVoiceCharacteristics(enhanced.processed);
+            
+            // Check for speaker change indicators
+            const shouldChangeSpeaker = timeSinceLastChange > state.speakerChangeThreshold ||
+                                       hasSignificantPauseOrChange(characteristics);
+
+            if (shouldChangeSpeaker || !state.currentSpeakerId) {
+                // Try to match existing speaker
+                let bestMatch = null;
+                let bestScore = 0;
+
+                state.voiceProfiles.forEach((profile, speakerId) => {
+                    const score = calculateSpeakerSimilarity(characteristics, profile);
+                    if (score > bestScore && score > 0.65) { // 65% similarity threshold
+                        bestScore = score;
+                        bestMatch = speakerId;
+                    }
+                });
+
+                if (bestMatch && confidence > 0.7) {
+                    state.currentSpeakerId = bestMatch;
+                    updateVoiceProfile(bestMatch, characteristics);
+                } else {
+                    // Create new speaker
+                    const newSpeaker = createNewSpeaker();
+                    state.currentSpeakerId = newSpeaker.id;
+                    state.voiceProfiles.set(newSpeaker.id, characteristics);
+                }
+
+                state.lastSpeakerChange = now;
+            } else {
+                // Update current speaker's profile
+                updateVoiceProfile(state.currentSpeakerId, characteristics);
+            }
+
+            return state.speakers.get(state.currentSpeakerId);
+        }
+
+        // Extract voice characteristics for speaker identification
+        function extractVoiceCharacteristics(text) {
+            const words = text.toLowerCase().split(/\s+/);
+            const sentences = text.split(/[.!?]+/).filter(s => s.trim());
+            
+            return {
+                avgWordLength: words.reduce((sum, word) => sum + word.length, 0) / words.length,
+                wordCount: words.length,
+                sentenceCount: sentences.length,
+                avgWordsPerSentence: words.length / Math.max(sentences.length, 1),
+                vocabularyRichness: new Set(words).size / words.length,
+                questionRatio: (text.match(/\?/g) || []).length / Math.max(sentences.length, 1),
+                exclamationRatio: (text.match(/!/g) || []).length / Math.max(sentences.length, 1),
+                formalityScore: calculateFormalityScore(text),
+                commonWords: extractCommonWords(words)
+            };
+        }
+
+        // Calculate formality score
+        function calculateFormalityScore(text) {
+            const informalMarkers = /\b(yeah|yep|nope|gonna|wanna|gotta|kinda|sorta|like|um|uh)\b/gi;
+            const formalMarkers = /\b(therefore|however|furthermore|nevertheless|consequently|regarding)\b/gi;
+            
+            const informalCount = (text.match(informalMarkers) || []).length;
+            const formalCount = (text.match(formalMarkers) || []).length;
+            
+            return (formalCount - informalCount + 10) / 20; // Normalized 0-1
+        }
+
+        // Extract common words for speaker profiling
+        function extractCommonWords(words) {
+            const stopWords = new Set(['the', 'a', 'an', 'and', 'or', 'but', 'in', 'on', 'at', 'to', 'for', 'of', 'with', 'by', 'is', 'are', 'was', 'were']);
+            const filtered = words.filter(w => !stopWords.has(w) && w.length > 3);
+            const wordFreq = {};
+            
+            filtered.forEach(word => {
+                wordFreq[word] = (wordFreq[word] || 0) + 1;
+            });
+            
+            return Object.entries(wordFreq)
+                .sort((a, b) => b[1] - a[1])
+                .slice(0, 5)
+                .map(([word]) => word);
+        }
+
+        // Calculate speaker similarity
+        function calculateSpeakerSimilarity(char1, char2) {
+            const weights = {
+                avgWordLength: 0.15,
+                avgWordsPerSentence: 0.15,
+                vocabularyRichness: 0.1,
+                questionRatio: 0.15,
+                exclamationRatio: 0.1,
+                formalityScore: 0.2,
+                commonWords: 0.15
+            };
+
+            let totalScore = 0;
+
+            // Numeric comparisons
+            ['avgWordLength', 'avgWordsPerSentence', 'vocabularyRichness', 'questionRatio', 'exclamationRatio', 'formalityScore'].forEach(key => {
+                const diff = Math.abs(char1[key] - char2[key]);
+                const maxVal = Math.max(char1[key], char2[key], 1);
+                const similarity = 1 - (diff / maxVal);
+                totalScore += similarity * weights[key];
+            });
+
+            // Common words comparison
+            const commonOverlap = char1.commonWords.filter(w => char2.commonWords.includes(w)).length;
+            const commonScore = commonOverlap / Math.max(char1.commonWords.length, char2.commonWords.length, 1);
+            totalScore += commonScore * weights.commonWords;
+
+            return totalScore;
+        }
+
+        // Check for significant pause or change
+        function hasSignificantPauseOrChange(characteristics) {
+            if (!state.voiceProfiles.has(state.currentSpeakerId)) return true;
+            
+            const currentProfile = state.voiceProfiles.get(state.currentSpeakerId);
+            const similarity = calculateSpeakerSimilarity(characteristics, currentProfile);
+            
+            return similarity < 0.5; // Less than 50% similar suggests different speaker
+        }
+
+        // Update voice profile with new data
+        function updateVoiceProfile(speakerId, newCharacteristics) {
+            const existing = state.voiceProfiles.get(speakerId);
+            if (!existing) {
+                state.voiceProfiles.set(speakerId, newCharacteristics);
+                return;
+            }
+
+            // Weighted average update (80% existing, 20% new)
+            const updated = {};
+            ['avgWordLength', 'avgWordsPerSentence', 'vocabularyRichness', 'questionRatio', 'exclamationRatio', 'formalityScore'].forEach(key => {
+                updated[key] = existing[key] * 0.8 + newCharacteristics[key] * 0.2;
+            });
+
+            // Merge common words
+            updated.commonWords = [...new Set([...existing.commonWords, ...newCharacteristics.commonWords])].slice(0, 10);
+
+            state.voiceProfiles.set(speakerId, updated);
+        }
+
+        // Create new speaker
+        function createNewSpeaker() {
+            const speakerId = `speaker-${state.speakers.size + 1}`;
+            const color = speakerColors[state.speakers.size % speakerColors.length];
+            
+            const speaker = {
+                id: speakerId,
+                name: `Speaker ${state.speakers.size + 1}`,
+                color: color,
+                count: 0,
+                totalWords: 0,
+                avgConfidence: 0,
+                firstSeen: Date.now()
+            };
+
+            state.speakers.set(speakerId, speaker);
+            updateSpeakerPanelUI();
+            
+            return speaker;
+        }
+
+        // Update transcript UI
+        function updateTranscriptUI() {
+            if (state.transcript.length === 0) {
+                elements.transcriptContainer.innerHTML = `
+                    <div class="empty-state">
+                        <div style="font-size: 48px; margin-bottom: 16px;">🎙️</div>
+                        <p>Start recording to begin AI-enhanced transcription</p>
+                        <p style="font-size: 12px; margin-top: 8px;">The AI will automatically identify speakers and enhance accuracy</p>
+                    </div>
+                `;
+                return;
+            }
+
+            // Group consecutive messages from same speaker
+            const grouped = [];
+            let currentGroup = null;
+
+            state.transcript.forEach(entry => {
+                if (!currentGroup || currentGroup.speaker.id !== entry.speaker.id || 
+                    entry.timestamp - currentGroup.endTime > 5000) {
+                    currentGroup = {
+                        speaker: entry.speaker,
+                        messages: [entry],
+                        startTime: entry.timestamp,
+                        endTime: entry.timestamp
+                    };
+                    grouped.push(currentGroup);
+                } else {
+                    currentGroup.messages.push(entry);
+                    currentGroup.endTime = entry.timestamp;
+                }
+            });
+
+            elements.transcriptContainer.innerHTML = grouped.map(group => {
+                const messages = group.messages.map(entry => {
+                    let text = entry.text;
+                    if (entry.enhanced) {
+                        // Highlight AI enhancements
+                        text = text.replace(/(\b(?:don't|can't|won't|didn't|that's|what's|I'm|I've|you're|we're|they're)\b)/g, 
+                                          '<span class="ai-enhancement">$1</span>');
+                    }
+                    
+                    const confidenceClass = entry.confidence > 0.9 ? 'high' : 
+                                          entry.confidence > 0.7 ? 'medium' : 'low';
+                    
+                    return text + `<span class="confidence-indicator confidence-${confidenceClass}" title="Confidence: ${(entry.confidence * 100).toFixed(0)}%"></span>`;
+                }).join(' ');
+
+                return `
+                    <div class="transcript-block">
+                        <div class="speaker-header">
+                            <div class="speaker-avatar" style="background: ${group.speaker.color};">
+                                ${group.speaker.name.charAt(0).toUpperCase()}
+                            </div>
+                            <span class="speaker-name">${group.speaker.name}</span>
+                            <span class="timestamp">${group.startTime.toLocaleTimeString()}</span>
+                        </div>
+                        <div class="transcript-text">${messages}</div>
+                    </div>
+                `;
+            }).join('');
+
+            elements.transcriptContainer.scrollTop = elements.transcriptContainer.scrollHeight;
+        }
+
+        // Update speaker panel UI
+        function updateSpeakerPanelUI() {
+            if (state.speakers.size === 0) {
+                elements.speakerPanel.innerHTML = `
+                    <div class="empty-state">
+                        <p style="font-size: 13px;">No speakers detected yet</p>
+                    </div>
+                `;
+                return;
+            }
+
+            elements.speakerPanel.innerHTML = Array.from(state.speakers.values()).map(speaker => {
+                const profile = state.voiceProfiles.get(speaker.id) || {};
+                const voicePrint = generateVoicePrint(profile);
+                
+                return `
+                    <div class="speaker-card">
+                        <div class="speaker-card-header">
+                            <div class="speaker-card-avatar" style="background: ${speaker.color};">
+                                ${speaker.name.charAt(0).toUpperCase()}
+                            </div>
+                            <input type="text" 
+                                   class="speaker-input" 
+                                   value="${speaker.name}" 
+                                   onchange="updateSpeakerName('${speaker.id}', this.value)"
+                                   placeholder="Enter name">
+                        </div>
+                        <div class="speaker-stats">
+                            <div class="speaker-stat">
+                                <span>Segments</span>
+                                <span class="stat-value">${speaker.count}</span>
+                            </div>
+                            <div class="speaker-stat">
+                                <span>Words</span>
+                                <span class="stat-value">${speaker.totalWords}</span>
+                            </div>
+                            <div class="speaker-stat">
+                                <span>Confidence</span>
+                                <span class="stat-value">${speaker.avgConfidence ? (speaker.avgConfidence * 100).toFixed(0) + '%' : 'N/A'}</span>
+                            </div>
+                            <div class="speaker-stat">
+                                <span>Speaking Style</span>
+                                <span class="stat-value">${getStyleLabel(profile.formalityScore)}</span>
+                            </div>
+                        </div>
+                        <div class="voice-print">
+                            ${voicePrint}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Generate voice print visualization
+        function generateVoicePrint(profile) {
+            const values = [
+                profile.avgWordLength || 5,
+                profile.avgWordsPerSentence || 10,
+                profile.vocabularyRichness || 0.5,
+                profile.questionRatio || 0.2,
+                profile.formalityScore || 0.5
+            ];
+            
+            return values.map(val => {
+                const height = Math.min(Math.max(val * 5, 5), 25);
+                return `<div class="voice-bar" style="height: ${height}px; opacity: ${0.3 + val * 0.7}"></div>`;
+            }).join('');
+        }
+
+        // Get style label
+        function getStyleLabel(score) {
+            if (!score) return 'Unknown';
+            if (score < 0.3) return 'Casual';
+            if (score < 0.7) return 'Neutral';
+            return 'Formal';
+        }
+
+        // Update speaker stats
+        function updateSpeakerStats(speaker) {
+            const entries = state.transcript.filter(e => e.speaker.id === speaker.id);
+            speaker.count = entries.length;
+            speaker.totalWords = entries.reduce((sum, e) => sum + e.text.split(/\s+/).length, 0);
+            speaker.avgConfidence = entries.reduce((sum, e) => sum + e.confidence, 0) / entries.length;
+            
+            updateSpeakerPanelUI();
+        }
+
+        // Update insights
+        function updateInsights() {
+            const insights = [];
+            
+            // Meeting duration
+            if (state.transcript.length > 0) {
+                const duration = (Date.now() - state.transcript[0].timestamp) / 1000 / 60;
+                insights.push(`Meeting duration: ${Math.round(duration)} minutes`);
+            }
+            
+            // Speaker balance
+            if (state.speakers.size > 1) {
+                const speakerTimes = Array.from(state.speakers.values()).map(s => ({
+                    name: s.name,
+                    words: s.totalWords
+                })).sort((a, b) => b.words - a.words);
+                
+                const dominant = speakerTimes[0];
+                const totalWords = speakerTimes.reduce((sum, s) => sum + s.words, 0);
+                const dominance = (dominant.words / totalWords * 100).toFixed(0);
+                
+                insights.push(`${dominant.name} is leading with ${dominance}% of conversation`);
+            }
+            
+            // Conversation pace
+            if (state.transcript.length > 5) {
+                const recentEntries = state.transcript.slice(-5);
+                const avgWords = recentEntries.reduce((sum, e) => sum + e.text.split(/\s+/).length, 0) / 5;
+                const pace = avgWords < 10 ? 'slow' : avgWords < 25 ? 'moderate' : 'fast';
+                insights.push(`Current pace: ${pace} (${Math.round(avgWords)} words/segment)`);
+            }
+            
+            // AI enhancements
+            const enhanced = state.transcript.filter(e => e.enhanced).length;
+            if (enhanced > 0) {
+                const percentage = (enhanced / state.transcript.length * 100).toFixed(0);
+                insights.push(`AI enhanced ${percentage}% of transcripts`);
+            }
+
+            elements.insightsPanel.innerHTML = insights.length > 0 
+                ? insights.map(insight => `
+                    <div class="insight-item">
+                        <span class="insight-icon">•</span>
+                        <span>${insight}</span>
+                    </div>
+                `).join('')
+                : `<div class="insight-item">
+                    <span class="insight-icon">•</span>
+                    <span>Waiting for conversation data...</span>
+                </div>`;
+        }
+
+        // UI helper functions
+        function updateUI() {
+            if (state.isRecording) {
+                elements.startBtn.disabled = true;
+                elements.stopBtn.disabled = false;
+                elements.languageSelect.disabled = true;
+            } else {
+                elements.startBtn.disabled = false;
+                elements.stopBtn.disabled = true;
+                elements.languageSelect.disabled = false;
+            }
+        }
+
+        function updateAIStatus(status, text) {
+            elements.aiStatus.className = `ai-status ${status}`;
+            elements.aiDot.className = `ai-dot ${status}`;
+            elements.aiStatusText.textContent = text;
+        }
+
+        function showProcessingIndicator() {
+            elements.processingOverlay.style.display = 'flex';
+        }
+
+        function hideProcessingIndicator() {
+            elements.processingOverlay.style.display = 'none';
+        }
+
+        // Recording functions
+        function startRecording() {
+            initializeSpeechRecognition();
+            
+            navigator.mediaDevices.getUserMedia({ audio: true })
+                .then(stream => {
+                    state.recognition.start();
+                })
+                .catch(err => {
+                    console.error('Microphone error:', err);
+                    alert('Microphone access denied');
+                });
+        }
+
+        function stopRecording() {
+            if (state.recognition) {
+                state.recognition.stop();
+                state.recognition = null;
+            }
+            
+            state.isRecording = false;
+            updateUI();
+            updateAIStatus('ready', 'AI Ready');
+            generateSummary();
+        }
+
+        function clearAll() {
+            if (confirm('Clear all data?')) {
+                state.transcript = [];
+                state.speakers.clear();
+                state.voiceProfiles.clear();
+                state.conversationContext = [];
+                state.currentSpeakerId = null;
+                
+                updateTranscriptUI();
+                updateSpeakerPanelUI();
+                updateInsights();
+            }
+        }
+
+        // Export functions
+        window.updateSpeakerName = function(speakerId, newName) {
+            const speaker = state.speakers.get(speakerId);
+            if (speaker) {
+                speaker.name = newName;
+                updateTranscriptUI();
+            }
+        };
+
+        window.exportTranscript = function() {
+            if (state.transcript.length === 0) {
+                alert('No transcript to export');
+                return;
+            }
+            
+            let content = `Meeting Transcript - ${new Date().toLocaleDateString()}\n`;
+            content += `AI-Enhanced Transcription\n\n`;
+            
+            state.transcript.forEach(entry => {
+                content += `[${entry.timestamp.toLocaleTimeString()}] ${entry.speaker.name} (${(entry.confidence * 100).toFixed(0)}% confidence):\n`;
+                content += `${entry.text}\n\n`;
+            });
+            
+            const blob = new Blob([content], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `transcript-${new Date().toISOString().slice(0, 10)}.txt`;
+            a.click();
+            URL.revokeObjectURL(url);
+        };
+
+        window.exportSummary = function() {
+            const summary = generateSummary();
+            const blob = new Blob([summary], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `summary-${new Date().toISOString().slice(0, 10)}.txt`;
+            a.click();
+            URL.revokeObjectURL(url);
+        };
+
+        window.copyToClipboard = function() {
+            const text = state.transcript.map(e => `${e.speaker.name}: ${e.text}`).join('\n\n');
+            navigator.clipboard.writeText(text).then(() => {
+                alert('Copied to clipboard');
+            });
+        };
+
+        function generateSummary() {
+            if (state.transcript.length === 0) return 'No transcript available';
+            
+            let summary = `AI-Generated Meeting Summary\n`;
+            summary += `Date: ${new Date().toLocaleDateString()}\n`;
+            summary += `Duration: ${Math.round((Date.now() - state.transcript[0].timestamp) / 60000)} minutes\n`;
+            summary += `Participants: ${state.speakers.size}\n\n`;
+            
+            summary += `Speaker Analysis:\n`;
+            Array.from(state.speakers.values()).forEach(speaker => {
+                const profile = state.voiceProfiles.get(speaker.id) || {};
+                summary += `\n${speaker.name}:\n`;
+                summary += `- Spoke ${speaker.count} times (${speaker.totalWords} words)\n`;
+                summary += `- Speaking style: ${getStyleLabel(profile.formalityScore)}\n`;
+                summary += `- Average confidence: ${(speaker.avgConfidence * 100).toFixed(0)}%\n`;
+                
+                if (profile.commonWords && profile.commonWords.length > 0) {
+                    summary += `- Key topics: ${profile.commonWords.slice(0, 3).join(', ')}\n`;
+                }
+            });
+            
+            summary += `\nAI Enhancements:\n`;
+            const enhanced = state.transcript.filter(e => e.enhanced).length;
+            summary += `- Enhanced ${enhanced} of ${state.transcript.length} segments\n`;
+            summary += `- Overall transcription confidence: ${(state.transcript.reduce((sum, e) => sum + e.confidence, 0) / state.transcript.length * 100).toFixed(0)}%\n`;
+            
+            return summary;
+        }
+
+        // Event listeners
+        elements.startBtn.addEventListener('click', startRecording);
+        elements.stopBtn.addEventListener('click', stopRecording);
+        elements.clearBtn.addEventListener('click', clearAll);
+        
+        elements.exportBtn.addEventListener('click', () => {
+            elements.exportMenu.classList.toggle('show');
+        });
+
+        elements.aiToggle.addEventListener('click', () => {
+            state.aiProcessing = !state.aiProcessing;
+            elements.aiToggle.classList.toggle('active');
+            updateAIStatus(state.aiProcessing ? 'ready' : 'inactive', 
+                          state.aiProcessing ? 'AI Ready' : 'AI Disabled');
+        });
+
+        // Close export menu when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!elements.exportBtn.contains(e.target) && !elements.exportMenu.contains(e.target)) {
+                elements.exportMenu.classList.remove('show');
+            }
+        });
+
+        // Initialize
+        updateUI();
+        updateAIStatus('ready', 'AI Ready');
+    </script>
+</body>
+</html>
