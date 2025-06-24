@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Transcribe AI Pro - Advanced Voice Intelligence</title>
+    <title>Transcribe AI - Voice Recording</title>
     <style>
         * {
             margin: 0;
@@ -15,15 +15,10 @@
             --bg-primary: #000000;
             --bg-secondary: #0a0a0a;
             --bg-tertiary: #141414;
-            --bg-accent: #1a1a1a;
             --text-primary: #ffffff;
-            --text-secondary: #b0b0b0;
-            --text-tertiary: #666666;
+            --text-secondary: #a0a0a0;
             --accent-primary: #6366f1;
-            --accent-secondary: #818cf8;
             --accent-danger: #ef4444;
-            --accent-success: #10b981;
-            --accent-warning: #f59e0b;
             --border-color: #262626;
         }
 
@@ -35,17 +30,13 @@
         }
 
         .header {
-            background: rgba(0, 0, 0, 0.8);
-            backdrop-filter: blur(20px);
+            background: var(--bg-secondary);
             border-bottom: 1px solid var(--border-color);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            padding: 12px 0;
+            padding: 16px 0;
         }
 
         .header-content {
-            max-width: 1600px;
+            max-width: 1400px;
             margin: 0 auto;
             padding: 0 24px;
             display: flex;
@@ -54,124 +45,65 @@
         }
 
         .logo {
-            display: flex;
-            align-items: center;
-            gap: 16px;
             font-size: 20px;
             font-weight: 700;
         }
 
-        .ai-indicator {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 8px 16px;
-            background: rgba(99, 102, 241, 0.1);
-            border: 1px solid rgba(99, 102, 241, 0.3);
-            border-radius: 24px;
-            font-size: 12px;
-            color: var(--accent-primary);
-        }
-
-        .ai-pulse {
-            width: 8px;
-            height: 8px;
-            background: var(--accent-primary);
-            border-radius: 50%;
-            animation: ai-pulse 2s infinite;
-        }
-
-        @keyframes ai-pulse {
-            0% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.6); }
-            50% { box-shadow: 0 0 0 8px rgba(99, 102, 241, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0); }
-        }
-
         .container {
-            max-width: 1600px;
+            max-width: 1400px;
             margin: 0 auto;
             padding: 20px;
         }
 
-        .control-center {
+        .control-bar {
             background: var(--bg-secondary);
             border: 1px solid var(--border-color);
             border-radius: 12px;
             padding: 20px;
             margin-bottom: 20px;
-            display: grid;
-            grid-template-columns: auto 1fr auto;
-            gap: 24px;
+            display: flex;
             align-items: center;
+            gap: 20px;
         }
 
         .record-button {
-            width: 60px;
-            height: 60px;
+            width: 56px;
+            height: 56px;
             border-radius: 50%;
             background: var(--accent-danger);
-            border: 3px solid rgba(239, 68, 68, 0.3);
+            border: none;
             cursor: pointer;
-            position: relative;
-            transition: all 0.3s ease;
             display: flex;
             align-items: center;
             justify-content: center;
+            transition: all 0.3s ease;
         }
 
         .record-button:hover {
             transform: scale(1.05);
-            box-shadow: 0 0 20px rgba(239, 68, 68, 0.4);
         }
 
         .record-button.recording {
-            animation: record-pulse 1.5s infinite;
+            animation: pulse 2s infinite;
         }
 
-        @keyframes record-pulse {
+        @keyframes pulse {
             0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.6); }
-            70% { box-shadow: 0 0 0 15px rgba(239, 68, 68, 0); }
+            70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
             100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
         }
 
         .record-icon {
-            width: 24px;
-            height: 24px;
+            width: 20px;
+            height: 20px;
             background: white;
             border-radius: 50%;
-            transition: all 0.3s ease;
         }
 
         .record-button.recording .record-icon {
             border-radius: 4px;
-            width: 20px;
-            height: 20px;
-        }
-
-        .voice-visualizer {
-            height: 60px;
-            background: var(--bg-tertiary);
-            border-radius: 8px;
-            overflow: hidden;
-            position: relative;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 3px;
-            padding: 0 20px;
-        }
-
-        .voice-bar {
-            width: 3px;
-            height: 20px;
-            background: var(--accent-primary);
-            border-radius: 2px;
-            transition: height 0.1s ease;
-        }
-
-        .control-actions {
-            display: flex;
-            gap: 12px;
+            width: 16px;
+            height: 16px;
         }
 
         button {
@@ -180,24 +112,22 @@
             border-radius: 8px;
             background: var(--bg-tertiary);
             color: var(--text-primary);
-            font-size: 13px;
-            font-weight: 500;
+            font-size: 14px;
             cursor: pointer;
             transition: all 0.2s ease;
         }
 
         button:hover {
-            background: var(--bg-accent);
-            border-color: var(--accent-primary);
+            background: var(--bg-secondary);
         }
 
         .main-grid {
             display: grid;
-            grid-template-columns: 1fr 400px;
+            grid-template-columns: 1fr 300px;
             gap: 20px;
         }
 
-        @media (max-width: 1200px) {
+        @media (max-width: 768px) {
             .main-grid {
                 grid-template-columns: 1fr;
             }
@@ -213,20 +143,17 @@
         .panel-header {
             padding: 16px 20px;
             border-bottom: 1px solid var(--border-color);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
         }
 
         .panel-title {
-            font-size: 15px;
+            font-size: 16px;
             font-weight: 600;
         }
 
         .transcript-area {
-            height: calc(100vh - 280px);
+            height: calc(100vh - 260px);
             overflow-y: auto;
-            padding: 24px;
+            padding: 20px;
         }
 
         .transcript-area::-webkit-scrollbar {
@@ -238,56 +165,29 @@
         }
 
         .transcript-area::-webkit-scrollbar-thumb {
-            background: var(--bg-accent);
+            background: var(--border-color);
             border-radius: 3px;
         }
 
-        .conversation-block {
-            margin-bottom: 32px;
-            opacity: 0;
-            animation: fadeIn 0.5s ease forwards;
-        }
-
-        @keyframes fadeIn {
-            to { opacity: 1; }
-        }
-
-        .speaker-section {
+        .speaker-block {
+            margin-bottom: 24px;
             display: flex;
-            gap: 16px;
-            margin-bottom: 12px;
+            gap: 12px;
         }
 
         .speaker-avatar {
-            width: 40px;
-            height: 40px;
+            width: 36px;
+            height: 36px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             font-weight: 600;
-            font-size: 16px;
             color: white;
             flex-shrink: 0;
-            position: relative;
         }
 
-        .voice-match-indicator {
-            position: absolute;
-            bottom: -2px;
-            right: -2px;
-            width: 14px;
-            height: 14px;
-            background: var(--accent-success);
-            border-radius: 50%;
-            border: 2px solid var(--bg-secondary);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 8px;
-        }
-
-        .speaker-meta {
+        .speaker-content {
             flex: 1;
         }
 
@@ -297,85 +197,45 @@
             margin-bottom: 4px;
         }
 
-        .speaker-timestamp {
-            font-size: 12px;
-            color: var(--text-tertiary);
-        }
-
-        .conversation-text {
-            margin-left: 56px;
+        .speaker-text {
             color: var(--text-secondary);
-            line-height: 1.8;
-            font-size: 15px;
+            line-height: 1.6;
         }
 
-        .ai-enhancement {
-            position: relative;
-            display: inline;
-            border-bottom: 1px dotted var(--accent-primary);
-            cursor: help;
+        .interim-block {
+            opacity: 0.6;
+            border-left: 2px solid var(--accent-primary);
+            padding-left: 8px;
         }
 
-        .ai-enhancement:hover::after {
-            content: attr(data-original);
-            position: absolute;
-            bottom: 100%;
-            left: 0;
-            background: var(--bg-tertiary);
-            border: 1px solid var(--border-color);
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-size: 12px;
-            white-space: nowrap;
-            z-index: 10;
-        }
-
-        .sidebar-section {
-            margin-bottom: 24px;
-        }
-
-        .voice-profile {
-            background: var(--bg-tertiary);
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
+        .speaker-list {
             padding: 16px;
-            margin-bottom: 12px;
-            position: relative;
-            overflow: hidden;
         }
 
-        .voice-profile::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 2px;
-            background: var(--accent-primary);
-            transform: scaleX(var(--confidence, 0));
-            transition: transform 0.3s ease;
-        }
-
-        .profile-header {
+        .speaker-item {
             display: flex;
             align-items: center;
             gap: 12px;
-            margin-bottom: 12px;
+            padding: 12px;
+            background: var(--bg-tertiary);
+            border-radius: 8px;
+            margin-bottom: 8px;
         }
 
-        .profile-avatar {
-            width: 36px;
-            height: 36px;
+        .speaker-item-avatar {
+            width: 32px;
+            height: 32px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
+            font-size: 14px;
             font-weight: 600;
             color: white;
         }
 
-        .profile-name {
-            background: transparent;
+        .speaker-input {
+            background: var(--bg-secondary);
             border: 1px solid var(--border-color);
             border-radius: 4px;
             padding: 4px 8px;
@@ -384,1102 +244,502 @@
             flex: 1;
         }
 
-        .voice-metrics {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 8px;
-            font-size: 12px;
-        }
-
-        .metric {
-            display: flex;
-            justify-content: space-between;
-            color: var(--text-tertiary);
-        }
-
-        .metric-value {
-            color: var(--text-secondary);
-            font-weight: 500;
-        }
-
-        .voice-waveform {
-            margin-top: 12px;
-            height: 40px;
-            background: var(--bg-secondary);
-            border-radius: 4px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 2px;
-            padding: 0 12px;
-        }
-
-        .waveform-bar {
-            width: 2px;
-            background: var(--accent-primary);
-            border-radius: 1px;
-            opacity: 0.6;
-        }
-
-        .ai-insights {
-            background: var(--bg-tertiary);
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            padding: 16px;
-            font-size: 13px;
-        }
-
-        .insight {
-            display: flex;
-            align-items: flex-start;
-            gap: 8px;
-            margin-bottom: 12px;
-            color: var(--text-secondary);
-        }
-
-        .insight-icon {
-            color: var(--accent-primary);
-            flex-shrink: 0;
-            margin-top: 2px;
-        }
-
-        .ai-processing {
-            position: fixed;
-            bottom: 24px;
-            right: 24px;
-            background: var(--bg-tertiary);
-            border: 1px solid var(--accent-primary);
-            border-radius: 8px;
-            padding: 12px 20px;
-            display: none;
-            align-items: center;
-            gap: 12px;
-            font-size: 13px;
-            color: var(--accent-primary);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
-        }
-
-        .ai-processing.active {
-            display: flex;
-        }
-
-        .processing-spinner {
-            width: 16px;
-            height: 16px;
-            border: 2px solid rgba(99, 102, 241, 0.3);
-            border-top-color: var(--accent-primary);
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
         .empty-state {
             text-align: center;
-            padding: 80px 20px;
-            color: var(--text-tertiary);
+            padding: 60px 20px;
+            color: var(--text-secondary);
         }
 
-        .empty-state-icon {
-            font-size: 48px;
-            margin-bottom: 16px;
-            opacity: 0.5;
-        }
-
-        .confidence-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-            padding: 2px 8px;
-            background: rgba(16, 185, 129, 0.1);
-            border: 1px solid rgba(16, 185, 129, 0.3);
-            border-radius: 12px;
-            font-size: 11px;
-            color: var(--accent-success);
-            margin-left: 8px;
-        }
-
-        .settings-panel {
-            background: var(--bg-tertiary);
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            padding: 16px;
+        .status {
             font-size: 13px;
+            color: var(--text-secondary);
         }
 
-        .setting-row {
+        .voice-bars {
+            flex: 1;
+            height: 40px;
             display: flex;
             align-items: center;
-            justify-content: space-between;
-            margin-bottom: 12px;
+            gap: 2px;
+            padding: 0 20px;
         }
 
-        .toggle {
-            width: 36px;
+        .voice-bar {
+            width: 3px;
             height: 20px;
-            background: var(--bg-accent);
-            border-radius: 10px;
-            cursor: pointer;
-            position: relative;
-            transition: background 0.3s ease;
-        }
-
-        .toggle.active {
             background: var(--accent-primary);
-        }
-
-        .toggle::after {
-            content: '';
-            position: absolute;
-            top: 2px;
-            left: 2px;
-            width: 16px;
-            height: 16px;
-            background: white;
-            border-radius: 50%;
-            transition: transform 0.3s ease;
-        }
-
-        .toggle.active::after {
-            transform: translateX(16px);
-        }
-
-        select {
-            background: var(--bg-secondary);
-            border: 1px solid var(--border-color);
-            border-radius: 6px;
-            padding: 6px 12px;
-            color: var(--text-primary);
-            font-size: 13px;
+            border-radius: 2px;
+            transition: height 0.1s ease;
         }
     </style>
 </head>
 <body>
     <header class="header">
         <div class="header-content">
-            <div class="logo">
-                <span>🧠</span>
-                <span>Transcribe AI Pro</span>
-            </div>
-            <div class="ai-indicator">
-                <div class="ai-pulse"></div>
-                <span id="aiStatus">AI Voice Analysis Active</span>
-            </div>
+            <div class="logo">Transcribe AI</div>
+            <div class="status" id="status">Ready</div>
         </div>
     </header>
 
     <div class="container">
-        <div class="control-center">
-            <div class="record-button" id="recordButton">
+        <div class="control-bar">
+            <button class="record-button" id="recordBtn">
                 <div class="record-icon"></div>
-            </div>
+            </button>
             
-            <div class="voice-visualizer" id="voiceVisualizer">
-                <!-- Voice bars will be dynamically added -->
-            </div>
+            <div class="voice-bars" id="voiceBars"></div>
             
-            <div class="control-actions">
-                <button id="clearBtn">Clear All</button>
-                <button id="exportBtn">Export</button>
-                <select id="languageSelect">
-                    <option value="en-US">English (US)</option>
-                    <option value="en-GB">English (UK)</option>
-                    <option value="es-ES">Spanish</option>
-                    <option value="fr-FR">French</option>
-                    <option value="de-DE">German</option>
-                    <option value="zh-CN">Chinese</option>
-                    <option value="ja-JP">Japanese</option>
-                </select>
-            </div>
+            <button id="clearBtn">Clear</button>
+            <button id="exportBtn">Export</button>
+            <select id="languageSelect" style="background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: 6px; padding: 8px; color: var(--text-primary);">
+                <option value="en-US">English (US)</option>
+                <option value="en-GB">English (UK)</option>
+                <option value="es-ES">Spanish</option>
+                <option value="fr-FR">French</option>
+                <option value="de-DE">German</option>
+            </select>
         </div>
 
         <div class="main-grid">
             <div class="panel">
                 <div class="panel-header">
-                    <h2 class="panel-title">Intelligent Transcript</h2>
-                    <span id="transcriptStatus" style="font-size: 12px; color: var(--text-tertiary);"></span>
+                    <h2 class="panel-title">Transcript</h2>
                 </div>
                 <div class="transcript-area" id="transcriptArea">
                     <div class="empty-state">
-                        <div class="empty-state-icon">🎙️</div>
-                        <p>Press the record button to start</p>
-                        <p style="font-size: 12px; margin-top: 8px;">AI will automatically identify and differentiate speakers using advanced voice analysis</p>
+                        <p>Click record to start transcribing</p>
                     </div>
                 </div>
             </div>
 
-            <div>
-                <div class="panel" style="margin-bottom: 20px;">
-                    <div class="panel-header">
-                        <h3 class="panel-title">Voice Profiles</h3>
-                    </div>
-                    <div style="padding: 16px;">
-                        <div id="voiceProfiles" class="sidebar-section">
-                            <div class="empty-state" style="padding: 40px 20px;">
-                                <p style="font-size: 13px;">No speakers detected</p>
-                            </div>
-                        </div>
-                    </div>
+            <div class="panel">
+                <div class="panel-header">
+                    <h3 class="panel-title">Speakers</h3>
                 </div>
-
-                <div class="panel" style="margin-bottom: 20px;">
-                    <div class="panel-header">
-                        <h3 class="panel-title">AI Analysis</h3>
-                    </div>
-                    <div style="padding: 16px;">
-                        <div class="ai-insights" id="aiInsights">
-                            <div class="insight">
-                                <span class="insight-icon">⚡</span>
-                                <span>AI is ready to analyze conversation patterns and voice characteristics</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="panel">
-                    <div class="panel-header">
-                        <h3 class="panel-title">AI Settings</h3>
-                    </div>
-                    <div style="padding: 16px;">
-                        <div class="settings-panel">
-                            <div class="setting-row">
-                                <span>Voice Recognition</span>
-                                <div class="toggle active" id="voiceRecognition"></div>
-                            </div>
-                            <div class="setting-row">
-                                <span>Auto Enhancement</span>
-                                <div class="toggle active" id="autoEnhance"></div>
-                            </div>
-                            <div class="setting-row">
-                                <span>Context Analysis</span>
-                                <div class="toggle active" id="contextAnalysis"></div>
-                            </div>
-                            <div class="setting-row">
-                                <span>Predictive Grouping</span>
-                                <div class="toggle active" id="predictiveGrouping"></div>
-                            </div>
-                        </div>
+                <div class="speaker-list" id="speakerList">
+                    <div class="empty-state">
+                        <p style="font-size: 13px;">No speakers yet</p>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="ai-processing" id="aiProcessing">
-        <div class="processing-spinner"></div>
-        <span id="processingText">AI analyzing voice patterns...</span>
-    </div>
-
     <script>
-        // Advanced AI-powered state management
-        const aiState = {
+        // Simplified state
+        const state = {
             isRecording: false,
             recognition: null,
             audioContext: null,
             analyser: null,
-            microphone: null,
-            segments: [],
             speakers: new Map(),
             voiceFingerprints: new Map(),
-            currentSegment: {
-                text: '',
-                startTime: null,
-                audioFeatures: [],
-                speakerId: null
-            },
-            conversationBuffer: [],
-            contextWindow: [],
-            audioBuffer: [],
-            silenceThreshold: 30,
-            silenceCounter: 0,
-            segmentThreshold: 3000, // 3 seconds or significant pause
-            lastSpeechEnd: Date.now(),
-            voiceAnalysisInterval: null,
-            settings: {
-                voiceRecognition: true,
-                autoEnhance: true,
-                contextAnalysis: true,
-                predictiveGrouping: true
-            }
+            transcriptBlocks: [],
+            currentSpeakerId: null,
+            currentText: '',
+            lastVoiceFeatures: null,
+            audioInterval: null
         };
 
-        // Initialize voice visualizer
-        function initializeVoiceVisualizer() {
-            const visualizer = document.getElementById('voiceVisualizer');
-            for (let i = 0; i < 50; i++) {
+        // Speaker colors
+        const colors = ['#6366f1', '#8b5cf6', '#ec4899', '#f43f5e', '#f59e0b', '#10b981', '#14b8a6', '#3b82f6'];
+
+        // Initialize voice bars
+        function initVoiceBars() {
+            const container = document.getElementById('voiceBars');
+            for (let i = 0; i < 40; i++) {
                 const bar = document.createElement('div');
                 bar.className = 'voice-bar';
-                visualizer.appendChild(bar);
+                container.appendChild(bar);
             }
         }
 
-        // Advanced speech recognition setup
-        function initializeRecognition() {
+        // Initialize speech recognition
+        function initRecognition() {
             const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
             if (!SpeechRecognition) {
-                alert('Browser not supported. Please use Chrome, Edge, or Safari.');
+                alert('Speech recognition not supported');
                 return;
             }
 
-            aiState.recognition = new SpeechRecognition();
-            aiState.recognition.continuous = true;
-            aiState.recognition.interimResults = true;
-            aiState.recognition.maxAlternatives = 5;
-            aiState.recognition.lang = document.getElementById('languageSelect').value;
+            state.recognition = new SpeechRecognition();
+            state.recognition.continuous = true;
+            state.recognition.interimResults = true;
+            state.recognition.lang = document.getElementById('languageSelect').value;
 
-            aiState.recognition.onstart = () => {
-                document.getElementById('recordButton').classList.add('recording');
-                updateAIStatus('Recording and analyzing voices...');
-                startVoiceAnalysis();
+            state.recognition.onstart = () => {
+                document.getElementById('status').textContent = 'Listening...';
+                document.getElementById('recordBtn').classList.add('recording');
             };
 
-            aiState.recognition.onresult = (event) => {
+            state.recognition.onresult = (event) => {
                 const current = event.resultIndex;
                 const transcript = event.results[current][0].transcript;
                 const isFinal = event.results[current].isFinal;
-                const alternatives = Array.from(event.results[current]).map(alt => ({
-                    text: alt.transcript,
-                    confidence: alt.confidence || 0.9
-                }));
 
-                processTranscriptWithAI(transcript, isFinal, alternatives);
+                if (isFinal) {
+                    // Add to current text
+                    state.currentText += (state.currentText ? ' ' : '') + transcript;
+                    
+                    // Check if speaker changed
+                    checkSpeakerChange();
+                    
+                    // Update display
+                    updateTranscriptDisplay();
+                } else {
+                    // Show interim results
+                    updateInterimDisplay(transcript);
+                }
             };
 
-            aiState.recognition.onerror = (event) => {
+            state.recognition.onerror = (event) => {
                 if (event.error !== 'no-speech') {
                     console.error('Recognition error:', event.error);
                 }
             };
 
-            aiState.recognition.onend = () => {
-                if (aiState.isRecording) {
-                    aiState.recognition.start();
+            state.recognition.onend = () => {
+                if (state.isRecording) {
+                    state.recognition.start();
                 }
             };
         }
 
-        // Initialize audio analysis for voice recognition
-        async function initializeAudioAnalysis() {
+        // Initialize audio analysis
+        async function initAudio() {
             try {
                 const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-                aiState.audioContext = new (window.AudioContext || window.webkitAudioContext)();
-                aiState.analyser = aiState.audioContext.createAnalyser();
-                aiState.analyser.fftSize = 2048;
+                state.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                state.analyser = state.audioContext.createAnalyser();
+                state.analyser.fftSize = 2048;
                 
-                aiState.microphone = aiState.audioContext.createMediaStreamSource(stream);
-                aiState.microphone.connect(aiState.analyser);
+                const source = state.audioContext.createMediaStreamSource(stream);
+                source.connect(state.analyser);
                 
+                startAudioAnalysis();
                 return true;
             } catch (err) {
-                console.error('Audio initialization error:', err);
+                console.error('Audio init error:', err);
                 return false;
             }
         }
 
-        // Advanced voice analysis
-        function startVoiceAnalysis() {
-            const bufferLength = aiState.analyser.frequencyBinCount;
+        // Analyze audio for speaker detection
+        function startAudioAnalysis() {
+            const bufferLength = state.analyser.frequencyBinCount;
             const dataArray = new Uint8Array(bufferLength);
             const bars = document.querySelectorAll('.voice-bar');
 
-            aiState.voiceAnalysisInterval = setInterval(() => {
-                aiState.analyser.getByteFrequencyData(dataArray);
+            state.audioInterval = setInterval(() => {
+                state.analyser.getByteFrequencyData(dataArray);
                 
                 // Update visualizer
                 for (let i = 0; i < bars.length; i++) {
-                    const value = dataArray[i * 20] || 0;
-                    bars[i].style.height = `${Math.min(40, value / 4)}px`;
+                    const value = dataArray[i * 25] || 0;
+                    bars[i].style.height = `${Math.min(30, value / 6)}px`;
                 }
                 
                 // Extract voice features
                 const features = extractVoiceFeatures(dataArray);
-                
-                // Detect silence
-                const volume = features.volume;
-                if (volume < aiState.silenceThreshold) {
-                    aiState.silenceCounter++;
-                } else {
-                    aiState.silenceCounter = 0;
+                if (features.volume > 20) { // Only store when speaking
+                    state.lastVoiceFeatures = features;
                 }
-                
-                // Store features for speaker recognition
-                if (aiState.currentSegment.startTime && volume > aiState.silenceThreshold) {
-                    aiState.currentSegment.audioFeatures.push(features);
-                }
-                
-                // Check for segment completion
-                if (shouldCompleteSegment()) {
-                    completeCurrentSegment();
-                }
-            }, 50);
+            }, 100);
         }
 
-        // Extract voice features for speaker identification
-        function extractVoiceFeatures(frequencyData) {
-            const sum = frequencyData.reduce((a, b) => a + b, 0);
-            const average = sum / frequencyData.length;
+        // Extract voice features
+        function extractVoiceFeatures(data) {
+            const sum = data.reduce((a, b) => a + b, 0);
+            const avg = sum / data.length;
             
-            // Frequency bands for voice characteristics
-            const bass = frequencyData.slice(0, 100).reduce((a, b) => a + b, 0) / 100;
-            const mid = frequencyData.slice(100, 400).reduce((a, b) => a + b, 0) / 300;
-            const treble = frequencyData.slice(400, 800).reduce((a, b) => a + b, 0) / 400;
+            // Get frequency bands
+            const bass = data.slice(0, 80).reduce((a, b) => a + b, 0) / 80;
+            const mid = data.slice(80, 300).reduce((a, b) => a + b, 0) / 220;
+            const high = data.slice(300, 600).reduce((a, b) => a + b, 0) / 300;
             
-            // Find dominant frequency
-            let maxFreq = 0;
-            let maxValue = 0;
-            for (let i = 0; i < frequencyData.length; i++) {
-                if (frequencyData[i] > maxValue) {
-                    maxValue = frequencyData[i];
-                    maxFreq = i;
+            // Find peak frequency
+            let maxIdx = 0;
+            let maxVal = 0;
+            for (let i = 0; i < data.length; i++) {
+                if (data[i] > maxVal) {
+                    maxVal = data[i];
+                    maxIdx = i;
                 }
             }
-            
-            // Calculate spectral centroid (brightness of voice)
-            let weightedSum = 0;
-            let magnitudeSum = 0;
-            for (let i = 0; i < frequencyData.length; i++) {
-                weightedSum += i * frequencyData[i];
-                magnitudeSum += frequencyData[i];
-            }
-            const spectralCentroid = magnitudeSum > 0 ? weightedSum / magnitudeSum : 0;
             
             return {
-                volume: average,
+                volume: avg,
                 bass: bass,
                 mid: mid,
-                treble: treble,
-                dominantFreq: maxFreq,
-                spectralCentroid: spectralCentroid,
-                timestamp: Date.now()
+                high: high,
+                peak: maxIdx,
+                pattern: [bass/avg, mid/avg, high/avg]
             };
         }
 
-        // AI-powered transcript processing
-        function processTranscriptWithAI(text, isFinal, alternatives) {
-            showAIProcessing('Processing speech...');
+        // Check if speaker changed
+        function checkSpeakerChange() {
+            if (!state.lastVoiceFeatures) return;
             
-            if (!aiState.currentSegment.startTime) {
-                aiState.currentSegment.startTime = Date.now();
-            }
-            
-            if (isFinal) {
-                // Use AI to select best alternative based on context
-                const bestText = selectBestAlternative(alternatives);
-                
-                // Apply AI enhancements
-                const enhanced = aiState.settings.autoEnhance ? enhanceWithAI(bestText) : bestText;
-                
-                // Add to current segment
-                if (aiState.currentSegment.text) {
-                    aiState.currentSegment.text += ' ' + enhanced;
-                } else {
-                    aiState.currentSegment.text = enhanced;
-                }
-                
-                aiState.lastSpeechEnd = Date.now();
-            } else {
-                // Update interim display
-                updateInterimTranscript(text);
-            }
-            
-            hideAIProcessing();
-        }
-
-        // Select best alternative using context
-        function selectBestAlternative(alternatives) {
-            if (!aiState.settings.contextAnalysis || alternatives.length === 1) {
-                return alternatives[0].text;
-            }
-            
-            // Score each alternative based on context coherence
-            const scores = alternatives.map(alt => {
-                let score = alt.confidence;
-                
-                // Check grammar patterns
-                if (/^[A-Z].*[.!?]$/.test(alt.text)) score += 0.1;
-                
-                // Check context continuity
-                if (aiState.contextWindow.length > 0) {
-                    const lastContext = aiState.contextWindow[aiState.contextWindow.length - 1];
-                    if (checkContextContinuity(lastContext, alt.text)) score += 0.15;
-                }
-                
-                return { text: alt.text, score: score };
-            });
-            
-            return scores.sort((a, b) => b.score - a.score)[0].text;
-        }
-
-        // Check context continuity
-        function checkContextContinuity(previousText, currentText) {
-            // Simple coherence check - can be made more sophisticated
-            const prevWords = previousText.toLowerCase().split(' ').slice(-3);
-            const currWords = currentText.toLowerCase().split(' ').slice(0, 3);
-            
-            // Check for natural flow
-            const transitions = ['and', 'but', 'so', 'then', 'therefore', 'however', 'also', 'moreover'];
-            return transitions.some(t => currWords.includes(t)) || 
-                   prevWords.some(w => currWords.includes(w));
-        }
-
-        // Enhanced AI text processing
-        function enhanceWithAI(text) {
-            let enhanced = text;
-            
-            // Advanced corrections
-            const corrections = {
-                // Contractions
-                '\\bi\\s+am\\b': "I'm",
-                '\\byou\\s+are\\b': "you're",
-                '\\bwe\\s+are\\b': "we're",
-                '\\bthey\\s+are\\b': "they're",
-                '\\bdo\\s+not\\b': "don't",
-                '\\bcan\\s+not\\b': "cannot",
-                '\\bwill\\s+not\\b': "won't",
-                '\\bit\\s+is\\b': "it's",
-                '\\bthat\\s+is\\b': "that's",
-                '\\blet\\s+us\\b': "let's",
-                // Common errors
-                '\\bgonna\\b': 'going to',
-                '\\bwanna\\b': 'want to',
-                '\\bgotta\\b': 'got to',
-                '\\bkinda\\b': 'kind of',
-                '\\bsorta\\b': 'sort of',
-                // Filler words (optionally remove)
-                '\\b(um|uh|er|ah)\\b': '',
-                // Multiple spaces
-                '\\s+': ' '
-            };
-            
-            for (const [pattern, replacement] of Object.entries(corrections)) {
-                enhanced = enhanced.replace(new RegExp(pattern, 'gi'), replacement);
-            }
-            
-            // Smart capitalization
-            enhanced = enhanced.replace(/(^|\. )(\w)/g, (match, p1, p2) => p1 + p2.toUpperCase());
-            
-            // Smart punctuation
-            enhanced = addSmartPunctuation(enhanced);
-            
-            return enhanced.trim();
-        }
-
-        // Add smart punctuation based on patterns
-        function addSmartPunctuation(text) {
-            if (!/[.!?]$/.test(text)) {
-                // Question detection
-                const questionWords = /^(what|where|when|why|how|who|which|whose|whom|is|are|do|does|did|can|could|would|should|will|may|might|shall)/i;
-                const questionPatterns = /(what|where|when|why|how).*(you|your|they|their|he|his|she|her|it|we|our)/i;
-                
-                if (questionWords.test(text) || questionPatterns.test(text)) {
-                    text += '?';
-                } else if (/^(wow|oh|ah|great|awesome|amazing)/i.test(text)) {
-                    text += '!';
-                } else {
-                    text += '.';
-                }
-            }
-            
-            return text;
-        }
-
-        // Determine if segment should be completed
-        function shouldCompleteSegment() {
-            if (!aiState.currentSegment.text) return false;
-            
-            const now = Date.now();
-            const timeSinceStart = now - aiState.currentSegment.startTime;
-            const timeSinceSpeech = now - aiState.lastSpeechEnd;
-            
-            // Complete segment if:
-            // 1. Long pause detected (silence for 2+ seconds)
-            // 2. Segment is getting too long (15+ seconds)
-            // 3. Significant voice change detected
-            return (aiState.silenceCounter > 40) || 
-                   (timeSinceStart > 15000) ||
-                   (timeSinceSpeech > 2000 && aiState.currentSegment.text.length > 20);
-        }
-
-        // Complete current segment and identify speaker
-        async function completeCurrentSegment() {
-            if (!aiState.currentSegment.text) return;
-            
-            showAIProcessing('Analyzing speaker voice...');
-            
-            // Identify speaker using voice features
-            const speaker = await identifySpeakerWithAI();
-            
-            // Create segment
-            const segment = {
-                id: Date.now(),
-                speaker: speaker,
-                text: aiState.currentSegment.text,
-                startTime: new Date(aiState.currentSegment.startTime),
-                endTime: new Date(),
-                confidence: calculateConfidence(),
-                voiceFeatures: aggregateVoiceFeatures(aiState.currentSegment.audioFeatures)
-            };
-            
-            // Add to segments
-            aiState.segments.push(segment);
-            
-            // Update context window
-            aiState.contextWindow.push(segment.text);
-            if (aiState.contextWindow.length > 5) {
-                aiState.contextWindow.shift();
-            }
-            
-            // Reset current segment
-            aiState.currentSegment = {
-                text: '',
-                startTime: null,
-                audioFeatures: [],
-                speakerId: null
-            };
-            
-            // Update UI
-            updateTranscriptDisplay();
-            updateSpeakerProfiles();
-            updateAIInsights();
-            
-            hideAIProcessing();
-        }
-
-        // Advanced speaker identification using voice features
-        async function identifySpeakerWithAI() {
-            const currentFeatures = aggregateVoiceFeatures(aiState.currentSegment.audioFeatures);
-            
-            if (!currentFeatures || !aiState.settings.voiceRecognition) {
-                return getOrCreateSpeaker(null, currentFeatures);
-            }
-            
-            // Compare with existing voice fingerprints
+            // Find matching speaker
             let bestMatch = null;
             let bestScore = 0;
             
-            for (const [speakerId, fingerprint] of aiState.voiceFingerprints) {
-                const similarity = calculateVoiceSimilarity(currentFeatures, fingerprint);
-                if (similarity > bestScore && similarity > 0.75) { // 75% threshold
-                    bestScore = similarity;
+            for (const [speakerId, fingerprint] of state.voiceFingerprints) {
+                const score = compareVoices(state.lastVoiceFeatures, fingerprint);
+                if (score > bestScore && score > 0.7) {
+                    bestScore = score;
                     bestMatch = speakerId;
                 }
             }
             
-            if (bestMatch) {
-                // Update fingerprint with new data
-                updateVoiceFingerprint(bestMatch, currentFeatures);
-                return aiState.speakers.get(bestMatch);
-            } else {
-                // Create new speaker
-                return getOrCreateSpeaker(null, currentFeatures);
+            // If no match or different speaker, save current and start new
+            if (!bestMatch || (state.currentSpeakerId && bestMatch !== state.currentSpeakerId)) {
+                // Save current block if exists
+                if (state.currentText && state.currentSpeakerId) {
+                    saveCurrentBlock();
+                }
+                
+                // Create new speaker if needed
+                if (!bestMatch) {
+                    bestMatch = createNewSpeaker();
+                    state.voiceFingerprints.set(bestMatch, state.lastVoiceFeatures);
+                }
+                
+                state.currentSpeakerId = bestMatch;
+            } else if (!state.currentSpeakerId) {
+                // First speaker
+                if (!bestMatch) {
+                    bestMatch = createNewSpeaker();
+                    state.voiceFingerprints.set(bestMatch, state.lastVoiceFeatures);
+                }
+                state.currentSpeakerId = bestMatch;
+            }
+            
+            // Update voice fingerprint
+            if (state.currentSpeakerId) {
+                updateVoiceFingerprint(state.currentSpeakerId, state.lastVoiceFeatures);
             }
         }
 
-        // Aggregate voice features from audio samples
-        function aggregateVoiceFeatures(features) {
-            if (!features || features.length === 0) return null;
-            
-            const aggregate = {
-                avgVolume: 0,
-                avgBass: 0,
-                avgMid: 0,
-                avgTreble: 0,
-                dominantFreqs: [],
-                avgSpectralCentroid: 0,
-                voicePattern: []
-            };
-            
-            features.forEach(f => {
-                aggregate.avgVolume += f.volume;
-                aggregate.avgBass += f.bass;
-                aggregate.avgMid += f.mid;
-                aggregate.avgTreble += f.treble;
-                aggregate.dominantFreqs.push(f.dominantFreq);
-                aggregate.avgSpectralCentroid += f.spectralCentroid;
-            });
-            
-            const count = features.length;
-            aggregate.avgVolume /= count;
-            aggregate.avgBass /= count;
-            aggregate.avgMid /= count;
-            aggregate.avgTreble /= count;
-            aggregate.avgSpectralCentroid /= count;
-            
-            // Create voice pattern signature
-            aggregate.voicePattern = [
-                aggregate.avgBass / aggregate.avgVolume,
-                aggregate.avgMid / aggregate.avgVolume,
-                aggregate.avgTreble / aggregate.avgVolume,
-                aggregate.avgSpectralCentroid / 1000
-            ];
-            
-            return aggregate;
-        }
-
-        // Calculate voice similarity between two voice fingerprints
-        function calculateVoiceSimilarity(features1, features2) {
+        // Compare voice patterns
+        function compareVoices(features1, features2) {
             if (!features1 || !features2) return 0;
             
-            // Compare voice patterns
-            let patternSimilarity = 0;
-            for (let i = 0; i < features1.voicePattern.length; i++) {
-                const diff = Math.abs(features1.voicePattern[i] - features2.voicePattern[i]);
-                patternSimilarity += 1 - Math.min(diff, 1);
+            let score = 0;
+            
+            // Compare patterns
+            for (let i = 0; i < features1.pattern.length; i++) {
+                const diff = Math.abs(features1.pattern[i] - features2.pattern[i]);
+                score += 1 - Math.min(diff, 1);
             }
-            patternSimilarity /= features1.voicePattern.length;
+            score /= features1.pattern.length;
             
-            // Compare frequency characteristics
-            const freqSimilarity = 1 - Math.abs(features1.avgSpectralCentroid - features2.avgSpectralCentroid) / 1000;
+            // Compare peak frequency
+            const peakDiff = Math.abs(features1.peak - features2.peak);
+            const peakScore = 1 - Math.min(peakDiff / 100, 1);
             
-            // Weighted combination
-            return patternSimilarity * 0.7 + freqSimilarity * 0.3;
+            return score * 0.7 + peakScore * 0.3;
         }
 
-        // Update voice fingerprint with new data
-        function updateVoiceFingerprint(speakerId, newFeatures) {
-            const existing = aiState.voiceFingerprints.get(speakerId);
+        // Update voice fingerprint
+        function updateVoiceFingerprint(speakerId, features) {
+            const existing = state.voiceFingerprints.get(speakerId);
             if (!existing) {
-                aiState.voiceFingerprints.set(speakerId, newFeatures);
+                state.voiceFingerprints.set(speakerId, features);
                 return;
             }
             
-            // Weighted average (80% existing, 20% new)
+            // Average with existing
             const updated = {
-                avgVolume: existing.avgVolume * 0.8 + newFeatures.avgVolume * 0.2,
-                avgBass: existing.avgBass * 0.8 + newFeatures.avgBass * 0.2,
-                avgMid: existing.avgMid * 0.8 + newFeatures.avgMid * 0.2,
-                avgTreble: existing.avgTreble * 0.8 + newFeatures.avgTreble * 0.2,
-                avgSpectralCentroid: existing.avgSpectralCentroid * 0.8 + newFeatures.avgSpectralCentroid * 0.2,
-                voicePattern: existing.voicePattern.map((v, i) => v * 0.8 + newFeatures.voicePattern[i] * 0.2)
+                volume: (existing.volume + features.volume) / 2,
+                bass: (existing.bass + features.bass) / 2,
+                mid: (existing.mid + features.mid) / 2,
+                high: (existing.high + features.high) / 2,
+                peak: Math.round((existing.peak + features.peak) / 2),
+                pattern: existing.pattern.map((v, i) => (v + features.pattern[i]) / 2)
             };
             
-            aiState.voiceFingerprints.set(speakerId, updated);
+            state.voiceFingerprints.set(speakerId, updated);
         }
 
-        // Get or create speaker
-        function getOrCreateSpeaker(speakerId, voiceFeatures) {
-            if (speakerId && aiState.speakers.has(speakerId)) {
-                return aiState.speakers.get(speakerId);
-            }
-            
-            const id = `speaker-${aiState.speakers.size + 1}`;
-            const colors = ['#6366f1', '#8b5cf6', '#ec4899', '#f43f5e', '#f59e0b', '#10b981', '#14b8a6', '#3b82f6'];
-            const color = colors[aiState.speakers.size % colors.length];
-            
+        // Create new speaker
+        function createNewSpeaker() {
+            const id = `speaker-${state.speakers.size + 1}`;
             const speaker = {
                 id: id,
-                name: `Speaker ${aiState.speakers.size + 1}`,
-                color: color,
-                segments: 0,
-                totalWords: 0,
-                avgConfidence: 0,
-                firstSeen: Date.now(),
-                voiceCharacteristics: voiceFeatures ? {
-                    pitch: voiceFeatures.avgSpectralCentroid > 500 ? 'Higher' : 'Lower',
-                    tone: voiceFeatures.avgMid > voiceFeatures.avgBass ? 'Bright' : 'Deep'
-                } : null
+                name: `Speaker ${state.speakers.size + 1}`,
+                color: colors[state.speakers.size % colors.length]
             };
-            
-            aiState.speakers.set(id, speaker);
-            
-            if (voiceFeatures) {
-                aiState.voiceFingerprints.set(id, voiceFeatures);
-            }
-            
-            return speaker;
+            state.speakers.set(id, speaker);
+            updateSpeakerList();
+            return id;
         }
 
-        // Calculate confidence score
-        function calculateConfidence() {
-            // Base confidence on various factors
-            let confidence = 0.85;
+        // Save current block
+        function saveCurrentBlock() {
+            if (!state.currentText || !state.currentSpeakerId) return;
             
-            // Adjust based on audio quality
-            if (aiState.currentSegment.audioFeatures.length > 0) {
-                const avgVolume = aiState.currentSegment.audioFeatures.reduce((sum, f) => sum + f.volume, 0) / aiState.currentSegment.audioFeatures.length;
-                if (avgVolume > 50) confidence += 0.05;
-                if (avgVolume < 20) confidence -= 0.1;
-            }
+            state.transcriptBlocks.push({
+                speaker: state.speakers.get(state.currentSpeakerId),
+                text: state.currentText
+            });
             
-            // Adjust based on text coherence
-            if (aiState.currentSegment.text.length > 100) confidence += 0.05;
-            if (!/[.!?]/.test(aiState.currentSegment.text)) confidence -= 0.05;
-            
-            return Math.max(0.5, Math.min(1, confidence));
+            state.currentText = '';
         }
 
         // Update transcript display
         function updateTranscriptDisplay() {
             const container = document.getElementById('transcriptArea');
             
-            if (aiState.segments.length === 0) {
-                container.innerHTML = `
-                    <div class="empty-state">
-                        <div class="empty-state-icon">🎙️</div>
-                        <p>Press the record button to start</p>
-                        <p style="font-size: 12px; margin-top: 8px;">AI will automatically identify and differentiate speakers using advanced voice analysis</p>
+            // Build HTML for all blocks plus current
+            let html = '';
+            
+            // Existing blocks
+            state.transcriptBlocks.forEach(block => {
+                html += `
+                    <div class="speaker-block">
+                        <div class="speaker-avatar" style="background: ${block.speaker.color};">
+                            ${block.speaker.name.charAt(0)}
+                        </div>
+                        <div class="speaker-content">
+                            <div class="speaker-name">${block.speaker.name}</div>
+                            <div class="speaker-text">${block.text}</div>
+                        </div>
                     </div>
                 `;
-                return;
-            }
-            
-            // Group segments by continuous speakers
-            const grouped = [];
-            let currentGroup = null;
-            
-            aiState.segments.forEach(segment => {
-                if (!currentGroup || currentGroup.speaker.id !== segment.speaker.id) {
-                    currentGroup = {
-                        speaker: segment.speaker,
-                        segments: [segment],
-                        startTime: segment.startTime,
-                        endTime: segment.endTime
-                    };
-                    grouped.push(currentGroup);
-                } else {
-                    currentGroup.segments.push(segment);
-                    currentGroup.endTime = segment.endTime;
-                }
             });
             
-            container.innerHTML = grouped.map((group, index) => `
-                <div class="conversation-block" style="animation-delay: ${index * 0.1}s">
-                    <div class="speaker-section">
-                        <div class="speaker-avatar" style="background: ${group.speaker.color};">
-                            ${group.speaker.name.charAt(0).toUpperCase()}
-                            ${group.speaker.voiceCharacteristics ? 
-                                `<div class="voice-match-indicator" title="Voice verified">✓</div>` : ''}
+            // Current block if any
+            if (state.currentText && state.currentSpeakerId) {
+                const speaker = state.speakers.get(state.currentSpeakerId);
+                html += `
+                    <div class="speaker-block">
+                        <div class="speaker-avatar" style="background: ${speaker.color};">
+                            ${speaker.name.charAt(0)}
                         </div>
-                        <div class="speaker-meta">
-                            <div class="speaker-name">
-                                ${group.speaker.name}
-                                ${group.segments[0].confidence > 0.9 ? 
-                                    `<span class="confidence-badge">High confidence</span>` : ''}
-                            </div>
-                            <div class="speaker-timestamp">
-                                ${group.startTime.toLocaleTimeString()} - ${group.endTime.toLocaleTimeString()}
-                            </div>
+                        <div class="speaker-content">
+                            <div class="speaker-name">${speaker.name}</div>
+                            <div class="speaker-text">${state.currentText}</div>
                         </div>
                     </div>
-                    <div class="conversation-text">
-                        ${group.segments.map(s => processTextForDisplay(s.text)).join(' ')}
-                    </div>
-                </div>
-            `).join('');
+                `;
+            }
             
+            container.innerHTML = html || '<div class="empty-state"><p>Click record to start transcribing</p></div>';
             container.scrollTop = container.scrollHeight;
-            updateTranscriptStatus();
         }
 
-        // Process text for display with AI enhancements
-        function processTextForDisplay(text) {
-            // Highlight AI corrections
-            return text.replace(/(I'm|you're|we're|they're|don't|won't|can't|it's|that's|let's)/g, 
-                               '<span class="ai-enhancement" data-original="$1">$1</span>');
-        }
-
-        // Update speaker profiles
-        function updateSpeakerProfiles() {
-            const container = document.getElementById('voiceProfiles');
+        // Update interim display
+        function updateInterimDisplay(interim) {
+            const container = document.getElementById('transcriptArea');
+            let interimDiv = container.querySelector('.interim-block');
             
-            if (aiState.speakers.size === 0) {
-                container.innerHTML = `
-                    <div class="empty-state" style="padding: 40px 20px;">
-                        <p style="font-size: 13px;">No speakers detected</p>
+            if (!interimDiv && state.currentSpeakerId) {
+                const speaker = state.speakers.get(state.currentSpeakerId);
+                interimDiv = document.createElement('div');
+                interimDiv.className = 'speaker-block interim-block';
+                interimDiv.innerHTML = `
+                    <div class="speaker-avatar" style="background: ${speaker.color};">
+                        ${speaker.name.charAt(0)}
+                    </div>
+                    <div class="speaker-content">
+                        <div class="speaker-name">${speaker.name}</div>
+                        <div class="speaker-text"></div>
                     </div>
                 `;
+                container.appendChild(interimDiv);
+            }
+            
+            if (interimDiv) {
+                interimDiv.querySelector('.speaker-text').textContent = state.currentText + ' ' + interim;
+                container.scrollTop = container.scrollHeight;
+            }
+        }
+
+        // Update speaker list
+        function updateSpeakerList() {
+            const container = document.getElementById('speakerList');
+            
+            if (state.speakers.size === 0) {
+                container.innerHTML = '<div class="empty-state"><p style="font-size: 13px;">No speakers yet</p></div>';
                 return;
             }
             
-            container.innerHTML = Array.from(aiState.speakers.values()).map(speaker => {
-                const segments = aiState.segments.filter(s => s.speaker.id === speaker.id);
-                const totalWords = segments.reduce((sum, s) => sum + s.text.split(' ').length, 0);
-                const avgConfidence = segments.reduce((sum, s) => sum + s.confidence, 0) / segments.length;
-                const voiceData = aiState.voiceFingerprints.get(speaker.id);
-                
-                return `
-                    <div class="voice-profile" style="--confidence: ${avgConfidence}">
-                        <div class="profile-header">
-                            <div class="profile-avatar" style="background: ${speaker.color};">
-                                ${speaker.name.charAt(0).toUpperCase()}
-                            </div>
-                            <input type="text" 
-                                   class="profile-name" 
-                                   value="${speaker.name}"
-                                   onchange="updateSpeakerName('${speaker.id}', this.value)">
-                        </div>
-                        <div class="voice-metrics">
-                            <div class="metric">
-                                <span>Segments</span>
-                                <span class="metric-value">${segments.length}</span>
-                            </div>
-                            <div class="metric">
-                                <span>Words</span>
-                                <span class="metric-value">${totalWords}</span>
-                            </div>
-                            <div class="metric">
-                                <span>Confidence</span>
-                                <span class="metric-value">${(avgConfidence * 100).toFixed(0)}%</span>
-                            </div>
-                            <div class="metric">
-                                <span>Voice Type</span>
-                                <span class="metric-value">${speaker.voiceCharacteristics?.tone || 'Analyzing...'}</span>
-                            </div>
-                        </div>
-                        ${voiceData ? `
-                            <div class="voice-waveform">
-                                ${generateWaveform(voiceData.voicePattern)}
-                            </div>
-                        ` : ''}
+            container.innerHTML = Array.from(state.speakers.values()).map(speaker => `
+                <div class="speaker-item">
+                    <div class="speaker-item-avatar" style="background: ${speaker.color};">
+                        ${speaker.name.charAt(0)}
                     </div>
-                `;
-            }).join('');
-        }
-
-        // Generate waveform visualization
-        function generateWaveform(pattern) {
-            return pattern.map(value => {
-                const height = Math.max(5, Math.min(30, value * 30));
-                return `<div class="waveform-bar" style="height: ${height}px;"></div>`;
-            }).repeat(8).join('');
-        }
-
-        // Update AI insights
-        function updateAIInsights() {
-            const container = document.getElementById('aiInsights');
-            const insights = [];
-            
-            if (aiState.segments.length > 0) {
-                // Meeting duration
-                const duration = (Date.now() - aiState.segments[0].startTime) / 60000;
-                insights.push(`Meeting duration: ${Math.round(duration)} minutes`);
-                
-                // Speaker analysis
-                if (aiState.speakers.size > 1) {
-                    const speakerStats = Array.from(aiState.speakers.values()).map(speaker => {
-                        const segments = aiState.segments.filter(s => s.speaker.id === speaker.id);
-                        const words = segments.reduce((sum, s) => sum + s.text.split(' ').length, 0);
-                        return { name: speaker.name, words: words };
-                    }).sort((a, b) => b.words - a.words);
-                    
-                    const dominant = speakerStats[0];
-                    const total = speakerStats.reduce((sum, s) => sum + s.words, 0);
-                    const percentage = ((dominant.words / total) * 100).toFixed(0);
-                    
-                    insights.push(`${dominant.name} is leading the conversation (${percentage}% of words)`);
-                }
-                
-                // Voice recognition accuracy
-                const avgConfidence = aiState.segments.reduce((sum, s) => sum + s.confidence, 0) / aiState.segments.length;
-                insights.push(`Voice recognition accuracy: ${(avgConfidence * 100).toFixed(0)}%`);
-                
-                // Conversation dynamics
-                if (aiState.segments.length > 5) {
-                    const recentSegments = aiState.segments.slice(-5);
-                    const avgLength = recentSegments.reduce((sum, s) => sum + s.text.length, 0) / 5;
-                    const pace = avgLength < 50 ? 'Quick exchanges' : avgLength < 150 ? 'Moderate discussion' : 'Detailed conversation';
-                    insights.push(`Current style: ${pace}`);
-                }
-                
-                // AI enhancements
-                const enhanced = aiState.segments.filter(s => s.text.includes("'")).length;
-                if (enhanced > 0) {
-                    insights.push(`AI enhanced ${enhanced} segments for clarity`);
-                }
-            } else {
-                insights.push('AI is ready to analyze conversation patterns and voice characteristics');
-            }
-            
-            container.innerHTML = insights.map(insight => `
-                <div class="insight">
-                    <span class="insight-icon">⚡</span>
-                    <span>${insight}</span>
+                    <input type="text" 
+                           class="speaker-input" 
+                           value="${speaker.name}"
+                           onchange="updateSpeakerName('${speaker.id}', this.value)">
                 </div>
             `).join('');
         }
 
-        // Update transcript status
-        function updateTranscriptStatus() {
-            const status = document.getElementById('transcriptStatus');
-            const segmentCount = aiState.segments.length;
-            const speakerCount = aiState.speakers.size;
-            
-            status.textContent = `${segmentCount} segment${segmentCount !== 1 ? 's' : ''} • ${speakerCount} speaker${speakerCount !== 1 ? 's' : ''}`;
-        }
+        // Update speaker name
+        window.updateSpeakerName = function(id, name) {
+            const speaker = state.speakers.get(id);
+            if (speaker) {
+                speaker.name = name;
+                updateTranscriptDisplay();
+            }
+        };
 
-        // UI Helper functions
-        function updateAIStatus(text) {
-            document.getElementById('aiStatus').textContent = text;
-        }
-
-        function showAIProcessing(text) {
-            const processing = document.getElementById('aiProcessing');
-            document.getElementById('processingText').textContent = text;
-            processing.classList.add('active');
-        }
-
-        function hideAIProcessing() {
-            setTimeout(() => {
-                document.getElementById('aiProcessing').classList.remove('active');
-            }, 500);
-        }
-
-        function updateInterimTranscript(text) {
-            // Could show interim results in UI if desired
-        }
-
-        // Recording controls
+        // Start recording
         async function startRecording() {
-            aiState.isRecording = true;
+            state.isRecording = true;
             
-            const audioReady = await initializeAudioAnalysis();
+            const audioReady = await initAudio();
             if (!audioReady) {
-                alert('Microphone access required for voice recognition');
-                aiState.isRecording = false;
+                alert('Microphone access required');
+                state.isRecording = false;
                 return;
             }
             
-            initializeRecognition();
-            aiState.recognition.start();
+            initRecognition();
+            state.recognition.start();
         }
 
+        // Stop recording
         function stopRecording() {
-            aiState.isRecording = false;
+            state.isRecording = false;
             
-            if (aiState.recognition) {
-                aiState.recognition.stop();
-                aiState.recognition = null;
+            // Save any pending text
+            if (state.currentText) {
+                saveCurrentBlock();
+                updateTranscriptDisplay();
             }
             
-            if (aiState.voiceAnalysisInterval) {
-                clearInterval(aiState.voiceAnalysisInterval);
-                aiState.voiceAnalysisInterval = null;
+            if (state.recognition) {
+                state.recognition.stop();
+                state.recognition = null;
             }
             
-            if (aiState.audioContext) {
-                aiState.audioContext.close();
-                aiState.audioContext = null;
+            if (state.audioInterval) {
+                clearInterval(state.audioInterval);
+                state.audioInterval = null;
             }
             
-            document.getElementById('recordButton').classList.remove('recording');
-            updateAIStatus('AI Voice Analysis Ready');
+            if (state.audioContext) {
+                state.audioContext.close();
+                state.audioContext = null;
+            }
+            
+            document.getElementById('recordBtn').classList.remove('recording');
+            document.getElementById('status').textContent = 'Ready';
             
             // Reset visualizer
             document.querySelectorAll('.voice-bar').forEach(bar => {
                 bar.style.height = '20px';
             });
-            
-            // Complete any pending segment
-            if (aiState.currentSegment.text) {
-                completeCurrentSegment();
-            }
         }
 
         // Event listeners
-        document.getElementById('recordButton').addEventListener('click', () => {
-            if (aiState.isRecording) {
+        document.getElementById('recordBtn').addEventListener('click', () => {
+            if (state.isRecording) {
                 stopRecording();
             } else {
                 startRecording();
@@ -1487,74 +747,39 @@
         });
 
         document.getElementById('clearBtn').addEventListener('click', () => {
-            if (confirm('Clear all recorded data?')) {
-                aiState.segments = [];
-                aiState.speakers.clear();
-                aiState.voiceFingerprints.clear();
-                aiState.contextWindow = [];
-                aiState.currentSegment = {
-                    text: '',
-                    startTime: null,
-                    audioFeatures: [],
-                    speakerId: null
-                };
-                
+            if (confirm('Clear all?')) {
+                state.transcriptBlocks = [];
+                state.speakers.clear();
+                state.voiceFingerprints.clear();
+                state.currentSpeakerId = null;
+                state.currentText = '';
                 updateTranscriptDisplay();
-                updateSpeakerProfiles();
-                updateAIInsights();
+                updateSpeakerList();
             }
         });
 
         document.getElementById('exportBtn').addEventListener('click', () => {
-            if (aiState.segments.length === 0) {
-                alert('No data to export');
-                return;
-            }
-            
-            let content = `AI-Enhanced Meeting Transcript\n`;
-            content += `Generated: ${new Date().toLocaleString()}\n`;
-            content += `Speakers: ${aiState.speakers.size}\n`;
-            content += `Voice Recognition: Enabled\n\n`;
-            
-            aiState.segments.forEach(segment => {
-                content += `[${segment.startTime.toLocaleTimeString()}] ${segment.speaker.name} (${(segment.confidence * 100).toFixed(0)}% confidence):\n`;
-                content += `${segment.text}\n\n`;
+            let text = '';
+            state.transcriptBlocks.forEach(block => {
+                text += `${block.speaker.name}:\n${block.text}\n\n`;
             });
             
-            content += `\n--- AI Analysis ---\n`;
-            content += `Total segments: ${aiState.segments.length}\n`;
-            content += `Average confidence: ${(aiState.segments.reduce((sum, s) => sum + s.confidence, 0) / aiState.segments.length * 100).toFixed(1)}%\n`;
+            if (state.currentText && state.currentSpeakerId) {
+                const speaker = state.speakers.get(state.currentSpeakerId);
+                text += `${speaker.name}:\n${state.currentText}\n\n`;
+            }
             
-            const blob = new Blob([content], { type: 'text/plain' });
+            const blob = new Blob([text], { type: 'text/plain' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = `ai-transcript-${new Date().toISOString().slice(0, 10)}.txt`;
+            a.download = `transcript-${new Date().toISOString().slice(0, 10)}.txt`;
             a.click();
             URL.revokeObjectURL(url);
         });
 
-        // Settings toggles
-        ['voiceRecognition', 'autoEnhance', 'contextAnalysis', 'predictiveGrouping'].forEach(setting => {
-            document.getElementById(setting).addEventListener('click', function() {
-                this.classList.toggle('active');
-                aiState.settings[setting] = this.classList.contains('active');
-            });
-        });
-
-        // Update speaker name
-        window.updateSpeakerName = function(speakerId, newName) {
-            const speaker = aiState.speakers.get(speakerId);
-            if (speaker) {
-                speaker.name = newName;
-                updateTranscriptDisplay();
-                updateAIInsights();
-            }
-        };
-
         // Initialize
-        initializeVoiceVisualizer();
-        updateAIStatus('AI Voice Analysis Ready');
+        initVoiceBars();
     </script>
 </body>
 </html>
