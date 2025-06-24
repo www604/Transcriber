@@ -493,14 +493,28 @@
             }
             
             async getQuote(symbol) {
+                console.log(`Fetching quote for ${symbol} using ${this.provider}`);
+                
                 try {
                     // Example with Alpha Vantage (Free tier: 5 calls/min, 500/day)
                     if (this.provider === 'alphavantage') {
                         const url = `${this.endpoints.alphavantage.quote}${symbol}&apikey=${this.API_KEY}`;
+                        console.log('API URL:', url.replace(this.API_KEY, 'API_KEY_HIDDEN'));
+                        
                         const response = await fetch(url);
                         const data = await response.json();
+                        console.log('API Response:', data);
                         
-                        if (data['Global Quote']) {
+                        // Check for API errors
+                        if (data['Error Message']) {
+                            throw new Error('Invalid API call. Please check your API key and symbol.');
+                        }
+                        
+                        if (data['Note']) {
+                            throw new Error('API call frequency limit reached. Please wait and try again.');
+                        }
+                        
+                        if (data['Global Quote'] && data['Global Quote']['01. symbol']) {
                             return {
                                 symbol: data['Global Quote']['01. symbol'],
                                 price: parseFloat(data['Global Quote']['05. price']),
@@ -508,6 +522,30 @@
                                 changePercent: data['Global Quote']['10. change percent'],
                                 volume: parseInt(data['Global Quote']['06. volume']),
                                 timestamp: data['Global Quote']['07. latest trading day']
+                            };
+                        } else {
+                            console.log('No data found for symbol, using mock data');
+                            return this.getMockQuote(symbol);
+                        }
+                    }
+                    
+                    // Example with Finnhub (Free tier: 60 calls/min)
+                    if (this.provider === 'finnhub') {
+                        const url = `${this.endpoints.finnhub.quote}${symbol}&token=${this.API_KEY}`;
+                        const response = await fetch(url);
+                        const data = await response.json();
+                        
+                        if (data.c && data.c > 0) {
+                            return {
+                                symbol: symbol,
+                                price: data.c,
+                                change: data.d,
+                                changePercent: data.dp + '%',
+                                high: data.h,
+                                low: data.l,
+                                open: data.o,
+                                previousClose: data.pc,
+                                timestamp: new Date(data.t * 1000).toISOString()
                             };
                         }
                     }
@@ -518,6 +556,10 @@
                         const response = await fetch(url);
                         const data = await response.json();
                         
+                        if (data.status === 'ERROR') {
+                            throw new Error(data.error || 'API Error');
+                        }
+                        
                         if (data.results && data.results.length > 0) {
                             const result = data.results[0];
                             return {
@@ -527,16 +569,20 @@
                                 high: result.h,
                                 low: result.l,
                                 volume: result.v,
+                                change: result.c - result.o,
+                                changePercent: ((result.c - result.o) / result.o * 100).toFixed(2) + '%',
                                 timestamp: new Date(result.t).toISOString()
                             };
                         }
                     }
                     
                     // Fallback to mock data if API fails
+                    console.log('API data not available, using mock data');
                     return this.getMockQuote(symbol);
                     
                 } catch (error) {
-                    console.error('Error fetching real-time data:', error);
+                    console.error('Error fetching real-time data:', error.message);
+                    // Always return mock data as fallback
                     return this.getMockQuote(symbol);
                 }
             }
@@ -889,6 +935,10 @@
             const [loading, setLoading] = useState(false);
             const [watchlist, setWatchlist] = useState(['AAPL', 'GOOGL', 'TSLA']);
             const [newSymbol, setNewSymbol] = useState('');
+            const [apiKey, setApiKey] = useState('');
+            const [apiProvider, setApiProvider] = useState('alphavantage');
+            const [apiConfigured, setApiConfigured] = useState(false);
+            const [apiError, setApiError] = useState('');
             const [stats, setStats] = useState({
                 weeklySignals: 0,
                 avgConfidence: 0,
@@ -905,6 +955,17 @@
                 const termsAccepted = localStorage.getItem('opusTraderTermsAccepted');
                 if (termsAccepted === 'true') {
                     setHasAcceptedTerms(true);
+                }
+                
+                // Load saved API configuration
+                const savedApiKey = localStorage.getItem('opusTraderApiKey');
+                const savedProvider = localStorage.getItem('opusTraderApiProvider');
+                if (savedApiKey && savedProvider) {
+                    setApiKey(savedApiKey);
+                    setApiProvider(savedProvider);
+                    setApiConfigured(true);
+                    aiEngine.marketData.API_KEY = savedApiKey;
+                    aiEngine.marketData.provider = savedProvider;
                 }
             }, []);
             
@@ -985,7 +1046,13 @@
             };
             
             const generateNewSignals = async () => {
+                if (!apiConfigured) {
+                    setApiError('Please configure your API key first');
+                    return;
+                }
+                
                 setLoading(true);
+                setApiError('');
                 try {
                     const newSignals = await aiEngine.generateWeeklySignals(watchlist);
                     setSignals(newSignals);
@@ -1000,9 +1067,63 @@
                     });
                 } catch (error) {
                     console.error('Error generating signals:', error);
+                    setApiError('Failed to fetch market data. Please check your API key.');
                 } finally {
                     setLoading(false);
                 }
+            };
+            
+            const testApiConnection = async () => {
+                if (!apiKey) {
+                    setApiError('Please enter an API key first');
+                    return;
+                }
+                
+                setLoading(true);
+                setApiError('');
+                
+                try {
+                    // Update the market data service
+                    aiEngine.marketData.API_KEY = apiKey;
+                    aiEngine.marketData.provider = apiProvider;
+                    
+                    // Test with a known symbol
+                    const testSymbol = 'AAPL';
+                    const quote = await aiEngine.marketData.getQuote(testSymbol);
+                    
+                    if (quote && quote.price > 0) {
+                        setApiError('');
+                        alert(`✅ Success! Connected to ${apiProvider}. Test quote: ${testSymbol} = ${quote.price}`);
+                    } else {
+                        throw new Error('Invalid response from API');
+                    }
+                } catch (error) {
+                    console.error('API test failed:', error);
+                    setApiError(`Connection failed: ${error.message}. Please check your API key.`);
+                } finally {
+                    setLoading(false);
+                }
+            };
+            
+            const saveApiConfiguration = () => {
+                if (!apiKey) {
+                    setApiError('Please enter an API key');
+                    return;
+                }
+                
+                // Save to localStorage
+                localStorage.setItem('opusTraderApiKey', apiKey);
+                localStorage.setItem('opusTraderApiProvider', apiProvider);
+                
+                // Update the market data service
+                aiEngine.marketData.API_KEY = apiKey;
+                aiEngine.marketData.provider = apiProvider;
+                
+                setApiConfigured(true);
+                setApiError('');
+                
+                // Generate signals immediately after configuration
+                generateNewSignals();
             };
             
             const addToWatchlist = () => {
@@ -1182,10 +1303,10 @@
                                         To get real-time market data, sign up for a free API key from one of these providers:
                                     </p>
                                     <ul style={{ fontSize: '0.875rem', color: '#e1e4ed', paddingLeft: '1.5rem' }}>
-                                        <li><strong>Alpha Vantage</strong> - Free: 5 req/min, 500/day - Good for testing</li>
-                                        <li><strong>Polygon.io</strong> - Free: 5 req/min - Best overall data quality</li>
-                                        <li><strong>Finnhub</strong> - Free: 60 req/min - Good for real-time quotes</li>
-                                        <li><strong>MarketStack</strong> - Free: 100 req/month - Limited but simple</li>
+                                        <li><strong>Alpha Vantage</strong> - Free: 5 req/min, 500/day - <a href="https://www.alphavantage.co/support/#api-key" target="_blank" style={{color: '#6366f1'}}>Get Key</a></li>
+                                        <li><strong>Polygon.io</strong> - Free: 5 req/min - <a href="https://polygon.io/dashboard/signup" target="_blank" style={{color: '#6366f1'}}>Get Key</a></li>
+                                        <li><strong>Finnhub</strong> - Free: 60 req/min - <a href="https://finnhub.io/register" target="_blank" style={{color: '#6366f1'}}>Get Key</a></li>
+                                        <li><strong>MarketStack</strong> - Free: 100 req/month - <a href="https://marketstack.com/product" target="_blank" style={{color: '#6366f1'}}>Get Key</a></li>
                                     </ul>
                                 </div>
                                 
@@ -1193,12 +1314,8 @@
                                     <label className="input-label">Select Data Provider</label>
                                     <select 
                                         className="input"
-                                        onChange={(e) => {
-                                            if (aiEngine.current.marketData) {
-                                                aiEngine.current.marketData.provider = e.target.value;
-                                            }
-                                        }}
-                                        defaultValue="alphavantage"
+                                        value={apiProvider}
+                                        onChange={(e) => setApiProvider(e.target.value)}
                                     >
                                         <option value="alphavantage">Alpha Vantage (Best for Free)</option>
                                         <option value="polygon">Polygon.io (Best Data Quality)</option>
@@ -1213,16 +1330,60 @@
                                         type="text"
                                         className="input"
                                         placeholder="Enter your API key"
-                                        onChange={(e) => {
-                                            if (aiEngine.current.marketData) {
-                                                aiEngine.current.marketData.API_KEY = e.target.value;
-                                            }
-                                        }}
+                                        value={apiKey}
+                                        onChange={(e) => setApiKey(e.target.value)}
+                                        onKeyPress={(e) => e.key === 'Enter' && saveApiConfiguration()}
                                     />
                                     <p style={{ fontSize: '0.75rem', color: '#9ca3af', marginTop: '0.5rem' }}>
                                         Get your free API key from your chosen provider's website
                                     </p>
                                 </div>
+                                
+                                <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+                                    <button 
+                                        className="btn btn-secondary" 
+                                        onClick={testApiConnection}
+                                        disabled={!apiKey || loading}
+                                        style={{ 
+                                            opacity: apiKey && !loading ? 1 : 0.5, 
+                                            cursor: apiKey && !loading ? 'pointer' : 'not-allowed' 
+                                        }}
+                                    >
+                                        {loading ? 'Testing...' : 'Test Connection'}
+                                    </button>
+                                    
+                                    <button 
+                                        className="btn btn-primary" 
+                                        onClick={saveApiConfiguration}
+                                        disabled={!apiKey}
+                                        style={{ 
+                                            opacity: apiKey ? 1 : 0.5, 
+                                            cursor: apiKey ? 'pointer' : 'not-allowed' 
+                                        }}
+                                    >
+                                        Save & Connect
+                                    </button>
+                                    
+                                    {apiConfigured && (
+                                        <span style={{ color: '#10b981', fontSize: '0.875rem' }}>
+                                            ✓ API Connected
+                                        </span>
+                                    )}
+                                </div>
+                                
+                                {apiError && (
+                                    <div style={{ 
+                                        marginTop: '1rem',
+                                        padding: '0.75rem',
+                                        background: 'rgba(239, 68, 68, 0.1)',
+                                        border: '1px solid rgba(239, 68, 68, 0.3)',
+                                        borderRadius: '0.5rem',
+                                        color: '#ef4444',
+                                        fontSize: '0.875rem'
+                                    }}>
+                                        {apiError}
+                                    </div>
+                                )}
                                 
                                 <div style={{ 
                                     marginTop: '1.5rem', 
@@ -1231,8 +1392,19 @@
                                     border: '1px solid rgba(239, 68, 68, 0.3)',
                                     borderRadius: '0.5rem'
                                 }}>
-                                    <p style={{ fontSize: '0.875rem', color: '#f59e0b' }}>
-                                        ⚠️ <strong>Note:</strong> Without an API key, the app uses simulated data for demonstration purposes.
+                                    <p style={{ fontSize: '0.875rem', color: '#f59e0b', marginBottom: '0.5rem' }}>
+                                        ⚠️ <strong>Important:</strong> Browser Security (CORS) Notice
+                                    </p>
+                                    <p style={{ fontSize: '0.875rem', color: '#9ca3af' }}>
+                                        Most APIs block direct browser requests for security. To use real data:
+                                    </p>
+                                    <ol style={{ fontSize: '0.875rem', color: '#9ca3af', marginTop: '0.5rem', paddingLeft: '1.5rem' }}>
+                                        <li>Use a CORS proxy: Add <code style={{background: '#1a1a1a', padding: '2px 4px', borderRadius: '3px'}}>https://cors-anywhere.herokuapp.com/</code> before the API URL</li>
+                                        <li>Or run a local backend server (recommended for production)</li>
+                                        <li>Or use the simulated data mode for testing</li>
+                                    </ol>
+                                    <p style={{ fontSize: '0.875rem', color: '#9ca3af', marginTop: '0.5rem' }}>
+                                        Without these solutions, the app will use simulated market data.
                                     </p>
                                 </div>
                             </div>
