@@ -3,1071 +3,941 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Transcribe Pro</title>
+    <title>OpusTrader - Weekly Options Signals</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.5/babel.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.js"></script>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-
-        :root {
-            --bg-primary: #0a0a0a;
-            --bg-secondary: #151515;
-            --bg-tertiary: #1f1f1f;
-            --text-primary: #ffffff;
-            --text-secondary: #a0a0a0;
-            --accent: #6366f1;
-            --accent-hover: #818cf8;
-            --danger: #ef4444;
-            --success: #10b981;
-            --border: #2a2a2a;
-        }
-
+        
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: var(--bg-primary);
-            color: var(--text-primary);
-            line-height: 1.6;
+            background: #0a0e1a;
+            color: #e1e4ed;
+            min-height: 100vh;
         }
-
+        
+        .app {
+            min-height: 100vh;
+            background: linear-gradient(180deg, #0a0e1a 0%, #0d1117 100%);
+        }
+        
+        .header {
+            background: rgba(13, 17, 23, 0.8);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(48, 54, 61, 0.5);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+        
+        .nav-link {
+            color: #9ca3af;
+            text-decoration: none;
+            transition: color 0.2s;
+            cursor: pointer;
+        }
+        
+        .nav-link:hover {
+            color: #e1e4ed;
+        }
+        
+        .btn {
+            padding: 0.5rem 1.5rem;
+            border-radius: 0.5rem;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.875rem;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 10px 20px rgba(99, 102, 241, 0.3);
+        }
+        
+        .btn-secondary {
+            background: rgba(48, 54, 61, 0.5);
+            color: #e1e4ed;
+            border: 1px solid rgba(48, 54, 61, 0.5);
+        }
+        
+        .btn-secondary:hover {
+            background: rgba(48, 54, 61, 0.8);
+        }
+        
         .container {
             max-width: 1400px;
             margin: 0 auto;
-            padding: 20px;
+            padding: 2rem;
         }
-
-        /* Header */
-        .header {
-            background: var(--bg-secondary);
-            padding: 20px 0;
-            margin-bottom: 30px;
-            border-bottom: 1px solid var(--border);
-        }
-
-        .header-content {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 0 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .logo {
-            font-size: 24px;
-            font-weight: bold;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .status {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 8px 16px;
-            background: var(--bg-tertiary);
-            border-radius: 20px;
-            font-size: 14px;
-        }
-
-        .status-dot {
-            width: 8px;
-            height: 8px;
-            background: var(--text-secondary);
-            border-radius: 50%;
-        }
-
-        .status-dot.active {
-            background: var(--danger);
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0% { opacity: 1; }
-            50% { opacity: 0.5; }
-            100% { opacity: 1; }
-        }
-
-        /* Controls */
-        .controls {
-            background: var(--bg-secondary);
-            padding: 30px;
-            border-radius: 12px;
-            margin-bottom: 30px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 20px;
-            flex-wrap: wrap;
-        }
-
-        .record-section {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-        }
-
-        .record-btn {
-            width: 80px;
-            height: 80px;
-            border: none;
-            border-radius: 50%;
-            background: var(--danger);
-            color: white;
-            cursor: pointer;
+        
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: all 0.3s ease;
-            font-size: 24px;
+            z-index: 1000;
+            animation: fadeIn 0.2s ease-out;
         }
-
-        .record-btn:hover {
-            transform: scale(1.05);
-            box-shadow: 0 0 20px rgba(239, 68, 68, 0.5);
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
-
-        .record-btn.recording {
-            animation: recording-pulse 1.5s infinite;
-        }
-
-        @keyframes recording-pulse {
-            0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
-            70% { box-shadow: 0 0 0 20px rgba(239, 68, 68, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
-        }
-
-        .timer {
-            font-size: 24px;
-            font-family: monospace;
-            color: var(--text-secondary);
-        }
-
-        .control-buttons {
-            display: flex;
-            gap: 10px;
-        }
-
-        button {
-            padding: 10px 20px;
-            border: 1px solid var(--border);
-            background: var(--bg-tertiary);
-            color: var(--text-primary);
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            font-size: 14px;
-        }
-
-        button:hover:not(:disabled) {
-            background: var(--bg-primary);
-            border-color: var(--accent);
-        }
-
-        button:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-
-        select {
-            padding: 10px;
-            border: 1px solid var(--border);
-            background: var(--bg-tertiary);
-            color: var(--text-primary);
-            border-radius: 8px;
-            font-size: 14px;
-            cursor: pointer;
-        }
-
-        /* Main Layout */
-        .main-content {
-            display: grid;
-            grid-template-columns: 1fr 350px;
-            gap: 30px;
-        }
-
-        @media (max-width: 1024px) {
-            .main-content {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        /* Transcript Panel */
-        .transcript-panel {
-            background: var(--bg-secondary);
-            border-radius: 12px;
-            overflow: hidden;
-        }
-
-        .panel-header {
-            padding: 20px;
-            border-bottom: 1px solid var(--border);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .panel-title {
-            font-size: 18px;
-            font-weight: 600;
-        }
-
-        .transcript-content {
-            height: 600px;
+        
+        .modal {
+            background: #161b22;
+            border-radius: 1rem;
+            padding: 2rem;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
             overflow-y: auto;
-            padding: 20px;
+            border: 1px solid rgba(48, 54, 61, 0.5);
+            animation: slideIn 0.3s ease-out;
         }
-
-        .transcript-content::-webkit-scrollbar {
-            width: 8px;
+        
+        @keyframes slideIn {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
         }
-
-        .transcript-content::-webkit-scrollbar-track {
-            background: var(--bg-tertiary);
+        
+        .modal h2 {
+            margin-bottom: 1.5rem;
+            color: #e1e4ed;
         }
-
-        .transcript-content::-webkit-scrollbar-thumb {
-            background: var(--border);
-            border-radius: 4px;
-        }
-
-        .transcript-entry {
-            margin-bottom: 20px;
-            display: flex;
-            gap: 15px;
-        }
-
-        .speaker-avatar {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            flex-shrink: 0;
-            color: white;
-        }
-
-        .transcript-text {
-            flex: 1;
-        }
-
-        .speaker-name {
-            font-weight: 600;
-            margin-bottom: 5px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .timestamp {
-            font-size: 12px;
-            color: var(--text-secondary);
-        }
-
-        .text-content {
-            color: var(--text-secondary);
-            line-height: 1.6;
-        }
-
-        .interim-text {
-            opacity: 0.6;
-            font-style: italic;
-        }
-
-        /* Sidebar */
-        .sidebar {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-
-        .sidebar-panel {
-            background: var(--bg-secondary);
-            border-radius: 12px;
-            overflow: hidden;
-        }
-
-        .speaker-list {
-            padding: 20px;
+        
+        .legal-content {
+            background: rgba(13, 17, 23, 0.8);
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid rgba(48, 54, 61, 0.5);
             max-height: 300px;
             overflow-y: auto;
         }
-
-        .speaker-item {
+        
+        .legal-content h3 {
+            color: #f59e0b;
+            margin-bottom: 1rem;
+            font-size: 1.125rem;
+        }
+        
+        .legal-content p {
+            color: #9ca3af;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+        
+        .checkbox-wrapper {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .checkbox {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            accent-color: #6366f1;
+        }
+        
+        .checkbox-label {
+            color: #e1e4ed;
+            line-height: 1.5;
+        }
+        
+        .modal-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+        }
+        
+        .dashboard {
+            display: grid;
+            gap: 2rem;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .stat-card {
+            background: rgba(13, 17, 23, 0.8);
+            border: 1px solid rgba(48, 54, 61, 0.5);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+        
+        .stat-label {
+            color: #9ca3af;
+            font-size: 0.875rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .signals-section {
+            background: rgba(13, 17, 23, 0.8);
+            border: 1px solid rgba(48, 54, 61, 0.5);
+            border-radius: 1rem;
+            padding: 2rem;
+        }
+        
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+        
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #e1e4ed;
+        }
+        
+        .signal-grid {
+            display: grid;
+            gap: 1.5rem;
+        }
+        
+        .signal-card {
+            background: rgba(22, 27, 34, 0.8);
+            border: 1px solid rgba(48, 54, 61, 0.5);
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .signal-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(180deg, #10b981 0%, #059669 100%);
+        }
+        
+        .signal-card.put::before {
+            background: linear-gradient(180deg, #ef4444 0%, #dc2626 100%);
+        }
+        
+        .signal-card:hover {
+            transform: translateX(4px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+        
+        .signal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+        
+        .signal-symbol {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #e1e4ed;
+        }
+        
+        .signal-type {
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        
+        .signal-type.call {
+            background: rgba(16, 185, 129, 0.2);
+            color: #10b981;
+        }
+        
+        .signal-type.put {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+        }
+        
+        .signal-details {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .detail-item {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+        
+        .detail-label {
+            color: #9ca3af;
+            font-size: 0.75rem;
+        }
+        
+        .detail-value {
+            color: #e1e4ed;
+            font-weight: 600;
+        }
+        
+        .confidence-bar {
+            background: rgba(48, 54, 61, 0.5);
+            border-radius: 9999px;
+            height: 8px;
+            overflow: hidden;
+            margin-top: 1rem;
+        }
+        
+        .confidence-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #6366f1 0%, #8b5cf6 100%);
+            transition: width 0.5s ease-out;
+        }
+        
+        .settings-section {
+            background: rgba(13, 17, 23, 0.8);
+            border: 1px solid rgba(48, 54, 61, 0.5);
+            border-radius: 1rem;
+            padding: 2rem;
+            margin-top: 2rem;
+        }
+        
+        .input-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .input-label {
+            display: block;
+            color: #e1e4ed;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+        
+        .input {
+            width: 100%;
+            padding: 0.75rem;
+            background: rgba(22, 27, 34, 0.8);
+            border: 1px solid rgba(48, 54, 61, 0.5);
+            border-radius: 0.5rem;
+            color: #e1e4ed;
+            font-size: 1rem;
+            transition: border-color 0.2s;
+        }
+        
+        .input:focus {
+            outline: none;
+            border-color: #6366f1;
+        }
+        
+        .watchlist {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+        
+        .watchlist-item {
+            padding: 0.5rem 1rem;
+            background: rgba(99, 102, 241, 0.2);
+            border: 1px solid rgba(99, 102, 241, 0.3);
+            border-radius: 9999px;
+            font-size: 0.875rem;
             display: flex;
             align-items: center;
-            gap: 15px;
-            padding: 15px;
-            background: var(--bg-tertiary);
-            border-radius: 8px;
-            margin-bottom: 10px;
+            gap: 0.5rem;
         }
-
-        .speaker-avatar-small {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
+        
+        .remove-btn {
+            cursor: pointer;
+            color: #9ca3af;
+            transition: color 0.2s;
+        }
+        
+        .remove-btn:hover {
+            color: #ef4444;
+        }
+        
+        .chart-container {
+            background: rgba(22, 27, 34, 0.8);
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            margin-top: 1rem;
+            height: 300px;
+            position: relative;
+        }
+        
+        .loading {
             display: flex;
             align-items: center;
             justify-content: center;
-            font-weight: bold;
-            color: white;
+            min-height: 200px;
         }
-
-        .speaker-info {
-            flex: 1;
+        
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 3px solid rgba(99, 102, 241, 0.3);
+            border-top-color: #6366f1;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
         }
-
-        .speaker-name-input {
-            background: transparent;
-            border: 1px solid var(--border);
-            color: var(--text-primary);
-            padding: 5px 10px;
-            border-radius: 4px;
-            width: 100%;
-            margin-bottom: 5px;
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
         }
-
-        .speaker-stats {
-            font-size: 12px;
-            color: var(--text-secondary);
-        }
-
-        /* Summary */
-        .summary-content {
-            padding: 20px;
-            font-size: 14px;
-            color: var(--text-secondary);
-        }
-
-        .summary-section {
-            margin-bottom: 15px;
-        }
-
-        .summary-title {
-            font-weight: 600;
-            color: var(--text-primary);
-            margin-bottom: 5px;
-        }
-
-        /* Empty State */
+        
         .empty-state {
             text-align: center;
-            padding: 60px 20px;
-            color: var(--text-secondary);
+            padding: 4rem 2rem;
+            color: #9ca3af;
         }
-
-        .empty-icon {
-            font-size: 48px;
-            opacity: 0.3;
-            margin-bottom: 10px;
-        }
-
-        /* Features */
-        .features {
-            display: flex;
-            gap: 15px;
-            padding: 20px;
-            border-top: 1px solid var(--border);
-            flex-wrap: wrap;
-        }
-
-        .feature-toggle {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            cursor: pointer;
-            user-select: none;
-        }
-
-        .toggle {
-            width: 40px;
-            height: 22px;
-            background: var(--bg-tertiary);
-            border-radius: 11px;
-            position: relative;
-            transition: background 0.3s ease;
-        }
-
-        .toggle.active {
-            background: var(--accent);
-        }
-
-        .toggle::after {
-            content: '';
-            position: absolute;
-            top: 2px;
-            left: 2px;
-            width: 18px;
-            height: 18px;
-            background: white;
-            border-radius: 50%;
-            transition: transform 0.3s ease;
-        }
-
-        .toggle.active::after {
-            transform: translateX(18px);
-        }
-
-        /* Export button */
-        .export-btn {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            width: 60px;
-            height: 60px;
-            background: var(--accent);
-            border: none;
-            border-radius: 50%;
-            color: white;
-            font-size: 24px;
-            cursor: pointer;
-            box-shadow: 0 4px 20px rgba(99, 102, 241, 0.4);
-            transition: all 0.3s ease;
-        }
-
-        .export-btn:hover {
-            transform: scale(1.1);
+        
+        .empty-state h3 {
+            color: #e1e4ed;
+            margin-bottom: 0.5rem;
         }
     </style>
 </head>
 <body>
-    <div class="header">
-        <div class="header-content">
-            <div class="logo">
-                <span>🤖</span>
-                <span>AI Transcribe Pro</span>
-            </div>
-            <div class="status">
-                <div class="status-dot" id="statusDot"></div>
-                <span id="statusText">Ready</span>
-            </div>
-        </div>
-    </div>
-
-    <div class="container">
-        <div class="controls">
-            <div class="record-section">
-                <button class="record-btn" id="recordBtn">
-                    <span id="recordIcon">🎙️</span>
-                </button>
-                <div class="timer" id="timer">00:00:00</div>
-            </div>
+    <div id="root"></div>
+    
+    <script type="text/babel">
+        const { useState, useEffect, useRef } = React;
+        
+        // Mock AI Signal Generator
+        class AISignalEngine {
+            constructor() {
+                this.symbols = ['AAPL', 'GOOGL', 'MSFT', 'AMZN', 'TSLA', 'META', 'NVDA', 'AMD'];
+                this.historicalData = {};
+            }
             
-            <div class="control-buttons">
-                <button id="clearBtn">Clear All</button>
-                <select id="languageSelect">
-                    <option value="en-US">English (US)</option>
-                    <option value="en-GB">English (UK)</option>
-                    <option value="es-ES">Spanish</option>
-                    <option value="fr-FR">French</option>
-                    <option value="de-DE">German</option>
-                    <option value="zh-CN">Chinese</option>
-                    <option value="ja-JP">Japanese</option>
-                </select>
-            </div>
-        </div>
-
-        <div class="main-content">
-            <div class="transcript-panel">
-                <div class="panel-header">
-                    <h2 class="panel-title">Transcript</h2>
-                    <span id="wordCount" style="font-size: 14px; color: var(--text-secondary);">0 words</span>
-                </div>
-                <div class="transcript-content" id="transcriptContent">
-                    <div class="empty-state">
-                        <div class="empty-icon">🎙️</div>
-                        <h3>Ready to transcribe</h3>
-                        <p>Click the record button to start</p>
-                    </div>
-                </div>
-                <div class="features">
-                    <label class="feature-toggle">
-                        <div class="toggle active" id="diarizationToggle"></div>
-                        <span>Speaker Detection</span>
-                    </label>
-                    <label class="feature-toggle">
-                        <div class="toggle active" id="punctuationToggle"></div>
-                        <span>Smart Punctuation</span>
-                    </label>
-                    <label class="feature-toggle">
-                        <div class="toggle active" id="summaryToggle"></div>
-                        <span>AI Summary</span>
-                    </label>
-                </div>
-            </div>
-
-            <div class="sidebar">
-                <div class="sidebar-panel">
-                    <div class="panel-header">
-                        <h3 class="panel-title">Speakers</h3>
-                    </div>
-                    <div class="speaker-list" id="speakerList">
-                        <div class="empty-state">
-                            <p>No speakers yet</p>
+            async generateWeeklySignals(watchlist) {
+                // Simulate API delay
+                await new Promise(resolve => setTimeout(resolve, 1500));
+                
+                const signals = [];
+                const selectedSymbols = watchlist.length > 0 ? watchlist : this.symbols;
+                const numSignals = Math.min(3, Math.floor(Math.random() * 4) + 1);
+                const usedSymbols = new Set();
+                
+                for (let i = 0; i < numSignals; i++) {
+                    let symbol;
+                    do {
+                        symbol = selectedSymbols[Math.floor(Math.random() * selectedSymbols.length)];
+                    } while (usedSymbols.has(symbol));
+                    usedSymbols.add(symbol);
+                    
+                    const isCall = Math.random() > 0.5;
+                    const currentPrice = 100 + Math.random() * 400;
+                    const strike = isCall 
+                        ? currentPrice * (1 + (Math.random() * 0.05 + 0.01))
+                        : currentPrice * (1 - (Math.random() * 0.05 + 0.01));
+                    
+                    signals.push({
+                        id: Date.now() + i,
+                        symbol,
+                        type: isCall ? 'CALL' : 'PUT',
+                        entryPrice: currentPrice.toFixed(2),
+                        strike: Math.round(strike),
+                        expiration: this.getNextFriday(),
+                        confidence: 0.65 + Math.random() * 0.3,
+                        probability: 0.55 + Math.random() * 0.35,
+                        aiScore: 0.7 + Math.random() * 0.25,
+                        timestamp: new Date().toISOString()
+                    });
+                }
+                
+                return signals;
+            }
+            
+            getNextFriday() {
+                const today = new Date();
+                const friday = new Date(today);
+                friday.setDate(today.getDate() + (5 - today.getDay() + 7) % 7 || 7);
+                return friday.toLocaleDateString();
+            }
+        }
+        
+        // Components
+        const LegalDisclosureModal = ({ isOpen, onClose, onAccept }) => {
+            const [accepted, setAccepted] = useState(false);
+            
+            if (!isOpen) return null;
+            
+            return (
+                <div className="modal-overlay" onClick={onClose}>
+                    <div className="modal" onClick={e => e.stopPropagation()}>
+                        <h2>Legal Disclosures & Risk Acknowledgment</h2>
+                        
+                        <div className="legal-content">
+                            <h3>⚠️ IMPORTANT RISK DISCLOSURE</h3>
+                            <p>
+                                <strong>Options trading involves substantial risk and is not suitable for all investors.</strong> 
+                                You may lose your entire investment or more. Past performance does not guarantee future results.
+                            </p>
+                            
+                            <h3>Not Financial Advice</h3>
+                            <p>
+                                The signals and information provided by OpusTrader are for educational and informational 
+                                purposes only. They do not constitute personalized investment advice, recommendations, 
+                                or solicitations to buy or sell any securities or options.
+                            </p>
+                            
+                            <h3>AI Model Limitations</h3>
+                            <p>
+                                Our AI models analyze historical patterns and market data but cannot predict future 
+                                market movements with certainty. All predictions and probability scores are estimates 
+                                based on historical data and may be completely wrong.
+                            </p>
+                            
+                            <h3>Your Responsibility</h3>
+                            <p>
+                                You are solely responsible for your investment decisions. Always conduct your own 
+                                research and consult with qualified financial advisors before making any investment. 
+                                Never invest money you cannot afford to lose.
+                            </p>
+                            
+                            <h3>Market Risks</h3>
+                            <p>
+                                Options can expire worthless. Market conditions can change rapidly. Liquidity risks, 
+                                volatility risks, and other market factors can significantly impact your investments.
+                            </p>
+                        </div>
+                        
+                        <div className="checkbox-wrapper">
+                            <input
+                                type="checkbox"
+                                className="checkbox"
+                                checked={accepted}
+                                onChange={(e) => setAccepted(e.target.checked)}
+                                id="accept-terms"
+                            />
+                            <label htmlFor="accept-terms" className="checkbox-label">
+                                I understand that this is not personalized financial advice and that options 
+                                trading carries substantial risk. I accept full responsibility for my investment 
+                                decisions and understand I may lose my entire investment.
+                            </label>
+                        </div>
+                        
+                        <div className="modal-buttons">
+                            <button className="btn btn-secondary" onClick={onClose}>
+                                Cancel
+                            </button>
+                            <button 
+                                className="btn btn-primary" 
+                                onClick={onAccept}
+                                disabled={!accepted}
+                                style={{ opacity: accepted ? 1 : 0.5, cursor: accepted ? 'pointer' : 'not-allowed' }}
+                            >
+                                I Understand & Accept
+                            </button>
                         </div>
                     </div>
                 </div>
-
-                <div class="sidebar-panel">
-                    <div class="panel-header">
-                        <h3 class="panel-title">Summary</h3>
-                    </div>
-                    <div class="summary-content" id="summaryContent">
-                        <div class="empty-state">
-                            <p>Summary will appear here</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <button class="export-btn" id="exportBtn" title="Export transcript">
-        💾
-    </button>
-
-    <script>
-        // State management
-        const state = {
-            isRecording: false,
-            recognition: null,
-            startTime: null,
-            timerInterval: null,
-            
-            // Transcript data
-            transcript: [],
-            currentSpeaker: null,
-            speakers: new Map(),
-            
-            // Audio analysis
-            audioContext: null,
-            analyser: null,
-            lastSoundTime: Date.now(),
-            
-            // Settings
-            features: {
-                diarization: true,
-                punctuation: true,
-                summary: true
-            },
-            
-            // Temporary storage
-            currentText: '',
-            wordCount: 0
+            );
         };
-
-        // Color palette for speakers
-        const colors = ['#6366f1', '#8b5cf6', '#ec4899', '#f43f5e', '#f59e0b', '#10b981', '#14b8a6', '#3b82f6'];
-
-        // Initialize speech recognition
-        function initRecognition() {
-            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        
+        const SignalCard = ({ signal }) => {
+            const confidencePercent = (signal.confidence * 100).toFixed(0);
+            const probabilityPercent = (signal.probability * 100).toFixed(0);
             
-            if (!SpeechRecognition) {
-                alert('Speech recognition is not supported in your browser. Please use Chrome, Edge, or Safari.');
-                return false;
-            }
-
-            state.recognition = new SpeechRecognition();
-            state.recognition.continuous = true;
-            state.recognition.interimResults = true;
-            state.recognition.lang = document.getElementById('languageSelect').value;
-
-            state.recognition.onstart = () => {
-                console.log('Recognition started');
-                updateStatus('Recording', true);
-            };
-
-            state.recognition.onresult = (event) => {
-                handleSpeechResult(event);
-            };
-
-            state.recognition.onerror = (event) => {
-                console.error('Recognition error:', event.error);
-                if (event.error === 'no-speech') {
-                    return; // Ignore no-speech errors
-                }
-                updateStatus('Error: ' + event.error, false);
-            };
-
-            state.recognition.onend = () => {
-                console.log('Recognition ended');
-                if (state.isRecording) {
-                    // Restart if still recording
-                    try {
-                        state.recognition.start();
-                    } catch (e) {
-                        console.error('Failed to restart:', e);
-                    }
-                }
-            };
-
-            return true;
-        }
-
-        // Initialize audio context for speaker detection
-        async function initAudio() {
-            try {
-                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-                state.audioContext = new (window.AudioContext || window.webkitAudioContext)();
-                state.analyser = state.audioContext.createAnalyser();
-                
-                const source = state.audioContext.createMediaStreamSource(stream);
-                source.connect(state.analyser);
-                
-                return true;
-            } catch (err) {
-                console.error('Microphone access error:', err);
-                return false;
-            }
-        }
-
-        // Handle speech recognition results
-        function handleSpeechResult(event) {
-            const current = event.resultIndex;
-            const transcript = event.results[current][0].transcript;
-            const isFinal = event.results[current].isFinal;
-
-            if (isFinal) {
-                // Process final result
-                const processed = processTranscript(transcript);
-                addTranscriptEntry(processed);
-                state.currentText = '';
-            } else {
-                // Update interim display
-                state.currentText = transcript;
-                updateInterimDisplay();
-            }
-        }
-
-        // Process transcript with AI features
-        function processTranscript(text) {
-            let processed = text.trim();
-
-            // Apply smart punctuation
-            if (state.features.punctuation) {
-                // Capitalize first letter
-                processed = processed.charAt(0).toUpperCase() + processed.slice(1);
-                
-                // Add ending punctuation if missing
-                if (!/[.!?]$/.test(processed)) {
-                    // Simple question detection
-                    if (/^(what|where|when|why|how|who|is|are|do|does|can|could|would)/i.test(processed)) {
-                        processed += '?';
-                    } else {
-                        processed += '.';
-                    }
-                }
-                
-                // Fix common contractions
-                processed = processed
-                    .replace(/\bi'm\b/gi, "I'm")
-                    .replace(/\byou're\b/gi, "you're")
-                    .replace(/\bit's\b/gi, "it's")
-                    .replace(/\bdon't\b/gi, "don't")
-                    .replace(/\bcan't\b/gi, "can't")
-                    .replace(/\bwon't\b/gi, "won't");
-            }
-
-            return processed;
-        }
-
-        // Add transcript entry
-        function addTranscriptEntry(text) {
-            // Detect speaker change if enabled
-            let speakerId = 'speaker-1';
-            
-            if (state.features.diarization) {
-                // Simple speaker detection based on pause
-                const timeSinceLastSound = Date.now() - state.lastSoundTime;
-                
-                if (timeSinceLastSound > 3000 || !state.currentSpeaker) {
-                    // Likely a new speaker
-                    speakerId = `speaker-${state.speakers.size + 1}`;
-                } else {
-                    speakerId = state.currentSpeaker;
-                }
-            }
-
-            // Create or update speaker
-            if (!state.speakers.has(speakerId)) {
-                state.speakers.set(speakerId, {
-                    id: speakerId,
-                    name: `Speaker ${state.speakers.size + 1}`,
-                    color: colors[state.speakers.size % colors.length],
-                    wordCount: 0
-                });
-                updateSpeakerList();
-            }
-
-            state.currentSpeaker = speakerId;
-            state.lastSoundTime = Date.now();
-
-            // Add to transcript
-            const entry = {
-                id: Date.now(),
-                speakerId: speakerId,
-                text: text,
-                timestamp: new Date()
-            };
-
-            state.transcript.push(entry);
-            
-            // Update word count
-            const words = text.split(/\s+/).length;
-            state.speakers.get(speakerId).wordCount += words;
-            state.wordCount += words;
-
-            updateTranscriptDisplay();
-            updateWordCount();
-            
-            // Update summary if enabled
-            if (state.features.summary && state.transcript.length % 5 === 0) {
-                updateSummary();
-            }
-        }
-
-        // Update displays
-        function updateTranscriptDisplay() {
-            const container = document.getElementById('transcriptContent');
-            
-            if (state.transcript.length === 0 && !state.currentText) {
-                container.innerHTML = `
-                    <div class="empty-state">
-                        <div class="empty-icon">🎙️</div>
-                        <h3>Ready to transcribe</h3>
-                        <p>Click the record button to start</p>
+            return (
+                <div className={`signal-card ${signal.type.toLowerCase()}`}>
+                    <div className="signal-header">
+                        <div className="signal-symbol">{signal.symbol}</div>
+                        <span className={`signal-type ${signal.type.toLowerCase()}`}>
+                            {signal.type}
+                        </span>
                     </div>
-                `;
-                return;
-            }
-
-            let html = '';
-            
-            // Add all transcript entries
-            state.transcript.forEach(entry => {
-                const speaker = state.speakers.get(entry.speakerId);
-                html += `
-                    <div class="transcript-entry">
-                        <div class="speaker-avatar" style="background: ${speaker.color}">
-                            ${speaker.name.charAt(0)}
+                    
+                    <div className="signal-details">
+                        <div className="detail-item">
+                            <span className="detail-label">Entry Price</span>
+                            <span className="detail-value">${signal.entryPrice}</span>
                         </div>
-                        <div class="transcript-text">
-                            <div class="speaker-name">
-                                ${speaker.name}
-                                <span class="timestamp">${entry.timestamp.toLocaleTimeString()}</span>
+                        <div className="detail-item">
+                            <span className="detail-label">Strike</span>
+                            <span className="detail-value">${signal.strike}</span>
+                        </div>
+                        <div className="detail-item">
+                            <span className="detail-label">Expiration</span>
+                            <span className="detail-value">{signal.expiration}</span>
+                        </div>
+                        <div className="detail-item">
+                            <span className="detail-label">Win Probability</span>
+                            <span className="detail-value">{probabilityPercent}%</span>
+                        </div>
+                    </div>
+                    
+                    <div className="confidence-bar">
+                        <div 
+                            className="confidence-fill" 
+                            style={{ width: `${confidencePercent}%` }}
+                        />
+                    </div>
+                    <div style={{ fontSize: '0.75rem', color: '#9ca3af', marginTop: '0.5rem' }}>
+                        AI Confidence: {confidencePercent}%
+                    </div>
+                </div>
+            );
+        };
+        
+        const App = () => {
+            const [hasAcceptedTerms, setHasAcceptedTerms] = useState(false);
+            const [showLegalModal, setShowLegalModal] = useState(false);
+            const [signals, setSignals] = useState([]);
+            const [loading, setLoading] = useState(false);
+            const [watchlist, setWatchlist] = useState(['AAPL', 'GOOGL', 'TSLA']);
+            const [newSymbol, setNewSymbol] = useState('');
+            const [stats, setStats] = useState({
+                weeklySignals: 0,
+                avgConfidence: 0,
+                successRate: 0,
+                activeTrades: 0
+            });
+            
+            const aiEngine = useRef(new AISignalEngine()).current;
+            const chartRef = useRef(null);
+            const chartInstance = useRef(null);
+            
+            useEffect(() => {
+                // Check if user has previously accepted terms
+                const termsAccepted = localStorage.getItem('opusTraderTermsAccepted');
+                if (termsAccepted === 'true') {
+                    setHasAcceptedTerms(true);
+                }
+            }, []);
+            
+            useEffect(() => {
+                if (hasAcceptedTerms && signals.length === 0) {
+                    generateNewSignals();
+                }
+            }, [hasAcceptedTerms]);
+            
+            useEffect(() => {
+                if (chartRef.current && signals.length > 0) {
+                    const ctx = chartRef.current.getContext('2d');
+                    
+                    if (chartInstance.current) {
+                        chartInstance.current.destroy();
+                    }
+                    
+                    chartInstance.current = new Chart(ctx, {
+                        type: 'bar',
+                        data: {
+                            labels: signals.map(s => s.symbol),
+                            datasets: [{
+                                label: 'AI Confidence Score',
+                                data: signals.map(s => s.confidence * 100),
+                                backgroundColor: signals.map(s => 
+                                    s.type === 'CALL' 
+                                        ? 'rgba(16, 185, 129, 0.6)' 
+                                        : 'rgba(239, 68, 68, 0.6)'
+                                ),
+                                borderColor: signals.map(s => 
+                                    s.type === 'CALL' 
+                                        ? 'rgb(16, 185, 129)' 
+                                        : 'rgb(239, 68, 68)'
+                                ),
+                                borderWidth: 1
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                legend: {
+                                    labels: {
+                                        color: '#e1e4ed'
+                                    }
+                                }
+                            },
+                            scales: {
+                                y: {
+                                    beginAtZero: true,
+                                    max: 100,
+                                    grid: {
+                                        color: 'rgba(48, 54, 61, 0.5)'
+                                    },
+                                    ticks: {
+                                        color: '#9ca3af'
+                                    }
+                                },
+                                x: {
+                                    grid: {
+                                        color: 'rgba(48, 54, 61, 0.5)'
+                                    },
+                                    ticks: {
+                                        color: '#9ca3af'
+                                    }
+                                }
+                            }
+                        }
+                    });
+                }
+            }, [signals]);
+            
+            const handleAcceptTerms = () => {
+                localStorage.setItem('opusTraderTermsAccepted', 'true');
+                localStorage.setItem('opusTraderTermsTimestamp', new Date().toISOString());
+                setHasAcceptedTerms(true);
+                setShowLegalModal(false);
+            };
+            
+            const generateNewSignals = async () => {
+                setLoading(true);
+                try {
+                    const newSignals = await aiEngine.generateWeeklySignals(watchlist);
+                    setSignals(newSignals);
+                    
+                    // Update stats
+                    const avgConf = newSignals.reduce((acc, s) => acc + s.confidence, 0) / newSignals.length;
+                    setStats({
+                        weeklySignals: newSignals.length,
+                        avgConfidence: avgConf,
+                        successRate: 0.68 + Math.random() * 0.15,
+                        activeTrades: newSignals.length
+                    });
+                } catch (error) {
+                    console.error('Error generating signals:', error);
+                } finally {
+                    setLoading(false);
+                }
+            };
+            
+            const addToWatchlist = () => {
+                if (newSymbol && !watchlist.includes(newSymbol.toUpperCase())) {
+                    setWatchlist([...watchlist, newSymbol.toUpperCase()]);
+                    setNewSymbol('');
+                }
+            };
+            
+            const removeFromWatchlist = (symbol) => {
+                setWatchlist(watchlist.filter(s => s !== symbol));
+            };
+            
+            if (!hasAcceptedTerms) {
+                return (
+                    <div className="app">
+                        <header className="header">
+                            <nav className="nav">
+                                <div className="logo">OpusTrader</div>
+                            </nav>
+                        </header>
+                        
+                        <div className="container">
+                            <div style={{ textAlign: 'center', padding: '4rem 2rem' }}>
+                                <h1 style={{ fontSize: '3rem', fontWeight: '700', marginBottom: '1rem' }}>
+                                    Welcome to OpusTrader
+                                </h1>
+                                <p style={{ fontSize: '1.25rem', color: '#9ca3af', marginBottom: '2rem' }}>
+                                    AI-Powered Weekly Options Signals
+                                </p>
+                                <button 
+                                    className="btn btn-primary" 
+                                    onClick={() => setShowLegalModal(true)}
+                                    style={{ fontSize: '1.125rem', padding: '0.75rem 2rem' }}
+                                >
+                                    Get Started
+                                </button>
                             </div>
-                            <div class="text-content">${entry.text}</div>
+                        </div>
+                        
+                        <LegalDisclosureModal
+                            isOpen={showLegalModal}
+                            onClose={() => setShowLegalModal(false)}
+                            onAccept={handleAcceptTerms}
+                        />
+                    </div>
+                );
+            }
+            
+            return (
+                <div className="app">
+                    <header className="header">
+                        <nav className="nav">
+                            <div className="logo">OpusTrader</div>
+                            <div className="nav-links">
+                                <a href="#" className="nav-link">Dashboard</a>
+                                <a href="#" className="nav-link">Settings</a>
+                                <a href="#" className="nav-link" onClick={() => setShowLegalModal(true)}>
+                                    Legal
+                                </a>
+                                <button className="btn btn-primary" onClick={generateNewSignals}>
+                                    Refresh Signals
+                                </button>
+                            </div>
+                        </nav>
+                    </header>
+                    
+                    <div className="container">
+                        <div className="dashboard">
+                            <div className="stats-grid">
+                                <div className="stat-card">
+                                    <div className="stat-label">Weekly Signals</div>
+                                    <div className="stat-value">{stats.weeklySignals}</div>
+                                </div>
+                                <div className="stat-card">
+                                    <div className="stat-label">Avg AI Confidence</div>
+                                    <div className="stat-value">
+                                        {(stats.avgConfidence * 100).toFixed(0)}%
+                                    </div>
+                                </div>
+                                <div className="stat-card">
+                                    <div className="stat-label">Historical Success</div>
+                                    <div className="stat-value">
+                                        {(stats.successRate * 100).toFixed(0)}%
+                                    </div>
+                                </div>
+                                <div className="stat-card">
+                                    <div className="stat-label">Active Positions</div>
+                                    <div className="stat-value">{stats.activeTrades}</div>
+                                </div>
+                            </div>
+                            
+                            <div className="signals-section">
+                                <div className="section-header">
+                                    <h2 className="section-title">This Week's AI Signals</h2>
+                                    <span style={{ color: '#9ca3af', fontSize: '0.875rem' }}>
+                                        Expires: {aiEngine.getNextFriday()}
+                                    </span>
+                                </div>
+                                
+                                {loading ? (
+                                    <div className="loading">
+                                        <div className="spinner"></div>
+                                    </div>
+                                ) : signals.length > 0 ? (
+                                    <>
+                                        <div className="signal-grid">
+                                            {signals.map(signal => (
+                                                <SignalCard key={signal.id} signal={signal} />
+                                            ))}
+                                        </div>
+                                        
+                                        <div className="chart-container">
+                                            <canvas ref={chartRef}></canvas>
+                                        </div>
+                                    </>
+                                ) : (
+                                    <div className="empty-state">
+                                        <h3>No signals generated yet</h3>
+                                        <p>Click "Refresh Signals" to generate new AI-powered signals</p>
+                                    </div>
+                                )}
+                            </div>
+                            
+                            <div className="settings-section">
+                                <h2 className="section-title">Watchlist Settings</h2>
+                                
+                                <div className="input-group">
+                                    <label className="input-label">Add Symbol to Watchlist</label>
+                                    <div style={{ display: 'flex', gap: '1rem' }}>
+                                        <input
+                                            type="text"
+                                            className="input"
+                                            placeholder="Enter symbol (e.g., AAPL)"
+                                            value={newSymbol}
+                                            onChange={(e) => setNewSymbol(e.target.value)}
+                                            onKeyPress={(e) => e.key === 'Enter' && addToWatchlist()}
+                                        />
+                                        <button className="btn btn-primary" onClick={addToWatchlist}>
+                                            Add
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                <div className="input-group">
+                                    <label className="input-label">Current Watchlist</label>
+                                    <div className="watchlist">
+                                        {watchlist.map(symbol => (
+                                            <div key={symbol} className="watchlist-item">
+                                                {symbol}
+                                                <span 
+                                                    className="remove-btn" 
+                                                    onClick={() => removeFromWatchlist(symbol)}
+                                                >
+                                                    ✕
+                                                </span>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                `;
-            });
-
-            container.innerHTML = html;
-            container.scrollTop = container.scrollHeight;
-        }
-
-        // Update interim display
-        function updateInterimDisplay() {
-            const container = document.getElementById('transcriptContent');
-            
-            // Remove empty state if exists
-            const emptyState = container.querySelector('.empty-state');
-            if (emptyState) {
-                emptyState.remove();
-            }
-
-            // Remove previous interim if exists
-            const prevInterim = container.querySelector('.interim-entry');
-            if (prevInterim) {
-                prevInterim.remove();
-            }
-
-            if (state.currentText) {
-                const speaker = state.speakers.get(state.currentSpeaker) || {
-                    name: 'Speaker',
-                    color: colors[0]
-                };
-
-                const interimHtml = `
-                    <div class="transcript-entry interim-entry">
-                        <div class="speaker-avatar" style="background: ${speaker.color}">
-                            ${speaker.name.charAt(0)}
-                        </div>
-                        <div class="transcript-text">
-                            <div class="speaker-name">${speaker.name}</div>
-                            <div class="text-content interim-text">${state.currentText}</div>
-                        </div>
-                    </div>
-                `;
-
-                container.insertAdjacentHTML('beforeend', interimHtml);
-                container.scrollTop = container.scrollHeight;
-            }
-        }
-
-        // Update speaker list
-        function updateSpeakerList() {
-            const container = document.getElementById('speakerList');
-            
-            if (state.speakers.size === 0) {
-                container.innerHTML = '<div class="empty-state"><p>No speakers yet</p></div>';
-                return;
-            }
-
-            let html = '';
-            state.speakers.forEach(speaker => {
-                html += `
-                    <div class="speaker-item">
-                        <div class="speaker-avatar-small" style="background: ${speaker.color}">
-                            ${speaker.name.charAt(0)}
-                        </div>
-                        <div class="speaker-info">
-                            <input type="text" 
-                                   class="speaker-name-input" 
-                                   value="${speaker.name}"
-                                   onchange="renameSpeaker('${speaker.id}', this.value)">
-                            <div class="speaker-stats">${speaker.wordCount} words</div>
-                        </div>
-                    </div>
-                `;
-            });
-
-            container.innerHTML = html;
-        }
-
-        // Update summary
-        function updateSummary() {
-            if (!state.features.summary) return;
-
-            const container = document.getElementById('summaryContent');
-            const duration = state.startTime ? Math.floor((Date.now() - state.startTime) / 1000) : 0;
-            
-            let html = `
-                <div class="summary-section">
-                    <div class="summary-title">Overview</div>
-                    <div>Duration: ${formatTime(duration)}</div>
-                    <div>Speakers: ${state.speakers.size}</div>
-                    <div>Total words: ${state.wordCount}</div>
+                    
+                    <LegalDisclosureModal
+                        isOpen={showLegalModal}
+                        onClose={() => setShowLegalModal(false)}
+                        onAccept={handleAcceptTerms}
+                    />
                 </div>
-            `;
-
-            // Speaker breakdown
-            if (state.speakers.size > 0) {
-                html += '<div class="summary-section"><div class="summary-title">Speaker Breakdown</div>';
-                state.speakers.forEach(speaker => {
-                    const percentage = state.wordCount > 0 ? 
-                        Math.round((speaker.wordCount / state.wordCount) * 100) : 0;
-                    html += `<div>${speaker.name}: ${percentage}% (${speaker.wordCount} words)</div>`;
-                });
-                html += '</div>';
-            }
-
-            container.innerHTML = html;
-        }
-
-        // Update word count
-        function updateWordCount() {
-            document.getElementById('wordCount').textContent = `${state.wordCount} words`;
-        }
-
-        // Update status
-        function updateStatus(text, active) {
-            document.getElementById('statusText').textContent = text;
-            const dot = document.getElementById('statusDot');
-            if (active) {
-                dot.classList.add('active');
-            } else {
-                dot.classList.remove('active');
-            }
-        }
-
-        // Timer functions
-        function startTimer() {
-            state.startTime = Date.now();
-            
-            function update() {
-                const elapsed = Math.floor((Date.now() - state.startTime) / 1000);
-                document.getElementById('timer').textContent = formatTime(elapsed);
-            }
-
-            update();
-            state.timerInterval = setInterval(update, 1000);
-        }
-
-        function stopTimer() {
-            if (state.timerInterval) {
-                clearInterval(state.timerInterval);
-                state.timerInterval = null;
-            }
-        }
-
-        function formatTime(seconds) {
-            const h = Math.floor(seconds / 3600);
-            const m = Math.floor((seconds % 3600) / 60);
-            const s = seconds % 60;
-            return `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
-        }
-
-        // Recording controls
-        async function startRecording() {
-            // Initialize recognition
-            if (!initRecognition()) {
-                return;
-            }
-
-            // Initialize audio
-            const audioReady = await initAudio();
-            if (!audioReady) {
-                alert('Microphone access is required for transcription');
-                return;
-            }
-
-            // Start recording
-            state.isRecording = true;
-            state.recognition.start();
-            startTimer();
-
-            // Update UI
-            const recordBtn = document.getElementById('recordBtn');
-            recordBtn.classList.add('recording');
-            document.getElementById('recordIcon').textContent = '⏹️';
-        }
-
-        function stopRecording() {
-            state.isRecording = false;
-
-            // Stop recognition
-            if (state.recognition) {
-                state.recognition.stop();
-                state.recognition = null;
-            }
-
-            // Stop audio
-            if (state.audioContext) {
-                state.audioContext.close();
-                state.audioContext = null;
-            }
-
-            // Stop timer
-            stopTimer();
-
-            // Update UI
-            const recordBtn = document.getElementById('recordBtn');
-            recordBtn.classList.remove('recording');
-            document.getElementById('recordIcon').textContent = '🎙️';
-            updateStatus('Ready', false);
-
-            // Final summary update
-            updateSummary();
-        }
-
-        // Clear all data
-        function clearAll() {
-            if (state.transcript.length > 0 && !confirm('Clear all transcript data?')) {
-                return;
-            }
-
-            state.transcript = [];
-            state.speakers.clear();
-            state.currentSpeaker = null;
-            state.wordCount = 0;
-            state.currentText = '';
-
-            document.getElementById('timer').textContent = '00:00:00';
-            updateTranscriptDisplay();
-            updateSpeakerList();
-            updateWordCount();
-            document.getElementById('summaryContent').innerHTML = '<div class="empty-state"><p>Summary will appear here</p></div>';
-        }
-
-        // Export transcript
-        function exportTranscript() {
-            if (state.transcript.length === 0) {
-                alert('No transcript to export');
-                return;
-            }
-
-            let text = 'Transcript Export\n';
-            text += `Date: ${new Date().toLocaleString()}\n`;
-            text += `Duration: ${document.getElementById('timer').textContent}\n`;
-            text += `Speakers: ${state.speakers.size}\n`;
-            text += `Total words: ${state.wordCount}\n\n`;
-            text += '---\n\n';
-
-            state.transcript.forEach(entry => {
-                const speaker = state.speakers.get(entry.speakerId);
-                text += `[${entry.timestamp.toLocaleTimeString()}] ${speaker.name}:\n`;
-                text += `${entry.text}\n\n`;
-            });
-
-            // Download file
-            const blob = new Blob([text], { type: 'text/plain' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `transcript-${new Date().toISOString().slice(0, 10)}.txt`;
-            a.click();
-            URL.revokeObjectURL(url);
-        }
-
-        // Rename speaker
-        window.renameSpeaker = function(speakerId, newName) {
-            const speaker = state.speakers.get(speakerId);
-            if (speaker && newName.trim()) {
-                speaker.name = newName.trim();
-                updateTranscriptDisplay();
-                updateSummary();
-            }
+            );
         };
-
-        // Event listeners
-        document.getElementById('recordBtn').addEventListener('click', () => {
-            if (state.isRecording) {
-                stopRecording();
-            } else {
-                startRecording();
-            }
-        });
-
-        document.getElementById('clearBtn').addEventListener('click', clearAll);
-        document.getElementById('exportBtn').addEventListener('click', exportTranscript);
-
-        // Feature toggles
-        document.getElementById('diarizationToggle').addEventListener('click', function() {
-            state.features.diarization = !state.features.diarization;
-            this.classList.toggle('active');
-        });
-
-        document.getElementById('punctuationToggle').addEventListener('click', function() {
-            state.features.punctuation = !state.features.punctuation;
-            this.classList.toggle('active');
-        });
-
-        document.getElementById('summaryToggle').addEventListener('click', function() {
-            state.features.summary = !state.features.summary;
-            this.classList.toggle('active');
-            if (state.features.summary) {
-                updateSummary();
-            }
-        });
-
-        // Language change
-        document.getElementById('languageSelect').addEventListener('change', function() {
-            if (state.recognition && state.isRecording) {
-                state.recognition.lang = this.value;
-                // Restart recognition with new language
-                state.recognition.stop();
-            }
-        });
-
-        // Initialize
-        updateStatus('Ready', false);
+        
+        ReactDOM.render(<App />, document.getElementById('root'));
     </script>
 </body>
 </html>
