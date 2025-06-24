@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TranscribeAI Pro - Next-Gen AI Meeting Intelligence</title>
+    <title>AI Transcribe Pro</title>
     <style>
         * {
             margin: 0;
@@ -13,20 +13,15 @@
 
         :root {
             --bg-primary: #0a0a0a;
-            --bg-secondary: #111111;
-            --bg-tertiary: #1a1a1a;
-            --bg-accent: #252525;
+            --bg-secondary: #151515;
+            --bg-tertiary: #1f1f1f;
             --text-primary: #ffffff;
-            --text-secondary: #b0b0b0;
-            --text-tertiary: #707070;
-            --accent-primary: #6366f1;
-            --accent-secondary: #818cf8;
-            --accent-success: #10b981;
-            --accent-warning: #f59e0b;
-            --accent-danger: #ef4444;
-            --border-color: #2a2a2a;
-            --gradient-primary: linear-gradient(135deg, #6366f1, #8b5cf6);
-            --gradient-success: linear-gradient(135deg, #10b981, #14b8a6);
+            --text-secondary: #a0a0a0;
+            --accent: #6366f1;
+            --accent-hover: #818cf8;
+            --danger: #ef4444;
+            --success: #10b981;
+            --border: #2a2a2a;
         }
 
         body {
@@ -34,276 +29,167 @@
             background: var(--bg-primary);
             color: var(--text-primary);
             line-height: 1.6;
-            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
         }
 
         /* Header */
         .header {
-            background: rgba(10, 10, 10, 0.95);
-            backdrop-filter: blur(20px);
-            border-bottom: 1px solid var(--border-color);
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            padding: 12px 0;
+            background: var(--bg-secondary);
+            padding: 20px 0;
+            margin-bottom: 30px;
+            border-bottom: 1px solid var(--border);
         }
 
         .header-content {
-            max-width: 1600px;
+            max-width: 1400px;
             margin: 0 auto;
-            padding: 0 24px;
+            padding: 0 20px;
             display: flex;
-            align-items: center;
             justify-content: space-between;
+            align-items: center;
         }
 
         .logo {
+            font-size: 24px;
+            font-weight: bold;
             display: flex;
             align-items: center;
-            gap: 12px;
-            font-size: 18px;
-            font-weight: 700;
+            gap: 10px;
         }
 
-        .logo-icon {
-            width: 32px;
-            height: 32px;
-            background: var(--gradient-primary);
-            border-radius: 8px;
+        .status {
             display: flex;
             align-items: center;
-            justify-content: center;
-            font-size: 16px;
-        }
-
-        .ai-status-bar {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-        }
-
-        .ai-indicator {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding: 6px 12px;
-            background: rgba(99, 102, 241, 0.1);
-            border: 1px solid rgba(99, 102, 241, 0.3);
+            gap: 10px;
+            padding: 8px 16px;
+            background: var(--bg-tertiary);
             border-radius: 20px;
-            font-size: 12px;
-            color: var(--accent-primary);
+            font-size: 14px;
         }
 
-        .ai-pulse {
-            width: 6px;
-            height: 6px;
-            background: var(--accent-primary);
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--text-secondary);
             border-radius: 50%;
+        }
+
+        .status-dot.active {
+            background: var(--danger);
             animation: pulse 2s infinite;
         }
 
         @keyframes pulse {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.6; transform: scale(1.2); }
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
         }
 
-        /* Main Container */
-        .container {
-            max-width: 1600px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-
-        /* Control Center */
-        .control-center {
+        /* Controls */
+        .controls {
             background: var(--bg-secondary);
-            border: 1px solid var(--border-color);
-            border-radius: 16px;
-            padding: 24px;
-            margin-bottom: 20px;
-        }
-
-        .control-grid {
-            display: grid;
-            grid-template-columns: auto 1fr auto;
-            gap: 24px;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .record-control {
+            padding: 30px;
+            border-radius: 12px;
+            margin-bottom: 30px;
             display: flex;
-            flex-direction: column;
             align-items: center;
-            gap: 12px;
+            justify-content: space-between;
+            gap: 20px;
+            flex-wrap: wrap;
         }
 
-        .record-button {
-            width: 72px;
-            height: 72px;
+        .record-section {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .record-btn {
+            width: 80px;
+            height: 80px;
+            border: none;
             border-radius: 50%;
-            background: var(--bg-tertiary);
-            border: 3px solid var(--accent-danger);
+            background: var(--danger);
+            color: white;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
             transition: all 0.3s ease;
-            position: relative;
+            font-size: 24px;
         }
 
-        .record-button:hover {
+        .record-btn:hover {
             transform: scale(1.05);
-            box-shadow: 0 0 20px rgba(239, 68, 68, 0.4);
+            box-shadow: 0 0 20px rgba(239, 68, 68, 0.5);
         }
 
-        .record-button.recording {
-            background: var(--accent-danger);
-            animation: record-pulse 1.5s infinite;
+        .record-btn.recording {
+            animation: recording-pulse 1.5s infinite;
         }
 
-        @keyframes record-pulse {
-            0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.6); }
+        @keyframes recording-pulse {
+            0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
             70% { box-shadow: 0 0 0 20px rgba(239, 68, 68, 0); }
             100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
         }
 
-        .record-icon {
-            width: 24px;
-            height: 24px;
-            background: var(--accent-danger);
-            border-radius: 50%;
-            transition: all 0.3s ease;
-        }
-
-        .record-button.recording .record-icon {
-            background: white;
-            border-radius: 4px;
-            width: 20px;
-            height: 20px;
-        }
-
-        .record-timer {
-            font-size: 14px;
-            color: var(--text-secondary);
+        .timer {
+            font-size: 24px;
             font-family: monospace;
-        }
-
-        /* Real-time Visualizer */
-        .voice-visualizer {
-            background: var(--bg-tertiary);
-            border-radius: 12px;
-            padding: 20px;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .waveform-container {
-            height: 80px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 2px;
-        }
-
-        .waveform-bar {
-            width: 3px;
-            height: 20px;
-            background: var(--accent-primary);
-            border-radius: 2px;
-            transition: height 0.1s ease;
-            opacity: 0.8;
-        }
-
-        .speaker-indicator {
-            position: absolute;
-            top: 8px;
-            left: 20px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 12px;
             color: var(--text-secondary);
         }
 
-        .speaker-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: var(--accent-primary);
-        }
-
-        /* Quick Actions */
-        .quick-actions {
+        .control-buttons {
             display: flex;
-            gap: 12px;
+            gap: 10px;
         }
 
-        .action-button {
+        button {
             padding: 10px 20px;
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
+            border: 1px solid var(--border);
             background: var(--bg-tertiary);
             color: var(--text-primary);
-            font-size: 13px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .action-button:hover {
-            background: var(--bg-accent);
-            border-color: var(--accent-primary);
-        }
-
-        /* AI Features Bar */
-        .ai-features {
-            display: flex;
-            gap: 16px;
-            padding: 16px;
-            background: var(--bg-tertiary);
-            border-radius: 12px;
-            flex-wrap: wrap;
-        }
-
-        .ai-feature {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding: 8px 16px;
-            background: var(--bg-secondary);
-            border: 1px solid var(--border-color);
             border-radius: 8px;
-            font-size: 12px;
             cursor: pointer;
             transition: all 0.2s ease;
+            font-size: 14px;
         }
 
-        .ai-feature.active {
-            background: rgba(99, 102, 241, 0.1);
-            border-color: var(--accent-primary);
-            color: var(--accent-primary);
+        button:hover:not(:disabled) {
+            background: var(--bg-primary);
+            border-color: var(--accent);
         }
 
-        .ai-feature-icon {
-            width: 16px;
-            height: 16px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        select {
+            padding: 10px;
+            border: 1px solid var(--border);
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
         }
 
         /* Main Layout */
-        .main-layout {
+        .main-content {
             display: grid;
-            grid-template-columns: 1fr 400px;
-            gap: 20px;
+            grid-template-columns: 1fr 350px;
+            gap: 30px;
         }
 
-        @media (max-width: 1200px) {
-            .main-layout {
+        @media (max-width: 1024px) {
+            .main-content {
                 grid-template-columns: 1fr;
             }
         }
@@ -311,60 +197,31 @@
         /* Transcript Panel */
         .transcript-panel {
             background: var(--bg-secondary);
-            border: 1px solid var(--border-color);
-            border-radius: 16px;
+            border-radius: 12px;
             overflow: hidden;
         }
 
         .panel-header {
-            padding: 16px 24px;
-            border-bottom: 1px solid var(--border-color);
+            padding: 20px;
+            border-bottom: 1px solid var(--border);
             display: flex;
-            align-items: center;
             justify-content: space-between;
+            align-items: center;
         }
 
         .panel-title {
-            font-size: 16px;
+            font-size: 18px;
             font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 8px;
         }
 
-        .transcript-actions {
-            display: flex;
-            gap: 8px;
-        }
-
-        .icon-button {
-            width: 32px;
-            height: 32px;
-            border-radius: 6px;
-            background: var(--bg-tertiary);
-            border: 1px solid var(--border-color);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            font-size: 14px;
-        }
-
-        .icon-button:hover {
-            background: var(--bg-accent);
-            border-color: var(--accent-primary);
-        }
-
-        /* Transcript Content */
         .transcript-content {
-            height: calc(100vh - 400px);
+            height: 600px;
             overflow-y: auto;
-            padding: 24px;
+            padding: 20px;
         }
 
         .transcript-content::-webkit-scrollbar {
-            width: 6px;
+            width: 8px;
         }
 
         .transcript-content::-webkit-scrollbar-track {
@@ -372,31 +229,14 @@
         }
 
         .transcript-content::-webkit-scrollbar-thumb {
-            background: var(--border-color);
-            border-radius: 3px;
+            background: var(--border);
+            border-radius: 4px;
         }
 
-        .speaker-segment {
-            margin-bottom: 24px;
-            animation: fadeInUp 0.3s ease;
-        }
-
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .speaker-header {
+        .transcript-entry {
+            margin-bottom: 20px;
             display: flex;
-            align-items: flex-start;
-            gap: 12px;
-            margin-bottom: 8px;
+            gap: 15px;
         }
 
         .speaker-avatar {
@@ -406,116 +246,36 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-weight: 600;
-            font-size: 16px;
-            color: white;
+            font-weight: bold;
             flex-shrink: 0;
-            position: relative;
+            color: white;
         }
 
-        .speaker-avatar.verified::after {
-            content: '✓';
-            position: absolute;
-            bottom: -2px;
-            right: -2px;
-            width: 16px;
-            height: 16px;
-            background: var(--accent-success);
-            border-radius: 50%;
-            border: 2px solid var(--bg-secondary);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 10px;
-        }
-
-        .speaker-info {
+        .transcript-text {
             flex: 1;
         }
 
         .speaker-name {
             font-weight: 600;
-            font-size: 14px;
+            margin-bottom: 5px;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
         }
 
-        .speaker-meta {
+        .timestamp {
             font-size: 12px;
-            color: var(--text-tertiary);
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .transcript-text {
-            margin-left: 52px;
             color: var(--text-secondary);
-            line-height: 1.8;
-            position: relative;
         }
 
-        .keyword-highlight {
-            background: rgba(99, 102, 241, 0.2);
-            color: var(--accent-secondary);
-            padding: 0 4px;
-            border-radius: 3px;
-            cursor: pointer;
+        .text-content {
+            color: var(--text-secondary);
+            line-height: 1.6;
         }
 
-        .ai-insight {
-            display: inline-block;
-            margin-left: 8px;
-            padding: 2px 8px;
-            background: rgba(16, 185, 129, 0.1);
-            border: 1px solid rgba(16, 185, 129, 0.3);
-            border-radius: 12px;
-            font-size: 11px;
-            color: var(--accent-success);
-        }
-
-        /* Live Transcription Indicator */
-        .live-indicator {
-            margin-left: 52px;
-            padding: 12px;
-            background: rgba(99, 102, 241, 0.05);
-            border-left: 3px solid var(--accent-primary);
-            border-radius: 0 8px 8px 0;
-            margin-bottom: 24px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .typing-indicator {
-            display: flex;
-            gap: 4px;
-        }
-
-        .typing-dot {
-            width: 4px;
-            height: 4px;
-            background: var(--accent-primary);
-            border-radius: 50%;
-            animation: typing 1.4s infinite;
-        }
-
-        .typing-dot:nth-child(2) {
-            animation-delay: 0.2s;
-        }
-
-        .typing-dot:nth-child(3) {
-            animation-delay: 0.4s;
-        }
-
-        @keyframes typing {
-            0%, 60%, 100% {
-                transform: translateY(0);
-            }
-            30% {
-                transform: translateY(-10px);
-            }
+        .interim-text {
+            opacity: 0.6;
+            font-style: italic;
         }
 
         /* Sidebar */
@@ -527,1039 +287,239 @@
 
         .sidebar-panel {
             background: var(--bg-secondary);
-            border: 1px solid var(--border-color);
-            border-radius: 16px;
+            border-radius: 12px;
             overflow: hidden;
         }
 
-        /* Speaker Management */
         .speaker-list {
-            padding: 16px;
+            padding: 20px;
             max-height: 300px;
             overflow-y: auto;
         }
 
-        .speaker-card {
-            background: var(--bg-tertiary);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 16px;
-            margin-bottom: 12px;
-            transition: all 0.2s ease;
-        }
-
-        .speaker-card:hover {
-            border-color: var(--accent-primary);
-        }
-
-        .speaker-card-header {
+        .speaker-item {
             display: flex;
             align-items: center;
-            gap: 12px;
-            margin-bottom: 12px;
+            gap: 15px;
+            padding: 15px;
+            background: var(--bg-tertiary);
+            border-radius: 8px;
+            margin-bottom: 10px;
         }
 
-        .speaker-card-avatar {
+        .speaker-avatar-small {
             width: 36px;
             height: 36px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-weight: 600;
+            font-weight: bold;
             color: white;
-            font-size: 14px;
         }
 
-        .speaker-card-info {
+        .speaker-info {
             flex: 1;
         }
 
         .speaker-name-input {
-            background: var(--bg-secondary);
-            border: 1px solid var(--border-color);
-            border-radius: 6px;
-            padding: 4px 8px;
+            background: transparent;
+            border: 1px solid var(--border);
             color: var(--text-primary);
-            font-size: 13px;
+            padding: 5px 10px;
+            border-radius: 4px;
             width: 100%;
+            margin-bottom: 5px;
         }
 
         .speaker-stats {
-            display: flex;
-            gap: 16px;
             font-size: 12px;
-            color: var(--text-tertiary);
-            margin-top: 4px;
+            color: var(--text-secondary);
         }
 
-        .voice-signature {
-            display: flex;
-            align-items: center;
-            gap: 2px;
-            height: 24px;
-            margin-top: 8px;
-        }
-
-        .voice-line {
-            width: 2px;
-            background: var(--accent-primary);
-            border-radius: 1px;
-            opacity: 0.6;
-            transition: height 0.3s ease;
-        }
-
-        /* AI Summary Panel */
-        .ai-summary {
+        /* Summary */
+        .summary-content {
             padding: 20px;
+            font-size: 14px;
+            color: var(--text-secondary);
         }
 
         .summary-section {
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
 
         .summary-title {
-            font-size: 13px;
             font-weight: 600;
-            margin-bottom: 8px;
             color: var(--text-primary);
-        }
-
-        .summary-content {
-            font-size: 13px;
-            color: var(--text-secondary);
-            line-height: 1.6;
-        }
-
-        .key-points {
-            list-style: none;
-        }
-
-        .key-point {
-            padding: 8px 0;
-            border-bottom: 1px solid var(--border-color);
-            display: flex;
-            align-items: flex-start;
-            gap: 8px;
-        }
-
-        .key-point:last-child {
-            border-bottom: none;
-        }
-
-        .point-icon {
-            width: 20px;
-            height: 20px;
-            background: rgba(99, 102, 241, 0.1);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 12px;
-            color: var(--accent-primary);
-            flex-shrink: 0;
-        }
-
-        /* Action Items */
-        .action-items {
-            padding: 20px;
-        }
-
-        .action-item {
-            background: var(--bg-tertiary);
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            padding: 12px;
-            margin-bottom: 12px;
-            display: flex;
-            align-items: flex-start;
-            gap: 12px;
-        }
-
-        .action-checkbox {
-            width: 20px;
-            height: 20px;
-            border: 2px solid var(--border-color);
-            border-radius: 4px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.2s ease;
-        }
-
-        .action-checkbox.checked {
-            background: var(--accent-success);
-            border-color: var(--accent-success);
-        }
-
-        .action-text {
-            flex: 1;
-            font-size: 13px;
-            color: var(--text-secondary);
-        }
-
-        .action-owner {
-            font-size: 11px;
-            color: var(--accent-primary);
-            margin-top: 4px;
-        }
-
-        /* Settings & Controls */
-        .settings-section {
-            padding: 20px;
-        }
-
-        .setting-group {
-            margin-bottom: 16px;
-        }
-
-        .setting-label {
-            font-size: 13px;
-            color: var(--text-secondary);
-            margin-bottom: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .toggle-switch {
-            width: 36px;
-            height: 20px;
-            background: var(--bg-accent);
-            border-radius: 10px;
-            cursor: pointer;
-            position: relative;
-            transition: background 0.3s ease;
-        }
-
-        .toggle-switch.active {
-            background: var(--accent-primary);
-        }
-
-        .toggle-switch::after {
-            content: '';
-            position: absolute;
-            top: 2px;
-            left: 2px;
-            width: 16px;
-            height: 16px;
-            background: white;
-            border-radius: 50%;
-            transition: transform 0.3s ease;
-        }
-
-        .toggle-switch.active::after {
-            transform: translateX(16px);
-        }
-
-        /* Export Menu */
-        .export-menu {
-            position: fixed;
-            bottom: 24px;
-            right: 24px;
-            background: var(--bg-tertiary);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 8px;
-            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
-            display: none;
-        }
-
-        .export-menu.show {
-            display: block;
-        }
-
-        .export-option {
-            padding: 12px 16px;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            font-size: 13px;
-        }
-
-        .export-option:hover {
-            background: var(--bg-accent);
-        }
-
-        /* Floating Action Button */
-        .fab {
-            position: fixed;
-            bottom: 24px;
-            right: 24px;
-            width: 56px;
-            height: 56px;
-            background: var(--gradient-primary);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            box-shadow: 0 4px 24px rgba(99, 102, 241, 0.4);
-            transition: all 0.3s ease;
-        }
-
-        .fab:hover {
-            transform: scale(1.1);
+            margin-bottom: 5px;
         }
 
         /* Empty State */
         .empty-state {
             text-align: center;
-            padding: 80px 20px;
-            color: var(--text-tertiary);
+            padding: 60px 20px;
+            color: var(--text-secondary);
         }
 
         .empty-icon {
             font-size: 48px;
-            margin-bottom: 16px;
-            opacity: 0.5;
+            opacity: 0.3;
+            margin-bottom: 10px;
         }
 
-        /* Loading State */
-        .loading-spinner {
-            width: 20px;
-            height: 20px;
-            border: 2px solid rgba(99, 102, 241, 0.3);
-            border-top-color: var(--accent-primary);
+        /* Features */
+        .features {
+            display: flex;
+            gap: 15px;
+            padding: 20px;
+            border-top: 1px solid var(--border);
+            flex-wrap: wrap;
+        }
+
+        .feature-toggle {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .toggle {
+            width: 40px;
+            height: 22px;
+            background: var(--bg-tertiary);
+            border-radius: 11px;
+            position: relative;
+            transition: background 0.3s ease;
+        }
+
+        .toggle.active {
+            background: var(--accent);
+        }
+
+        .toggle::after {
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 18px;
+            height: 18px;
+            background: white;
             border-radius: 50%;
-            animation: spin 0.8s linear infinite;
+            transition: transform 0.3s ease;
         }
 
-        @keyframes spin {
-            to { transform: rotate(360deg); }
+        .toggle.active::after {
+            transform: translateX(18px);
         }
 
-        /* Responsive Design */
-        @media (max-width: 768px) {
-            .control-grid {
-                grid-template-columns: 1fr;
-                gap: 16px;
-            }
+        /* Export button */
+        .export-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            background: var(--accent);
+            border: none;
+            border-radius: 50%;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(99, 102, 241, 0.4);
+            transition: all 0.3s ease;
+        }
 
-            .ai-features {
-                gap: 8px;
-            }
-
-            .main-layout {
-                grid-template-columns: 1fr;
-            }
-
-            .transcript-text {
-                margin-left: 0;
-                margin-top: 12px;
-            }
-
-            .live-indicator {
-                margin-left: 0;
-            }
+        .export-btn:hover {
+            transform: scale(1.1);
         }
     </style>
 </head>
 <body>
-    <header class="header">
+    <div class="header">
         <div class="header-content">
             <div class="logo">
-                <div class="logo-icon">🤖</div>
-                <span>TranscribeAI Pro</span>
+                <span>🤖</span>
+                <span>AI Transcribe Pro</span>
             </div>
-            <div class="ai-status-bar">
-                <div class="ai-indicator" id="aiStatus">
-                    <div class="ai-pulse"></div>
-                    <span>AI Engine Active</span>
-                </div>
-                <div class="ai-indicator">
-                    <span id="accuracyRate">95%</span>
-                    <span>Accuracy</span>
-                </div>
+            <div class="status">
+                <div class="status-dot" id="statusDot"></div>
+                <span id="statusText">Ready</span>
             </div>
         </div>
-    </header>
+    </div>
 
     <div class="container">
-        <!-- Control Center -->
-        <div class="control-center">
-            <div class="control-grid">
-                <div class="record-control">
-                    <button class="record-button" id="recordBtn">
-                        <div class="record-icon"></div>
-                    </button>
-                    <div class="record-timer" id="recordTimer">00:00:00</div>
-                </div>
-
-                <div class="voice-visualizer">
-                    <div class="speaker-indicator">
-                        <div class="speaker-dot"></div>
-                        <span id="currentSpeaker">Ready to record</span>
-                    </div>
-                    <div class="waveform-container" id="waveform">
-                        <!-- Waveform bars will be dynamically added -->
-                    </div>
-                </div>
-
-                <div class="quick-actions">
-                    <button class="action-button" id="pauseBtn" disabled>
-                        <span>⏸️</span>
-                        <span>Pause</span>
-                    </button>
-                    <button class="action-button" id="clearBtn">
-                        <span>🗑️</span>
-                        <span>Clear</span>
-                    </button>
-                    <select id="languageSelect" class="action-button" style="border: 1px solid var(--border-color);">
-                        <option value="en-US">English (US)</option>
-                        <option value="en-GB">English (UK)</option>
-                        <option value="es-ES">Spanish</option>
-                        <option value="fr-FR">French</option>
-                        <option value="de-DE">German</option>
-                        <option value="pt-BR">Portuguese</option>
-                        <option value="zh-CN">Chinese</option>
-                        <option value="ja-JP">Japanese</option>
-                        <option value="ko-KR">Korean</option>
-                        <option value="hi-IN">Hindi</option>
-                    </select>
-                </div>
+        <div class="controls">
+            <div class="record-section">
+                <button class="record-btn" id="recordBtn">
+                    <span id="recordIcon">🎙️</span>
+                </button>
+                <div class="timer" id="timer">00:00:00</div>
             </div>
-
-            <!-- AI Features -->
-            <div class="ai-features">
-                <div class="ai-feature active" id="diarizationToggle">
-                    <div class="ai-feature-icon">👥</div>
-                    <span>Speaker Diarization</span>
-                </div>
-                <div class="ai-feature active" id="punctuationToggle">
-                    <div class="ai-feature-icon">📝</div>
-                    <span>Smart Punctuation</span>
-                </div>
-                <div class="ai-feature active" id="sentimentToggle">
-                    <div class="ai-feature-icon">😊</div>
-                    <span>Sentiment Analysis</span>
-                </div>
-                <div class="ai-feature active" id="summaryToggle">
-                    <div class="ai-feature-icon">📊</div>
-                    <span>AI Summary</span>
-                </div>
-                <div class="ai-feature active" id="actionToggle">
-                    <div class="ai-feature-icon">✅</div>
-                    <span>Action Items</span>
-                </div>
-                <div class="ai-feature active" id="translationToggle">
-                    <div class="ai-feature-icon">🌐</div>
-                    <span>Live Translation</span>
-                </div>
+            
+            <div class="control-buttons">
+                <button id="clearBtn">Clear All</button>
+                <select id="languageSelect">
+                    <option value="en-US">English (US)</option>
+                    <option value="en-GB">English (UK)</option>
+                    <option value="es-ES">Spanish</option>
+                    <option value="fr-FR">French</option>
+                    <option value="de-DE">German</option>
+                    <option value="zh-CN">Chinese</option>
+                    <option value="ja-JP">Japanese</option>
+                </select>
             </div>
         </div>
 
-        <!-- Main Layout -->
-        <div class="main-layout">
-            <!-- Transcript Panel -->
+        <div class="main-content">
             <div class="transcript-panel">
                 <div class="panel-header">
-                    <h2 class="panel-title">
-                        <span>📄</span>
-                        <span>Live Transcript</span>
-                    </h2>
-                    <div class="transcript-actions">
-                        <button class="icon-button" id="searchBtn" title="Search">
-                            🔍
-                        </button>
-                        <button class="icon-button" id="editBtn" title="Edit Mode">
-                            ✏️
-                        </button>
-                        <button class="icon-button" id="playbackBtn" title="Playback">
-                            ▶️
-                        </button>
-                    </div>
+                    <h2 class="panel-title">Transcript</h2>
+                    <span id="wordCount" style="font-size: 14px; color: var(--text-secondary);">0 words</span>
                 </div>
                 <div class="transcript-content" id="transcriptContent">
                     <div class="empty-state">
                         <div class="empty-icon">🎙️</div>
                         <h3>Ready to transcribe</h3>
-                        <p>Click the record button to start AI-powered transcription with speaker identification</p>
+                        <p>Click the record button to start</p>
                     </div>
+                </div>
+                <div class="features">
+                    <label class="feature-toggle">
+                        <div class="toggle active" id="diarizationToggle"></div>
+                        <span>Speaker Detection</span>
+                    </label>
+                    <label class="feature-toggle">
+                        <div class="toggle active" id="punctuationToggle"></div>
+                        <span>Smart Punctuation</span>
+                    </label>
+                    <label class="feature-toggle">
+                        <div class="toggle active" id="summaryToggle"></div>
+                        <span>AI Summary</span>
+                    </label>
                 </div>
             </div>
 
-            <!-- Sidebar -->
             <div class="sidebar">
-                <!-- Speaker Management -->
                 <div class="sidebar-panel">
                     <div class="panel-header">
-                        <h3 class="panel-title">
-                            <span>👥</span>
-                            <span>Speakers</span>
-                        </h3>
+                        <h3 class="panel-title">Speakers</h3>
                     </div>
                     <div class="speaker-list" id="speakerList">
-                        <div class="empty-state" style="padding: 40px 20px;">
-                            <p style="font-size: 13px;">No speakers detected yet</p>
+                        <div class="empty-state">
+                            <p>No speakers yet</p>
                         </div>
                     </div>
                 </div>
 
-                <!-- AI Summary -->
                 <div class="sidebar-panel">
                     <div class="panel-header">
-                        <h3 class="panel-title">
-                            <span>🤖</span>
-                            <span>AI Insights</span>
-                        </h3>
+                        <h3 class="panel-title">Summary</h3>
                     </div>
-                    <div class="ai-summary" id="aiSummary">
-                        <div class="summary-section">
-                            <div class="summary-title">Meeting Summary</div>
-                            <div class="summary-content" id="summaryContent">
-                                AI-generated summary will appear here...
-                            </div>
-                        </div>
-                        ${voiceProfile ? `
-                            <div class="voice-signature">
-                                ${voiceProfile.signature.map(val => 
-                                    `<div class="voice-line" style="height: ${4 + val * 20}px;"></div>`
-                                ).join('')}
-                            </div>
-                        ` : ''}
-                    </div>
-                `;
-            }).join('');
-        }
-
-        // Update current speaker display
-        function updateCurrentSpeaker(speakerId) {
-            const speaker = aiState.speakers.get(speakerId);
-            if (speaker) {
-                document.getElementById('currentSpeaker').textContent = speaker.name;
-                document.querySelector('.speaker-dot').style.background = speaker.color;
-            }
-        }
-
-        // Update AI summary
-        function updateAISummary() {
-            if (aiState.segments.length === 0) return;
-            
-            // Simple summary generation
-            const totalWords = Array.from(aiState.speakers.values())
-                .reduce((sum, speaker) => sum + speaker.wordCount, 0);
-            
-            const duration = aiState.recordingStartTime ? 
-                Math.floor((Date.now() - aiState.recordingStartTime) / 1000) : 0;
-            
-            // Generate summary
-            const summaryContent = `
-                <p><strong>Duration:</strong> ${formatDuration(duration)}</p>
-                <p><strong>Participants:</strong> ${aiState.speakers.size}</p>
-                <p><strong>Total words:</strong> ${totalWords}</p>
-                <p><strong>Segments:</strong> ${aiState.segments.length}</p>
-            `;
-            
-            document.getElementById('summaryContent').innerHTML = summaryContent;
-            
-            // Extract key points
-            updateKeyPoints();
-        }
-
-        // Update key points
-        function updateKeyPoints() {
-            const keyPoints = [];
-            
-            // Find segments with questions
-            aiState.segments.forEach(segment => {
-                if (segment.text.includes('?')) {
-                    keyPoints.push({
-                        type: 'question',
-                        text: segment.text,
-                        speaker: aiState.speakers.get(segment.speakerId)?.name
-                    });
-                }
-            });
-            
-            // Find segments with action items
-            aiState.segments.forEach(segment => {
-                if (aiState.languagePatterns.actionIndicators.test(segment.text)) {
-                    keyPoints.push({
-                        type: 'action',
-                        text: segment.text,
-                        speaker: aiState.speakers.get(segment.speakerId)?.name
-                    });
-                }
-            });
-            
-            // Update display
-            const container = document.getElementById('keyPoints');
-            if (keyPoints.length > 0) {
-                container.innerHTML = keyPoints.slice(0, 5).map(point => {
-                    const icon = point.type === 'question' ? '❓' : '📌';
-                    return `
-                        <li class="key-point">
-                            <div class="point-icon">${icon}</div>
-                            <span><strong>${point.speaker}:</strong> ${point.text.substring(0, 100)}...</span>
-                        </li>
-                    `;
-                }).join('');
-            }
-        }
-
-        // Update action items
-        function updateActionItems() {
-            const container = document.getElementById('actionItems');
-            
-            if (aiState.actionItemsList.length === 0) {
-                container.innerHTML = `
-                    <div class="empty-state" style="padding: 40px 20px;">
-                        <p style="font-size: 13px;">No action items detected</p>
-                    </div>
-                `;
-                return;
-            }
-            
-            container.innerHTML = aiState.actionItemsList.map((item, index) => `
-                <div class="action-item">
-                    <div class="action-checkbox ${item.completed ? 'checked' : ''}" 
-                         onclick="toggleActionItem(${index})">
-                        ${item.completed ? '✓' : ''}
-                    </div>
-                    <div>
-                        <div class="action-text">${item.text}</div>
-                        <div class="action-owner">${item.speaker} • ${formatTime(item.timestamp)}</div>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        // Update UI based on state
-        function updateUI(state) {
-            const recordBtn = document.getElementById('recordBtn');
-            const pauseBtn = document.getElementById('pauseBtn');
-            
-            switch (state) {
-                case 'recording':
-                    recordBtn.classList.add('recording');
-                    pauseBtn.disabled = false;
-                    updateAIStatus('AI Engine Active', 'active');
-                    startRecordingTimer();
-                    break;
-                case 'paused':
-                    pauseBtn.innerHTML = '<span>▶️</span><span>Resume</span>';
-                    updateAIStatus('Paused', 'paused');
-                    break;
-                case 'stopped':
-                    recordBtn.classList.remove('recording');
-                    pauseBtn.disabled = true;
-                    pauseBtn.innerHTML = '<span>⏸️</span><span>Pause</span>';
-                    updateAIStatus('AI Engine Ready', 'ready');
-                    stopRecordingTimer();
-                    document.getElementById('currentSpeaker').textContent = 'Ready to record';
-                    break;
-            }
-        }
-
-        // Update AI status
-        function updateAIStatus(text, status = 'active') {
-            const statusElement = document.getElementById('aiStatus');
-            statusElement.querySelector('span:last-child').textContent = text;
-            
-            const pulse = statusElement.querySelector('.ai-pulse');
-            pulse.style.background = status === 'active' ? 'var(--accent-primary)' : 
-                                   status === 'error' ? 'var(--accent-danger)' : 
-                                   'var(--text-tertiary)';
-        }
-
-        // Recording timer
-        function startRecordingTimer() {
-            aiState.recordingStartTime = Date.now();
-            
-            function updateTimer() {
-                if (!aiState.isRecording) return;
-                
-                const elapsed = Math.floor((Date.now() - aiState.recordingStartTime) / 1000);
-                document.getElementById('recordTimer').textContent = formatDuration(elapsed);
-                
-                aiState.recordingTimer = setTimeout(updateTimer, 1000);
-            }
-            
-            updateTimer();
-        }
-
-        function stopRecordingTimer() {
-            if (aiState.recordingTimer) {
-                clearTimeout(aiState.recordingTimer);
-                aiState.recordingTimer = null;
-            }
-        }
-
-        // Helper functions
-        function formatTime(timestamp) {
-            return new Date(timestamp).toLocaleTimeString([], { 
-                hour: '2-digit', 
-                minute: '2-digit' 
-            });
-        }
-
-        function formatDuration(seconds) {
-            const hours = Math.floor(seconds / 3600);
-            const minutes = Math.floor((seconds % 3600) / 60);
-            const secs = seconds % 60;
-            
-            return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-        }
-
-        // User actions
-        window.updateSpeakerName = function(speakerId, newName) {
-            const speaker = aiState.speakers.get(speakerId);
-            if (speaker && newName.trim()) {
-                speaker.name = newName.trim();
-                updateTranscriptDisplay();
-                updateAISummary();
-                
-                // Update current speaker display if active
-                if (aiState.currentSegment && aiState.currentSegment.speakerId === speakerId) {
-                    updateCurrentSpeaker(speakerId);
-                }
-            }
-        };
-
-        window.toggleActionItem = function(index) {
-            if (aiState.actionItemsList[index]) {
-                aiState.actionItemsList[index].completed = !aiState.actionItemsList[index].completed;
-                updateActionItems();
-            }
-        };
-
-        window.exportTranscript = function(format) {
-            const exportMenu = document.getElementById('exportMenu');
-            exportMenu.classList.remove('show');
-            
-            let content = '';
-            const timestamp = new Date().toISOString().slice(0, 10);
-            
-            switch (format) {
-                case 'txt':
-                    content = generateTextTranscript();
-                    downloadFile(content, `transcript-${timestamp}.txt`, 'text/plain');
-                    break;
-                case 'docx':
-                    alert('Word export would require a backend service. Exporting as text instead.');
-                    content = generateTextTranscript();
-                    downloadFile(content, `transcript-${timestamp}.txt`, 'text/plain');
-                    break;
-                case 'pdf':
-                    alert('PDF export would require a backend service. Exporting as text instead.');
-                    content = generateTextTranscript();
-                    downloadFile(content, `transcript-${timestamp}.txt`, 'text/plain');
-                    break;
-                case 'srt':
-                    content = generateSRTSubtitles();
-                    downloadFile(content, `transcript-${timestamp}.srt`, 'text/plain');
-                    break;
-            }
-        };
-
-        function generateTextTranscript() {
-            let content = 'AI-Powered Meeting Transcript\n';
-            content += `Generated: ${new Date().toLocaleString()}\n`;
-            content += `Duration: ${document.getElementById('recordTimer').textContent}\n`;
-            content += `Participants: ${aiState.speakers.size}\n\n`;
-            
-            content += '=== TRANSCRIPT ===\n\n';
-            
-            aiState.segments.forEach(segment => {
-                const speaker = aiState.speakers.get(segment.speakerId);
-                content += `[${formatTime(segment.startTime)}] ${speaker.name}:\n`;
-                content += `${segment.text}\n\n`;
-            });
-            
-            if (aiState.currentSegment && aiState.currentSegment.text) {
-                const speaker = aiState.speakers.get(aiState.currentSegment.speakerId);
-                content += `[${formatTime(aiState.currentSegment.startTime)}] ${speaker.name}:\n`;
-                content += `${aiState.currentSegment.text}\n\n`;
-            }
-            
-            // Add summary
-            content += '\n=== AI SUMMARY ===\n\n';
-            content += document.getElementById('summaryContent').innerText + '\n\n';
-            
-            // Add action items
-            if (aiState.actionItemsList.length > 0) {
-                content += '=== ACTION ITEMS ===\n\n';
-                aiState.actionItemsList.forEach((item, index) => {
-                    content += `${index + 1}. [${item.completed ? 'x' : ' '}] ${item.text}\n`;
-                    content += `   Assigned to: ${item.speaker}\n\n`;
-                });
-            }
-            
-            return content;
-        }
-
-        function generateSRTSubtitles() {
-            let content = '';
-            let index = 1;
-            
-            aiState.segments.forEach(segment => {
-                const speaker = aiState.speakers.get(segment.speakerId);
-                const startTime = formatSRTTime(segment.startTime - aiState.recordingStartTime);
-                const endTime = formatSRTTime((segment.endTime || segment.startTime + 5000) - aiState.recordingStartTime);
-                
-                content += `${index}\n`;
-                content += `${startTime} --> ${endTime}\n`;
-                content += `${speaker.name}: ${segment.text}\n\n`;
-                index++;
-            });
-            
-            return content;
-        }
-
-        function formatSRTTime(ms) {
-            const seconds = Math.floor(ms / 1000);
-            const minutes = Math.floor(seconds / 60);
-            const hours = Math.floor(minutes / 60);
-            const remainingSeconds = seconds % 60;
-            const remainingMs = ms % 1000;
-            
-            return `${hours.toString().padStart(2, '0')}:${(minutes % 60).toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')},${remainingMs.toString().padStart(3, '0')}`;
-        }
-
-        function downloadFile(content, filename, type) {
-            const blob = new Blob([content], { type });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = filename;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-        }
-
-        // Initialize event listeners
-        function initializeEventListeners() {
-            // Record button
-            document.getElementById('recordBtn').addEventListener('click', async () => {
-                if (aiState.isRecording) {
-                    stopRecording();
-                } else {
-                    await startRecording();
-                }
-            });
-            
-            // Pause button
-            document.getElementById('pauseBtn').addEventListener('click', () => {
-                if (aiState.isPaused) {
-                    resumeRecording();
-                } else {
-                    pauseRecording();
-                }
-            });
-            
-            // Clear button
-            document.getElementById('clearBtn').addEventListener('click', () => {
-                if (confirm('Clear all transcript data?')) {
-                    clearAll();
-                }
-            });
-            
-            // FAB button
-            document.getElementById('fabBtn').addEventListener('click', () => {
-                const exportMenu = document.getElementById('exportMenu');
-                exportMenu.classList.toggle('show');
-            });
-            
-            // AI feature toggles
-            const features = ['diarization', 'punctuation', 'sentiment', 'summary', 'actionItems', 'translation'];
-            features.forEach(feature => {
-                const toggle = document.getElementById(`${feature}Toggle`);
-                if (toggle) {
-                    toggle.addEventListener('click', () => {
-                        aiState.features[feature] = !aiState.features[feature];
-                        toggle.classList.toggle('active');
-                    });
-                }
-            });
-            
-            // Close export menu on outside click
-            document.addEventListener('click', (e) => {
-                const exportMenu = document.getElementById('exportMenu');
-                const fabBtn = document.getElementById('fabBtn');
-                if (!exportMenu.contains(e.target) && !fabBtn.contains(e.target)) {
-                    exportMenu.classList.remove('show');
-                }
-            });
-        }
-
-        // Recording controls
-        async function startRecording() {
-            // Initialize recognition
-            if (!initializeRecognition()) {
-                return;
-            }
-            
-            // Initialize audio
-            const audioReady = await initializeAudio();
-            if (!audioReady) {
-                return;
-            }
-            
-            // Start recording
-            aiState.isRecording = true;
-            aiState.recognition.start();
-        }
-
-        function stopRecording() {
-            aiState.isRecording = false;
-            
-            // Finalize current segment
-            if (aiState.currentSegment && aiState.currentSegment.text) {
-                finalizeSegment();
-            }
-            
-            // Stop recognition
-            if (aiState.recognition) {
-                aiState.recognition.stop();
-                aiState.recognition = null;
-            }
-            
-            // Stop audio
-            if (aiState.audioContext) {
-                aiState.audioContext.close();
-                aiState.audioContext = null;
-            }
-            
-            // Reset visualizer
-            document.querySelectorAll('.waveform-bar').forEach(bar => {
-                bar.style.height = '20px';
-                bar.style.opacity = '0.8';
-            });
-            
-            updateUI('stopped');
-            
-            // Final summary update
-            if (aiState.features.summary) {
-                updateAISummary();
-            }
-        }
-
-        function pauseRecording() {
-            aiState.isPaused = true;
-            if (aiState.recognition) {
-                aiState.recognition.stop();
-            }
-            updateUI('paused');
-        }
-
-        function resumeRecording() {
-            aiState.isPaused = false;
-            if (aiState.recognition) {
-                aiState.recognition.start();
-            }
-            updateUI('recording');
-        }
-
-        function clearAll() {
-            // Reset all state
-            aiState.speakers.clear();
-            aiState.segments = [];
-            aiState.currentSegment = null;
-            aiState.voiceProfiles.clear();
-            aiState.currentVoiceBuffer = [];
-            aiState.pendingText = '';
-            aiState.interimText = '';
-            aiState.contextWindow = [];
-            aiState.keywords.clear();
-            aiState.entities.clear();
-            aiState.sentimentScores = [];
-            aiState.actionItemsList = [];
-            
-            // Reset displays
-            updateTranscriptDisplay();
-            updateSpeakerList();
-            document.getElementById('summaryContent').innerHTML = 'AI-generated summary will appear here...';
-            document.getElementById('keyPoints').innerHTML = '<li class="key-point"><div class="point-icon">💡</div><span>Key insights will be extracted automatically</span></li>';
-            updateActionItems();
-            document.getElementById('recordTimer').textContent = '00:00:00';
-        }
-
-        // Update interim display
-        function updateInterimDisplay() {
-            const container = document.getElementById('transcriptContent');
-            let indicator = container.querySelector('.live-indicator');
-            
-            if (!indicator && aiState.currentSegment) {
-                // Remove empty state if present
-                const emptyState = container.querySelector('.empty-state');
-                if (emptyState) {
-                    emptyState.remove();
-                }
-                
-                // Create live indicator
-                indicator = document.createElement('div');
-                indicator.className = 'live-indicator';
-                container.appendChild(indicator);
-            }
-            
-            if (indicator) {
-                const speaker = aiState.speakers.get(aiState.currentSegment.speakerId);
-                const displayText = aiState.currentSegment.text + 
-                                  (aiState.currentSegment.text ? ' ' : '') + 
-                                  aiState.interimText;
-                
-                indicator.innerHTML = `
-                    <div class="typing-indicator">
-                        <div class="typing-dot"></div>
-                        <div class="typing-dot"></div>
-                        <div class="typing-dot"></div>
-                    </div>
-                    <span style="color: var(--text-secondary); font-style: italic;">
-                        ${speaker ? `${speaker.name}: ` : ''}${displayText}
-                    </span>
-                `;
-                
-                container.scrollTop = container.scrollHeight;
-            }
-        }
-
-        // Initialize the app
-        function initialize() {
-            initializeWaveform();
-            initializeEventListeners();
-            updateUI('stopped');
-            
-            // Check browser support
-            if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
-                updateAIStatus('Speech recognition not supported', 'error');
-                document.getElementById('recordBtn').disabled = true;
-            }
-        }
-
-        // Start the app
-        initialize();
-    </script>
-</body>
-</html>>
-                        <div class="summary-section">
-                            <div class="summary-title">Key Points</div>
-                            <ul class="key-points" id="keyPoints">
-                                <li class="key-point">
-                                    <div class="point-icon">💡</div>
-                                    <span>Key insights will be extracted automatically</span>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Action Items -->
-                <div class="sidebar-panel">
-                    <div class="panel-header">
-                        <h3 class="panel-title">
-                            <span>✅</span>
-                            <span>Action Items</span>
-                        </h3>
-                    </div>
-                    <div class="action-items" id="actionItems">
-                        <div class="empty-state" style="padding: 40px 20px;">
-                            <p style="font-size: 13px;">No action items detected</p>
+                    <div class="summary-content" id="summaryContent">
+                        <div class="empty-state">
+                            <p>Summary will appear here</p>
                         </div>
                     </div>
                 </div>
@@ -1567,807 +527,547 @@
         </div>
     </div>
 
-    <!-- Export Menu -->
-    <div class="export-menu" id="exportMenu">
-        <div class="export-option" onclick="exportTranscript('txt')">
-            <span>📄</span>
-            <span>Export as Text</span>
-        </div>
-        <div class="export-option" onclick="exportTranscript('docx')">
-            <span>📝</span>
-            <span>Export as Word</span>
-        </div>
-        <div class="export-option" onclick="exportTranscript('pdf')">
-            <span>📑</span>
-            <span>Export as PDF</span>
-        </div>
-        <div class="export-option" onclick="exportTranscript('srt')">
-            <span>🎬</span>
-            <span>Export as Subtitles</span>
-        </div>
-    </div>
-
-    <!-- Floating Action Button -->
-    <button class="fab" id="fabBtn">
-        <span style="font-size: 24px;">💾</span>
+    <button class="export-btn" id="exportBtn" title="Export transcript">
+        💾
     </button>
 
     <script>
-        // Advanced AI State Management
-        const aiState = {
+        // State management
+        const state = {
             isRecording: false,
-            isPaused: false,
             recognition: null,
+            startTime: null,
+            timerInterval: null,
+            
+            // Transcript data
+            transcript: [],
+            currentSpeaker: null,
+            speakers: new Map(),
+            
+            // Audio analysis
             audioContext: null,
             analyser: null,
-            microphone: null,
-            
-            // Core transcript data
-            speakers: new Map(),
-            segments: [],
-            currentSegment: null,
-            
-            // Voice analysis
-            voiceProfiles: new Map(),
-            currentVoiceBuffer: [],
-            speakerChangeThreshold: 0.65,
-            
-            // AI processing
-            pendingText: '',
-            interimText: '',
-            lastProcessedIndex: 0,
-            contextWindow: [],
-            
-            // Real-time features
-            recordingStartTime: null,
-            recordingTimer: null,
-            accuracyScore: 95,
+            lastSoundTime: Date.now(),
             
             // Settings
             features: {
                 diarization: true,
                 punctuation: true,
-                sentiment: true,
-                summary: true,
-                actionItems: true,
-                translation: false
+                summary: true
             },
             
-            // Advanced features
-            keywords: new Set(),
-            entities: new Map(),
-            sentimentScores: [],
-            actionItemsList: [],
-            
-            // Language model simulation
-            languagePatterns: {
-                questionStarters: /^(what|where|when|why|how|who|which|whose|whom|is|are|do|does|did|can|could|would|should|will|may|might|shall)/i,
-                actionIndicators: /(need to|should|must|will|going to|have to|required to|please|action item|todo|task)/i,
-                sentimentPositive: /(good|great|excellent|wonderful|fantastic|amazing|love|happy|pleased|excited)/i,
-                sentimentNegative: /(bad|terrible|awful|hate|angry|frustrated|disappointed|concerned|worried)/i
-            }
+            // Temporary storage
+            currentText: '',
+            wordCount: 0
         };
 
-        // Speaker colors palette
-        const speakerColors = [
-            '#6366f1', '#8b5cf6', '#ec4899', '#f43f5e', 
-            '#f59e0b', '#10b981', '#14b8a6', '#3b82f6',
-            '#06b6d4', '#84cc16', '#a855f7', '#f97316'
-        ];
+        // Color palette for speakers
+        const colors = ['#6366f1', '#8b5cf6', '#ec4899', '#f43f5e', '#f59e0b', '#10b981', '#14b8a6', '#3b82f6'];
 
-        // Initialize waveform visualizer
-        function initializeWaveform() {
-            const container = document.getElementById('waveform');
-            for (let i = 0; i < 60; i++) {
-                const bar = document.createElement('div');
-                bar.className = 'waveform-bar';
-                container.appendChild(bar);
-            }
-        }
-
-        // Initialize speech recognition with advanced features
-        function initializeRecognition() {
+        // Initialize speech recognition
+        function initRecognition() {
             const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            
             if (!SpeechRecognition) {
-                alert('Your browser does not support speech recognition. Please use Chrome, Edge, or Safari.');
+                alert('Speech recognition is not supported in your browser. Please use Chrome, Edge, or Safari.');
                 return false;
             }
 
-            aiState.recognition = new SpeechRecognition();
-            aiState.recognition.continuous = true;
-            aiState.recognition.interimResults = true;
-            aiState.recognition.maxAlternatives = 3;
-            aiState.recognition.lang = document.getElementById('languageSelect').value;
+            state.recognition = new SpeechRecognition();
+            state.recognition.continuous = true;
+            state.recognition.interimResults = true;
+            state.recognition.lang = document.getElementById('languageSelect').value;
 
-            aiState.recognition.onstart = () => {
-                console.log('Speech recognition started');
-                updateUI('recording');
+            state.recognition.onstart = () => {
+                console.log('Recognition started');
+                updateStatus('Recording', true);
             };
 
-            aiState.recognition.onresult = (event) => {
-                processSpeechResult(event);
+            state.recognition.onresult = (event) => {
+                handleSpeechResult(event);
             };
 
-            aiState.recognition.onerror = (event) => {
-                if (event.error !== 'no-speech') {
-                    console.error('Speech recognition error:', event.error);
-                    updateAIStatus('Error: ' + event.error, 'error');
+            state.recognition.onerror = (event) => {
+                console.error('Recognition error:', event.error);
+                if (event.error === 'no-speech') {
+                    return; // Ignore no-speech errors
                 }
+                updateStatus('Error: ' + event.error, false);
             };
 
-            aiState.recognition.onend = () => {
-                if (aiState.isRecording && !aiState.isPaused) {
-                    aiState.recognition.start();
+            state.recognition.onend = () => {
+                console.log('Recognition ended');
+                if (state.isRecording) {
+                    // Restart if still recording
+                    try {
+                        state.recognition.start();
+                    } catch (e) {
+                        console.error('Failed to restart:', e);
+                    }
                 }
             };
 
             return true;
         }
 
-        // Initialize audio context for voice analysis
-        async function initializeAudio() {
+        // Initialize audio context for speaker detection
+        async function initAudio() {
             try {
-                const stream = await navigator.mediaDevices.getUserMedia({ 
-                    audio: {
-                        echoCancellation: true,
-                        noiseSuppression: true,
-                        autoGainControl: true
-                    }
-                });
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                state.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                state.analyser = state.audioContext.createAnalyser();
                 
-                aiState.audioContext = new (window.AudioContext || window.webkitAudioContext)();
-                aiState.analyser = aiState.audioContext.createAnalyser();
-                aiState.analyser.fftSize = 2048;
-                aiState.analyser.smoothingTimeConstant = 0.8;
+                const source = state.audioContext.createMediaStreamSource(stream);
+                source.connect(state.analyser);
                 
-                aiState.microphone = aiState.audioContext.createMediaStreamSource(stream);
-                aiState.microphone.connect(aiState.analyser);
-                
-                startVoiceAnalysis();
                 return true;
             } catch (err) {
-                console.error('Audio initialization error:', err);
-                alert('Microphone access is required for transcription');
+                console.error('Microphone access error:', err);
                 return false;
             }
         }
 
-        // Advanced voice analysis for speaker diarization
-        function startVoiceAnalysis() {
-            const bufferLength = aiState.analyser.frequencyBinCount;
-            const dataArray = new Float32Array(bufferLength);
-            const bars = document.querySelectorAll('.waveform-bar');
-            
-            function analyze() {
-                if (!aiState.isRecording) return;
-                
-                aiState.analyser.getFloatFrequencyData(dataArray);
-                
-                // Update visualizer
-                for (let i = 0; i < bars.length; i++) {
-                    const value = dataArray[i * Math.floor(bufferLength / bars.length)];
-                    const height = Math.max(0, (value + 140) * 0.5);
-                    bars[i].style.height = `${height}px`;
-                    bars[i].style.opacity = `${0.5 + (height / 80) * 0.5}`;
-                }
-                
-                // Extract voice features
-                if (aiState.features.diarization) {
-                    const features = extractAdvancedVoiceFeatures(dataArray);
-                    if (features.isSpeech) {
-                        aiState.currentVoiceBuffer.push(features);
-                        if (aiState.currentVoiceBuffer.length > 20) {
-                            aiState.currentVoiceBuffer.shift();
-                        }
-                    }
-                }
-                
-                requestAnimationFrame(analyze);
-            }
-            
-            analyze();
-        }
+        // Handle speech recognition results
+        function handleSpeechResult(event) {
+            const current = event.resultIndex;
+            const transcript = event.results[current][0].transcript;
+            const isFinal = event.results[current].isFinal;
 
-        // Extract advanced voice features for speaker identification
-        function extractAdvancedVoiceFeatures(frequencyData) {
-            // Calculate spectral features
-            let totalEnergy = 0;
-            let spectralCentroid = 0;
-            let spectralRolloff = 0;
-            let spectralFlux = 0;
-            
-            // Frequency bands for voice characteristics
-            const bands = {
-                subBass: { start: 0, end: 60, energy: 0 },
-                bass: { start: 60, end: 250, energy: 0 },
-                lowMid: { start: 250, end: 500, energy: 0 },
-                mid: { start: 500, end: 2000, energy: 0 },
-                highMid: { start: 2000, end: 4000, energy: 0 },
-                presence: { start: 4000, end: 6000, energy: 0 },
-                brilliance: { start: 6000, end: 20000, energy: 0 }
-            };
-            
-            // Calculate energy in each band
-            for (let i = 0; i < frequencyData.length; i++) {
-                const freq = i * aiState.audioContext.sampleRate / (2 * frequencyData.length);
-                const magnitude = Math.pow(10, frequencyData[i] / 20);
-                
-                totalEnergy += magnitude;
-                spectralCentroid += freq * magnitude;
-                
-                // Assign to frequency bands
-                Object.values(bands).forEach(band => {
-                    if (freq >= band.start && freq < band.end) {
-                        band.energy += magnitude;
-                    }
-                });
-            }
-            
-            // Normalize features
-            if (totalEnergy > 0) {
-                spectralCentroid /= totalEnergy;
-                
-                // Calculate spectral rolloff (85% of energy)
-                let cumulativeEnergy = 0;
-                for (let i = 0; i < frequencyData.length; i++) {
-                    cumulativeEnergy += Math.pow(10, frequencyData[i] / 20);
-                    if (cumulativeEnergy >= totalEnergy * 0.85) {
-                        spectralRolloff = i * aiState.audioContext.sampleRate / (2 * frequencyData.length);
-                        break;
-                    }
-                }
-            }
-            
-            // Detect if this is speech
-            const isSpeech = totalEnergy > 0.01 && 
-                           spectralCentroid > 100 && 
-                           spectralCentroid < 4000 &&
-                           bands.mid.energy > bands.bass.energy * 0.5;
-            
-            return {
-                timestamp: Date.now(),
-                totalEnergy,
-                spectralCentroid,
-                spectralRolloff,
-                spectralFlux,
-                bands: Object.entries(bands).reduce((acc, [name, band]) => {
-                    acc[name] = band.energy / totalEnergy;
-                    return acc;
-                }, {}),
-                isSpeech,
-                voiceSignature: createVoiceSignature(bands, spectralCentroid, spectralRolloff)
-            };
-        }
-
-        // Create unique voice signature for speaker identification
-        function createVoiceSignature(bands, centroid, rolloff) {
-            return [
-                bands.bass.energy,
-                bands.lowMid.energy,
-                bands.mid.energy,
-                bands.highMid.energy,
-                centroid / 1000,
-                rolloff / 1000
-            ].map(v => Math.round(v * 100) / 100);
-        }
-
-        // Process speech recognition results with AI enhancements
-        function processSpeechResult(event) {
-            const results = event.results;
-            const resultIndex = event.resultIndex;
-            
-            // Get all alternatives for better accuracy
-            const alternatives = [];
-            for (let i = 0; i < results[resultIndex].length; i++) {
-                alternatives.push({
-                    transcript: results[resultIndex][i].transcript,
-                    confidence: results[resultIndex][i].confidence || 0.9
-                });
-            }
-            
-            const isFinal = results[resultIndex].isFinal;
-            const bestTranscript = selectBestTranscript(alternatives);
-            
             if (isFinal) {
-                // Process final transcript with AI
-                const enhanced = enhanceTranscript(bestTranscript);
-                aiState.pendingText = enhanced;
-                
-                // Analyze for speaker change
-                if (aiState.features.diarization) {
-                    analyzeSpeakerChange();
-                }
-                
-                // Process the text
-                processTranscriptSegment();
+                // Process final result
+                const processed = processTranscript(transcript);
+                addTranscriptEntry(processed);
+                state.currentText = '';
             } else {
                 // Update interim display
-                aiState.interimText = bestTranscript;
+                state.currentText = transcript;
                 updateInterimDisplay();
             }
         }
 
-        // Select best transcript using AI logic
-        function selectBestTranscript(alternatives) {
-            if (alternatives.length === 1) {
-                return alternatives[0].transcript;
-            }
-            
-            // Score each alternative
-            const scored = alternatives.map(alt => {
-                let score = alt.confidence;
+        // Process transcript with AI features
+        function processTranscript(text) {
+            let processed = text.trim();
+
+            // Apply smart punctuation
+            if (state.features.punctuation) {
+                // Capitalize first letter
+                processed = processed.charAt(0).toUpperCase() + processed.slice(1);
                 
-                // Boost score for proper capitalization
-                if (/^[A-Z]/.test(alt.transcript)) score += 0.05;
-                
-                // Boost score for proper punctuation
-                if (/[.!?]$/.test(alt.transcript)) score += 0.05;
-                
-                // Check context coherence
-                if (aiState.contextWindow.length > 0) {
-                    const lastContext = aiState.contextWindow[aiState.contextWindow.length - 1];
-                    if (checkContextCoherence(lastContext, alt.transcript)) {
-                        score += 0.1;
+                // Add ending punctuation if missing
+                if (!/[.!?]$/.test(processed)) {
+                    // Simple question detection
+                    if (/^(what|where|when|why|how|who|is|are|do|does|can|could|would)/i.test(processed)) {
+                        processed += '?';
+                    } else {
+                        processed += '.';
                     }
                 }
                 
-                return { transcript: alt.transcript, score };
-            });
-            
-            // Return highest scoring transcript
-            return scored.sort((a, b) => b.score - a.score)[0].transcript;
-        }
-
-        // Check context coherence
-        function checkContextCoherence(previousText, currentText) {
-            const transitions = ['and', 'but', 'so', 'then', 'therefore', 'however', 'moreover', 'furthermore'];
-            const currentWords = currentText.toLowerCase().split(' ');
-            return transitions.some(t => currentWords.includes(t));
-        }
-
-        // Enhance transcript with AI
-        function enhanceTranscript(text) {
-            let enhanced = text;
-            
-            // Fix common speech recognition errors
-            const corrections = {
-                '\\bi\\s+am\\b': "I'm",
-                '\\byou\\s+are\\b': "you're",
-                '\\bwe\\s+are\\b': "we're",
-                '\\bthey\\s+are\\b': "they're",
-                '\\bit\\s+is\\b': "it's",
-                '\\bthat\\s+is\\b': "that's",
-                '\\bdo\\s+not\\b': "don't",
-                '\\bcan\\s+not\\b': "cannot",
-                '\\bwill\\s+not\\b': "won't",
-                '\\bgonna\\b': 'going to',
-                '\\bwanna\\b': 'want to',
-                '\\bgotta\\b': 'got to',
-                '\\bkinda\\b': 'kind of',
-                '\\bsorta\\b': 'sort of'
-            };
-            
-            for (const [pattern, replacement] of Object.entries(corrections)) {
-                enhanced = enhanced.replace(new RegExp(pattern, 'gi'), replacement);
+                // Fix common contractions
+                processed = processed
+                    .replace(/\bi'm\b/gi, "I'm")
+                    .replace(/\byou're\b/gi, "you're")
+                    .replace(/\bit's\b/gi, "it's")
+                    .replace(/\bdon't\b/gi, "don't")
+                    .replace(/\bcan't\b/gi, "can't")
+                    .replace(/\bwon't\b/gi, "won't");
             }
-            
-            // Smart capitalization
-            enhanced = enhanced.replace(/(^|\. )(\w)/g, (match, p1, p2) => p1 + p2.toUpperCase());
-            
-            // Add smart punctuation if enabled
-            if (aiState.features.punctuation) {
-                enhanced = addSmartPunctuation(enhanced);
-            }
-            
-            // Extract entities and keywords
-            extractEntitiesAndKeywords(enhanced);
-            
-            return enhanced.trim();
+
+            return processed;
         }
 
-        // Add smart punctuation
-        function addSmartPunctuation(text) {
-            if (!/[.!?]$/.test(text)) {
-                if (aiState.languagePatterns.questionStarters.test(text)) {
-                    text += '?';
-                } else if (/^(wow|oh|ah|great|awesome|amazing)/i.test(text)) {
-                    text += '!';
-                } else {
-                    text += '.';
-                }
-            }
-            return text;
-        }
-
-        // Extract entities and keywords
-        function extractEntitiesAndKeywords(text) {
-            // Simple entity extraction (can be enhanced with NLP library)
-            const words = text.split(/\s+/);
+        // Add transcript entry
+        function addTranscriptEntry(text) {
+            // Detect speaker change if enabled
+            let speakerId = 'speaker-1';
             
-            // Extract potential names (capitalized words not at start)
-            words.forEach((word, index) => {
-                if (index > 0 && /^[A-Z][a-z]+$/.test(word)) {
-                    aiState.entities.set(word, (aiState.entities.get(word) || 0) + 1);
-                }
+            if (state.features.diarization) {
+                // Simple speaker detection based on pause
+                const timeSinceLastSound = Date.now() - state.lastSoundTime;
                 
-                // Extract keywords (longer words)
-                if (word.length > 6) {
-                    aiState.keywords.add(word.toLowerCase());
+                if (timeSinceLastSound > 3000 || !state.currentSpeaker) {
+                    // Likely a new speaker
+                    speakerId = `speaker-${state.speakers.size + 1}`;
+                } else {
+                    speakerId = state.currentSpeaker;
                 }
-            });
-            
-            // Check for action items
-            if (aiState.features.actionItems && aiState.languagePatterns.actionIndicators.test(text)) {
-                extractActionItem(text);
             }
-            
-            // Analyze sentiment
-            if (aiState.features.sentiment) {
-                analyzeSentiment(text);
-            }
-        }
 
-        // Analyze speaker change
-        function analyzeSpeakerChange() {
-            if (aiState.currentVoiceBuffer.length < 5) return;
-            
-            const currentVoiceProfile = aggregateVoiceProfile(aiState.currentVoiceBuffer);
-            let speakerId = null;
-            let bestMatch = 0;
-            
-            // Compare with existing speakers
-            for (const [id, profile] of aiState.voiceProfiles) {
-                const similarity = calculateVoiceSimilarity(currentVoiceProfile, profile);
-                if (similarity > bestMatch && similarity > aiState.speakerChangeThreshold) {
-                    bestMatch = similarity;
-                    speakerId = id;
-                }
-            }
-            
-            // Create new speaker if no match
-            if (!speakerId) {
-                speakerId = `speaker-${aiState.speakers.size + 1}`;
-                const speaker = {
+            // Create or update speaker
+            if (!state.speakers.has(speakerId)) {
+                state.speakers.set(speakerId, {
                     id: speakerId,
-                    name: `Speaker ${aiState.speakers.size + 1}`,
-                    color: speakerColors[aiState.speakers.size % speakerColors.length],
-                    wordCount: 0,
-                    segments: 0,
-                    voiceConfidence: 0.8
-                };
-                aiState.speakers.set(speakerId, speaker);
-                aiState.voiceProfiles.set(speakerId, currentVoiceProfile);
-                updateSpeakerList();
-            } else {
-                // Update voice profile
-                updateVoiceProfile(speakerId, currentVoiceProfile);
-            }
-            
-            // Check if speaker changed
-            if (!aiState.currentSegment || aiState.currentSegment.speakerId !== speakerId) {
-                if (aiState.currentSegment && aiState.currentSegment.text) {
-                    finalizeSegment();
-                }
-                startNewSegment(speakerId);
-            }
-        }
-
-        // Aggregate voice profile from buffer
-        function aggregateVoiceProfile(buffer) {
-            const profile = {
-                signature: new Array(6).fill(0),
-                energy: 0,
-                centroid: 0,
-                rolloff: 0
-            };
-            
-            buffer.forEach(features => {
-                features.voiceSignature.forEach((val, idx) => {
-                    profile.signature[idx] += val;
+                    name: `Speaker ${state.speakers.size + 1}`,
+                    color: colors[state.speakers.size % colors.length],
+                    wordCount: 0
                 });
-                profile.energy += features.totalEnergy;
-                profile.centroid += features.spectralCentroid;
-                profile.rolloff += features.spectralRolloff;
-            });
-            
-            // Average the values
-            const count = buffer.length;
-            profile.signature = profile.signature.map(v => v / count);
-            profile.energy /= count;
-            profile.centroid /= count;
-            profile.rolloff /= count;
-            
-            return profile;
-        }
-
-        // Calculate voice similarity
-        function calculateVoiceSimilarity(profile1, profile2) {
-            if (!profile1 || !profile2) return 0;
-            
-            // Calculate cosine similarity of voice signatures
-            let dotProduct = 0;
-            let norm1 = 0;
-            let norm2 = 0;
-            
-            for (let i = 0; i < profile1.signature.length; i++) {
-                dotProduct += profile1.signature[i] * profile2.signature[i];
-                norm1 += profile1.signature[i] * profile1.signature[i];
-                norm2 += profile2.signature[i] * profile2.signature[i];
-            }
-            
-            if (norm1 === 0 || norm2 === 0) return 0;
-            
-            const cosineSimilarity = dotProduct / (Math.sqrt(norm1) * Math.sqrt(norm2));
-            
-            // Also consider spectral features
-            const centroidDiff = Math.abs(profile1.centroid - profile2.centroid) / 1000;
-            const centroidSimilarity = 1 - Math.min(centroidDiff, 1);
-            
-            // Weighted combination
-            return cosineSimilarity * 0.7 + centroidSimilarity * 0.3;
-        }
-
-        // Update voice profile
-        function updateVoiceProfile(speakerId, newProfile) {
-            const existingProfile = aiState.voiceProfiles.get(speakerId);
-            if (!existingProfile) {
-                aiState.voiceProfiles.set(speakerId, newProfile);
-                return;
-            }
-            
-            // Weighted average (80% existing, 20% new)
-            const updated = {
-                signature: existingProfile.signature.map((v, i) => v * 0.8 + newProfile.signature[i] * 0.2),
-                energy: existingProfile.energy * 0.8 + newProfile.energy * 0.2,
-                centroid: existingProfile.centroid * 0.8 + newProfile.centroid * 0.2,
-                rolloff: existingProfile.rolloff * 0.8 + newProfile.rolloff * 0.2
-            };
-            
-            aiState.voiceProfiles.set(speakerId, updated);
-        }
-
-        // Start new segment
-        function startNewSegment(speakerId) {
-            aiState.currentSegment = {
-                speakerId: speakerId,
-                text: '',
-                startTime: Date.now(),
-                sentiment: 'neutral'
-            };
-            
-            updateCurrentSpeaker(speakerId);
-        }
-
-        // Process transcript segment
-        function processTranscriptSegment() {
-            if (!aiState.currentSegment) {
-                // No speaker identified yet, create default
-                startNewSegment('speaker-1');
-                const speaker = {
-                    id: 'speaker-1',
-                    name: 'Speaker 1',
-                    color: speakerColors[0],
-                    wordCount: 0,
-                    segments: 0,
-                    voiceConfidence: 0.5
-                };
-                aiState.speakers.set('speaker-1', speaker);
                 updateSpeakerList();
             }
-            
-            // Add text to current segment
-            if (aiState.currentSegment.text) {
-                aiState.currentSegment.text += ' ' + aiState.pendingText;
-            } else {
-                aiState.currentSegment.text = aiState.pendingText;
-            }
-            
-            // Update context window
-            aiState.contextWindow.push(aiState.pendingText);
-            if (aiState.contextWindow.length > 5) {
-                aiState.contextWindow.shift();
-            }
-            
-            // Clear pending text
-            aiState.pendingText = '';
-            aiState.interimText = '';
-            
-            // Update display
-            updateTranscriptDisplay();
-        }
 
-        // Finalize current segment
-        function finalizeSegment() {
-            if (!aiState.currentSegment || !aiState.currentSegment.text) return;
-            
-            const segment = {
-                ...aiState.currentSegment,
-                endTime: Date.now()
-            };
-            
-            aiState.segments.push(segment);
-            
-            // Update speaker stats
-            const speaker = aiState.speakers.get(segment.speakerId);
-            if (speaker) {
-                speaker.wordCount += segment.text.split(/\s+/).length;
-                speaker.segments++;
-            }
-            
-            // Generate AI insights if enabled
-            if (aiState.features.summary) {
-                updateAISummary();
-            }
-        }
+            state.currentSpeaker = speakerId;
+            state.lastSoundTime = Date.now();
 
-        // Analyze sentiment
-        function analyzeSentiment(text) {
-            let score = 0;
-            
-            if (aiState.languagePatterns.sentimentPositive.test(text)) {
-                score += 1;
-            }
-            if (aiState.languagePatterns.sentimentNegative.test(text)) {
-                score -= 1;
-            }
-            
-            const sentiment = score > 0 ? 'positive' : score < 0 ? 'negative' : 'neutral';
-            
-            if (aiState.currentSegment) {
-                aiState.currentSegment.sentiment = sentiment;
-            }
-            
-            aiState.sentimentScores.push({ time: Date.now(), score, sentiment });
-        }
-
-        // Extract action item
-        function extractActionItem(text) {
-            const actionItem = {
+            // Add to transcript
+            const entry = {
+                id: Date.now(),
+                speakerId: speakerId,
                 text: text,
-                speaker: aiState.currentSegment ? aiState.speakers.get(aiState.currentSegment.speakerId)?.name : 'Unknown',
-                timestamp: Date.now(),
-                completed: false
+                timestamp: new Date()
             };
+
+            state.transcript.push(entry);
             
-            aiState.actionItemsList.push(actionItem);
-            updateActionItems();
+            // Update word count
+            const words = text.split(/\s+/).length;
+            state.speakers.get(speakerId).wordCount += words;
+            state.wordCount += words;
+
+            updateTranscriptDisplay();
+            updateWordCount();
+            
+            // Update summary if enabled
+            if (state.features.summary && state.transcript.length % 5 === 0) {
+                updateSummary();
+            }
         }
 
         // Update displays
         function updateTranscriptDisplay() {
             const container = document.getElementById('transcriptContent');
             
-            if (aiState.segments.length === 0 && !aiState.currentSegment) {
+            if (state.transcript.length === 0 && !state.currentText) {
                 container.innerHTML = `
                     <div class="empty-state">
                         <div class="empty-icon">🎙️</div>
                         <h3>Ready to transcribe</h3>
-                        <p>Click the record button to start AI-powered transcription with speaker identification</p>
+                        <p>Click the record button to start</p>
                     </div>
                 `;
                 return;
             }
-            
+
             let html = '';
             
-            // Render all segments
-            aiState.segments.forEach(segment => {
-                const speaker = aiState.speakers.get(segment.speakerId);
-                if (!speaker) return;
-                
-                html += renderSegment(segment, speaker);
-            });
-            
-            // Render current segment if exists
-            if (aiState.currentSegment && aiState.currentSegment.text) {
-                const speaker = aiState.speakers.get(aiState.currentSegment.speakerId);
-                if (speaker) {
-                    html += renderSegment(aiState.currentSegment, speaker, false);
-                }
-            }
-            
-            // Add interim text if any
-            if (aiState.interimText) {
+            // Add all transcript entries
+            state.transcript.forEach(entry => {
+                const speaker = state.speakers.get(entry.speakerId);
                 html += `
-                    <div class="live-indicator">
-                        <div class="typing-indicator">
-                            <div class="typing-dot"></div>
-                            <div class="typing-dot"></div>
-                            <div class="typing-dot"></div>
+                    <div class="transcript-entry">
+                        <div class="speaker-avatar" style="background: ${speaker.color}">
+                            ${speaker.name.charAt(0)}
                         </div>
-                        <span style="color: var(--text-secondary); font-style: italic;">
-                            ${aiState.interimText}
-                        </span>
+                        <div class="transcript-text">
+                            <div class="speaker-name">
+                                ${speaker.name}
+                                <span class="timestamp">${entry.timestamp.toLocaleTimeString()}</span>
+                            </div>
+                            <div class="text-content">${entry.text}</div>
+                        </div>
                     </div>
                 `;
-            }
-            
+            });
+
             container.innerHTML = html;
             container.scrollTop = container.scrollHeight;
         }
 
-        // Render a segment
-        function renderSegment(segment, speaker, isFinal = true) {
-            const sentimentIcon = {
-                positive: '😊',
-                negative: '😟',
-                neutral: '😐'
-            };
+        // Update interim display
+        function updateInterimDisplay() {
+            const container = document.getElementById('transcriptContent');
             
-            return `
-                <div class="speaker-segment">
-                    <div class="speaker-header">
-                        <div class="speaker-avatar ${speaker.voiceConfidence > 0.7 ? 'verified' : ''}" 
-                             style="background: ${speaker.color};">
-                            ${speaker.name.charAt(0).toUpperCase()}
-                        </div>
-                        <div class="speaker-info">
-                            <div class="speaker-name">
-                                ${speaker.name}
-                                ${segment.sentiment && aiState.features.sentiment ? 
-                                    `<span style="font-size: 14px;">${sentimentIcon[segment.sentiment]}</span>` : ''}
-                            </div>
-                            <div class="speaker-meta">
-                                ${isFinal ? formatTime(segment.startTime) : 'Speaking...'}
-                                ${speaker.voiceConfidence > 0.7 ? 
-                                    '<span class="ai-insight">Voice verified</span>' : ''}
-                            </div>
-                        </div>
-                    </div>
-                    <div class="transcript-text">
-                        ${highlightKeywords(segment.text)}
-                    </div>
-                </div>
-            `;
-        }
+            // Remove empty state if exists
+            const emptyState = container.querySelector('.empty-state');
+            if (emptyState) {
+                emptyState.remove();
+            }
 
-        // Highlight keywords
-        function highlightKeywords(text) {
-            let highlighted = text;
-            
-            // Highlight entities
-            aiState.entities.forEach((count, entity) => {
-                if (count > 1) {
-                    const regex = new RegExp(`\\b${entity}\\b`, 'g');
-                    highlighted = highlighted.replace(regex, `<span class="keyword-highlight">${entity}</span>`);
-                }
-            });
-            
-            return highlighted;
+            // Remove previous interim if exists
+            const prevInterim = container.querySelector('.interim-entry');
+            if (prevInterim) {
+                prevInterim.remove();
+            }
+
+            if (state.currentText) {
+                const speaker = state.speakers.get(state.currentSpeaker) || {
+                    name: 'Speaker',
+                    color: colors[0]
+                };
+
+                const interimHtml = `
+                    <div class="transcript-entry interim-entry">
+                        <div class="speaker-avatar" style="background: ${speaker.color}">
+                            ${speaker.name.charAt(0)}
+                        </div>
+                        <div class="transcript-text">
+                            <div class="speaker-name">${speaker.name}</div>
+                            <div class="text-content interim-text">${state.currentText}</div>
+                        </div>
+                    </div>
+                `;
+
+                container.insertAdjacentHTML('beforeend', interimHtml);
+                container.scrollTop = container.scrollHeight;
+            }
         }
 
         // Update speaker list
         function updateSpeakerList() {
             const container = document.getElementById('speakerList');
             
-            if (aiState.speakers.size === 0) {
-                container.innerHTML = `
-                    <div class="empty-state" style="padding: 40px 20px;">
-                        <p style="font-size: 13px;">No speakers detected yet</p>
-                    </div>
-                `;
+            if (state.speakers.size === 0) {
+                container.innerHTML = '<div class="empty-state"><p>No speakers yet</p></div>';
                 return;
             }
+
+            let html = '';
+            state.speakers.forEach(speaker => {
+                html += `
+                    <div class="speaker-item">
+                        <div class="speaker-avatar-small" style="background: ${speaker.color}">
+                            ${speaker.name.charAt(0)}
+                        </div>
+                        <div class="speaker-info">
+                            <input type="text" 
+                                   class="speaker-name-input" 
+                                   value="${speaker.name}"
+                                   onchange="renameSpeaker('${speaker.id}', this.value)">
+                            <div class="speaker-stats">${speaker.wordCount} words</div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html;
+        }
+
+        // Update summary
+        function updateSummary() {
+            if (!state.features.summary) return;
+
+            const container = document.getElementById('summaryContent');
+            const duration = state.startTime ? Math.floor((Date.now() - state.startTime) / 1000) : 0;
             
-            container.innerHTML = Array.from(aiState.speakers.values()).map(speaker => {
-                const voiceProfile = aiState.voiceProfiles.get(speaker.id);
-                const confidence = speaker.voiceConfidence || 0.5;
-                
-                return `
-                    <div class="speaker-card">
-                        <div class="speaker-card-header">
-                            <div class="speaker-card-avatar" style="background: ${speaker.color};">
-                                ${speaker.name.charAt(0).toUpperCase()}
-                            </div>
-                            <div class="speaker-card-info">
-                                <input type="text" 
-                                       class="speaker-name-input" 
-                                       value="${speaker.name}"
-                                       onchange="updateSpeakerName('${speaker.id}', this.value)"
-                                       placeholder="Enter name">
-                                <div class="speaker-stats">
-                                    <span>${speaker.segments} segments</span>
-                                    <span>${speaker.wordCount} words</span>
-                                </div>
-                            </div>
-                        </div
+            let html = `
+                <div class="summary-section">
+                    <div class="summary-title">Overview</div>
+                    <div>Duration: ${formatTime(duration)}</div>
+                    <div>Speakers: ${state.speakers.size}</div>
+                    <div>Total words: ${state.wordCount}</div>
+                </div>
+            `;
+
+            // Speaker breakdown
+            if (state.speakers.size > 0) {
+                html += '<div class="summary-section"><div class="summary-title">Speaker Breakdown</div>';
+                state.speakers.forEach(speaker => {
+                    const percentage = state.wordCount > 0 ? 
+                        Math.round((speaker.wordCount / state.wordCount) * 100) : 0;
+                    html += `<div>${speaker.name}: ${percentage}% (${speaker.wordCount} words)</div>`;
+                });
+                html += '</div>';
+            }
+
+            container.innerHTML = html;
+        }
+
+        // Update word count
+        function updateWordCount() {
+            document.getElementById('wordCount').textContent = `${state.wordCount} words`;
+        }
+
+        // Update status
+        function updateStatus(text, active) {
+            document.getElementById('statusText').textContent = text;
+            const dot = document.getElementById('statusDot');
+            if (active) {
+                dot.classList.add('active');
+            } else {
+                dot.classList.remove('active');
+            }
+        }
+
+        // Timer functions
+        function startTimer() {
+            state.startTime = Date.now();
+            
+            function update() {
+                const elapsed = Math.floor((Date.now() - state.startTime) / 1000);
+                document.getElementById('timer').textContent = formatTime(elapsed);
+            }
+
+            update();
+            state.timerInterval = setInterval(update, 1000);
+        }
+
+        function stopTimer() {
+            if (state.timerInterval) {
+                clearInterval(state.timerInterval);
+                state.timerInterval = null;
+            }
+        }
+
+        function formatTime(seconds) {
+            const h = Math.floor(seconds / 3600);
+            const m = Math.floor((seconds % 3600) / 60);
+            const s = seconds % 60;
+            return `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+        }
+
+        // Recording controls
+        async function startRecording() {
+            // Initialize recognition
+            if (!initRecognition()) {
+                return;
+            }
+
+            // Initialize audio
+            const audioReady = await initAudio();
+            if (!audioReady) {
+                alert('Microphone access is required for transcription');
+                return;
+            }
+
+            // Start recording
+            state.isRecording = true;
+            state.recognition.start();
+            startTimer();
+
+            // Update UI
+            const recordBtn = document.getElementById('recordBtn');
+            recordBtn.classList.add('recording');
+            document.getElementById('recordIcon').textContent = '⏹️';
+        }
+
+        function stopRecording() {
+            state.isRecording = false;
+
+            // Stop recognition
+            if (state.recognition) {
+                state.recognition.stop();
+                state.recognition = null;
+            }
+
+            // Stop audio
+            if (state.audioContext) {
+                state.audioContext.close();
+                state.audioContext = null;
+            }
+
+            // Stop timer
+            stopTimer();
+
+            // Update UI
+            const recordBtn = document.getElementById('recordBtn');
+            recordBtn.classList.remove('recording');
+            document.getElementById('recordIcon').textContent = '🎙️';
+            updateStatus('Ready', false);
+
+            // Final summary update
+            updateSummary();
+        }
+
+        // Clear all data
+        function clearAll() {
+            if (state.transcript.length > 0 && !confirm('Clear all transcript data?')) {
+                return;
+            }
+
+            state.transcript = [];
+            state.speakers.clear();
+            state.currentSpeaker = null;
+            state.wordCount = 0;
+            state.currentText = '';
+
+            document.getElementById('timer').textContent = '00:00:00';
+            updateTranscriptDisplay();
+            updateSpeakerList();
+            updateWordCount();
+            document.getElementById('summaryContent').innerHTML = '<div class="empty-state"><p>Summary will appear here</p></div>';
+        }
+
+        // Export transcript
+        function exportTranscript() {
+            if (state.transcript.length === 0) {
+                alert('No transcript to export');
+                return;
+            }
+
+            let text = 'Transcript Export\n';
+            text += `Date: ${new Date().toLocaleString()}\n`;
+            text += `Duration: ${document.getElementById('timer').textContent}\n`;
+            text += `Speakers: ${state.speakers.size}\n`;
+            text += `Total words: ${state.wordCount}\n\n`;
+            text += '---\n\n';
+
+            state.transcript.forEach(entry => {
+                const speaker = state.speakers.get(entry.speakerId);
+                text += `[${entry.timestamp.toLocaleTimeString()}] ${speaker.name}:\n`;
+                text += `${entry.text}\n\n`;
+            });
+
+            // Download file
+            const blob = new Blob([text], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `transcript-${new Date().toISOString().slice(0, 10)}.txt`;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        // Rename speaker
+        window.renameSpeaker = function(speakerId, newName) {
+            const speaker = state.speakers.get(speakerId);
+            if (speaker && newName.trim()) {
+                speaker.name = newName.trim();
+                updateTranscriptDisplay();
+                updateSummary();
+            }
+        };
+
+        // Event listeners
+        document.getElementById('recordBtn').addEventListener('click', () => {
+            if (state.isRecording) {
+                stopRecording();
+            } else {
+                startRecording();
+            }
+        });
+
+        document.getElementById('clearBtn').addEventListener('click', clearAll);
+        document.getElementById('exportBtn').addEventListener('click', exportTranscript);
+
+        // Feature toggles
+        document.getElementById('diarizationToggle').addEventListener('click', function() {
+            state.features.diarization = !state.features.diarization;
+            this.classList.toggle('active');
+        });
+
+        document.getElementById('punctuationToggle').addEventListener('click', function() {
+            state.features.punctuation = !state.features.punctuation;
+            this.classList.toggle('active');
+        });
+
+        document.getElementById('summaryToggle').addEventListener('click', function() {
+            state.features.summary = !state.features.summary;
+            this.classList.toggle('active');
+            if (state.features.summary) {
+                updateSummary();
+            }
+        });
+
+        // Language change
+        document.getElementById('languageSelect').addEventListener('change', function() {
+            if (state.recognition && state.isRecording) {
+                state.recognition.lang = this.value;
+                // Restart recognition with new language
+                state.recognition.stop();
+            }
+        });
+
+        // Initialize
+        updateStatus('Ready', false);
+    </script>
+</body>
+</html>
