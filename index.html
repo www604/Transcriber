@@ -1015,6 +1015,528 @@
                                 AI-generated summary will appear here...
                             </div>
                         </div>
+                        ${voiceProfile ? `
+                            <div class="voice-signature">
+                                ${voiceProfile.signature.map(val => 
+                                    `<div class="voice-line" style="height: ${4 + val * 20}px;"></div>`
+                                ).join('')}
+                            </div>
+                        ` : ''}
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Update current speaker display
+        function updateCurrentSpeaker(speakerId) {
+            const speaker = aiState.speakers.get(speakerId);
+            if (speaker) {
+                document.getElementById('currentSpeaker').textContent = speaker.name;
+                document.querySelector('.speaker-dot').style.background = speaker.color;
+            }
+        }
+
+        // Update AI summary
+        function updateAISummary() {
+            if (aiState.segments.length === 0) return;
+            
+            // Simple summary generation
+            const totalWords = Array.from(aiState.speakers.values())
+                .reduce((sum, speaker) => sum + speaker.wordCount, 0);
+            
+            const duration = aiState.recordingStartTime ? 
+                Math.floor((Date.now() - aiState.recordingStartTime) / 1000) : 0;
+            
+            // Generate summary
+            const summaryContent = `
+                <p><strong>Duration:</strong> ${formatDuration(duration)}</p>
+                <p><strong>Participants:</strong> ${aiState.speakers.size}</p>
+                <p><strong>Total words:</strong> ${totalWords}</p>
+                <p><strong>Segments:</strong> ${aiState.segments.length}</p>
+            `;
+            
+            document.getElementById('summaryContent').innerHTML = summaryContent;
+            
+            // Extract key points
+            updateKeyPoints();
+        }
+
+        // Update key points
+        function updateKeyPoints() {
+            const keyPoints = [];
+            
+            // Find segments with questions
+            aiState.segments.forEach(segment => {
+                if (segment.text.includes('?')) {
+                    keyPoints.push({
+                        type: 'question',
+                        text: segment.text,
+                        speaker: aiState.speakers.get(segment.speakerId)?.name
+                    });
+                }
+            });
+            
+            // Find segments with action items
+            aiState.segments.forEach(segment => {
+                if (aiState.languagePatterns.actionIndicators.test(segment.text)) {
+                    keyPoints.push({
+                        type: 'action',
+                        text: segment.text,
+                        speaker: aiState.speakers.get(segment.speakerId)?.name
+                    });
+                }
+            });
+            
+            // Update display
+            const container = document.getElementById('keyPoints');
+            if (keyPoints.length > 0) {
+                container.innerHTML = keyPoints.slice(0, 5).map(point => {
+                    const icon = point.type === 'question' ? '❓' : '📌';
+                    return `
+                        <li class="key-point">
+                            <div class="point-icon">${icon}</div>
+                            <span><strong>${point.speaker}:</strong> ${point.text.substring(0, 100)}...</span>
+                        </li>
+                    `;
+                }).join('');
+            }
+        }
+
+        // Update action items
+        function updateActionItems() {
+            const container = document.getElementById('actionItems');
+            
+            if (aiState.actionItemsList.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state" style="padding: 40px 20px;">
+                        <p style="font-size: 13px;">No action items detected</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = aiState.actionItemsList.map((item, index) => `
+                <div class="action-item">
+                    <div class="action-checkbox ${item.completed ? 'checked' : ''}" 
+                         onclick="toggleActionItem(${index})">
+                        ${item.completed ? '✓' : ''}
+                    </div>
+                    <div>
+                        <div class="action-text">${item.text}</div>
+                        <div class="action-owner">${item.speaker} • ${formatTime(item.timestamp)}</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Update UI based on state
+        function updateUI(state) {
+            const recordBtn = document.getElementById('recordBtn');
+            const pauseBtn = document.getElementById('pauseBtn');
+            
+            switch (state) {
+                case 'recording':
+                    recordBtn.classList.add('recording');
+                    pauseBtn.disabled = false;
+                    updateAIStatus('AI Engine Active', 'active');
+                    startRecordingTimer();
+                    break;
+                case 'paused':
+                    pauseBtn.innerHTML = '<span>▶️</span><span>Resume</span>';
+                    updateAIStatus('Paused', 'paused');
+                    break;
+                case 'stopped':
+                    recordBtn.classList.remove('recording');
+                    pauseBtn.disabled = true;
+                    pauseBtn.innerHTML = '<span>⏸️</span><span>Pause</span>';
+                    updateAIStatus('AI Engine Ready', 'ready');
+                    stopRecordingTimer();
+                    document.getElementById('currentSpeaker').textContent = 'Ready to record';
+                    break;
+            }
+        }
+
+        // Update AI status
+        function updateAIStatus(text, status = 'active') {
+            const statusElement = document.getElementById('aiStatus');
+            statusElement.querySelector('span:last-child').textContent = text;
+            
+            const pulse = statusElement.querySelector('.ai-pulse');
+            pulse.style.background = status === 'active' ? 'var(--accent-primary)' : 
+                                   status === 'error' ? 'var(--accent-danger)' : 
+                                   'var(--text-tertiary)';
+        }
+
+        // Recording timer
+        function startRecordingTimer() {
+            aiState.recordingStartTime = Date.now();
+            
+            function updateTimer() {
+                if (!aiState.isRecording) return;
+                
+                const elapsed = Math.floor((Date.now() - aiState.recordingStartTime) / 1000);
+                document.getElementById('recordTimer').textContent = formatDuration(elapsed);
+                
+                aiState.recordingTimer = setTimeout(updateTimer, 1000);
+            }
+            
+            updateTimer();
+        }
+
+        function stopRecordingTimer() {
+            if (aiState.recordingTimer) {
+                clearTimeout(aiState.recordingTimer);
+                aiState.recordingTimer = null;
+            }
+        }
+
+        // Helper functions
+        function formatTime(timestamp) {
+            return new Date(timestamp).toLocaleTimeString([], { 
+                hour: '2-digit', 
+                minute: '2-digit' 
+            });
+        }
+
+        function formatDuration(seconds) {
+            const hours = Math.floor(seconds / 3600);
+            const minutes = Math.floor((seconds % 3600) / 60);
+            const secs = seconds % 60;
+            
+            return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        }
+
+        // User actions
+        window.updateSpeakerName = function(speakerId, newName) {
+            const speaker = aiState.speakers.get(speakerId);
+            if (speaker && newName.trim()) {
+                speaker.name = newName.trim();
+                updateTranscriptDisplay();
+                updateAISummary();
+                
+                // Update current speaker display if active
+                if (aiState.currentSegment && aiState.currentSegment.speakerId === speakerId) {
+                    updateCurrentSpeaker(speakerId);
+                }
+            }
+        };
+
+        window.toggleActionItem = function(index) {
+            if (aiState.actionItemsList[index]) {
+                aiState.actionItemsList[index].completed = !aiState.actionItemsList[index].completed;
+                updateActionItems();
+            }
+        };
+
+        window.exportTranscript = function(format) {
+            const exportMenu = document.getElementById('exportMenu');
+            exportMenu.classList.remove('show');
+            
+            let content = '';
+            const timestamp = new Date().toISOString().slice(0, 10);
+            
+            switch (format) {
+                case 'txt':
+                    content = generateTextTranscript();
+                    downloadFile(content, `transcript-${timestamp}.txt`, 'text/plain');
+                    break;
+                case 'docx':
+                    alert('Word export would require a backend service. Exporting as text instead.');
+                    content = generateTextTranscript();
+                    downloadFile(content, `transcript-${timestamp}.txt`, 'text/plain');
+                    break;
+                case 'pdf':
+                    alert('PDF export would require a backend service. Exporting as text instead.');
+                    content = generateTextTranscript();
+                    downloadFile(content, `transcript-${timestamp}.txt`, 'text/plain');
+                    break;
+                case 'srt':
+                    content = generateSRTSubtitles();
+                    downloadFile(content, `transcript-${timestamp}.srt`, 'text/plain');
+                    break;
+            }
+        };
+
+        function generateTextTranscript() {
+            let content = 'AI-Powered Meeting Transcript\n';
+            content += `Generated: ${new Date().toLocaleString()}\n`;
+            content += `Duration: ${document.getElementById('recordTimer').textContent}\n`;
+            content += `Participants: ${aiState.speakers.size}\n\n`;
+            
+            content += '=== TRANSCRIPT ===\n\n';
+            
+            aiState.segments.forEach(segment => {
+                const speaker = aiState.speakers.get(segment.speakerId);
+                content += `[${formatTime(segment.startTime)}] ${speaker.name}:\n`;
+                content += `${segment.text}\n\n`;
+            });
+            
+            if (aiState.currentSegment && aiState.currentSegment.text) {
+                const speaker = aiState.speakers.get(aiState.currentSegment.speakerId);
+                content += `[${formatTime(aiState.currentSegment.startTime)}] ${speaker.name}:\n`;
+                content += `${aiState.currentSegment.text}\n\n`;
+            }
+            
+            // Add summary
+            content += '\n=== AI SUMMARY ===\n\n';
+            content += document.getElementById('summaryContent').innerText + '\n\n';
+            
+            // Add action items
+            if (aiState.actionItemsList.length > 0) {
+                content += '=== ACTION ITEMS ===\n\n';
+                aiState.actionItemsList.forEach((item, index) => {
+                    content += `${index + 1}. [${item.completed ? 'x' : ' '}] ${item.text}\n`;
+                    content += `   Assigned to: ${item.speaker}\n\n`;
+                });
+            }
+            
+            return content;
+        }
+
+        function generateSRTSubtitles() {
+            let content = '';
+            let index = 1;
+            
+            aiState.segments.forEach(segment => {
+                const speaker = aiState.speakers.get(segment.speakerId);
+                const startTime = formatSRTTime(segment.startTime - aiState.recordingStartTime);
+                const endTime = formatSRTTime((segment.endTime || segment.startTime + 5000) - aiState.recordingStartTime);
+                
+                content += `${index}\n`;
+                content += `${startTime} --> ${endTime}\n`;
+                content += `${speaker.name}: ${segment.text}\n\n`;
+                index++;
+            });
+            
+            return content;
+        }
+
+        function formatSRTTime(ms) {
+            const seconds = Math.floor(ms / 1000);
+            const minutes = Math.floor(seconds / 60);
+            const hours = Math.floor(minutes / 60);
+            const remainingSeconds = seconds % 60;
+            const remainingMs = ms % 1000;
+            
+            return `${hours.toString().padStart(2, '0')}:${(minutes % 60).toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')},${remainingMs.toString().padStart(3, '0')}`;
+        }
+
+        function downloadFile(content, filename, type) {
+            const blob = new Blob([content], { type });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        // Initialize event listeners
+        function initializeEventListeners() {
+            // Record button
+            document.getElementById('recordBtn').addEventListener('click', async () => {
+                if (aiState.isRecording) {
+                    stopRecording();
+                } else {
+                    await startRecording();
+                }
+            });
+            
+            // Pause button
+            document.getElementById('pauseBtn').addEventListener('click', () => {
+                if (aiState.isPaused) {
+                    resumeRecording();
+                } else {
+                    pauseRecording();
+                }
+            });
+            
+            // Clear button
+            document.getElementById('clearBtn').addEventListener('click', () => {
+                if (confirm('Clear all transcript data?')) {
+                    clearAll();
+                }
+            });
+            
+            // FAB button
+            document.getElementById('fabBtn').addEventListener('click', () => {
+                const exportMenu = document.getElementById('exportMenu');
+                exportMenu.classList.toggle('show');
+            });
+            
+            // AI feature toggles
+            const features = ['diarization', 'punctuation', 'sentiment', 'summary', 'actionItems', 'translation'];
+            features.forEach(feature => {
+                const toggle = document.getElementById(`${feature}Toggle`);
+                if (toggle) {
+                    toggle.addEventListener('click', () => {
+                        aiState.features[feature] = !aiState.features[feature];
+                        toggle.classList.toggle('active');
+                    });
+                }
+            });
+            
+            // Close export menu on outside click
+            document.addEventListener('click', (e) => {
+                const exportMenu = document.getElementById('exportMenu');
+                const fabBtn = document.getElementById('fabBtn');
+                if (!exportMenu.contains(e.target) && !fabBtn.contains(e.target)) {
+                    exportMenu.classList.remove('show');
+                }
+            });
+        }
+
+        // Recording controls
+        async function startRecording() {
+            // Initialize recognition
+            if (!initializeRecognition()) {
+                return;
+            }
+            
+            // Initialize audio
+            const audioReady = await initializeAudio();
+            if (!audioReady) {
+                return;
+            }
+            
+            // Start recording
+            aiState.isRecording = true;
+            aiState.recognition.start();
+        }
+
+        function stopRecording() {
+            aiState.isRecording = false;
+            
+            // Finalize current segment
+            if (aiState.currentSegment && aiState.currentSegment.text) {
+                finalizeSegment();
+            }
+            
+            // Stop recognition
+            if (aiState.recognition) {
+                aiState.recognition.stop();
+                aiState.recognition = null;
+            }
+            
+            // Stop audio
+            if (aiState.audioContext) {
+                aiState.audioContext.close();
+                aiState.audioContext = null;
+            }
+            
+            // Reset visualizer
+            document.querySelectorAll('.waveform-bar').forEach(bar => {
+                bar.style.height = '20px';
+                bar.style.opacity = '0.8';
+            });
+            
+            updateUI('stopped');
+            
+            // Final summary update
+            if (aiState.features.summary) {
+                updateAISummary();
+            }
+        }
+
+        function pauseRecording() {
+            aiState.isPaused = true;
+            if (aiState.recognition) {
+                aiState.recognition.stop();
+            }
+            updateUI('paused');
+        }
+
+        function resumeRecording() {
+            aiState.isPaused = false;
+            if (aiState.recognition) {
+                aiState.recognition.start();
+            }
+            updateUI('recording');
+        }
+
+        function clearAll() {
+            // Reset all state
+            aiState.speakers.clear();
+            aiState.segments = [];
+            aiState.currentSegment = null;
+            aiState.voiceProfiles.clear();
+            aiState.currentVoiceBuffer = [];
+            aiState.pendingText = '';
+            aiState.interimText = '';
+            aiState.contextWindow = [];
+            aiState.keywords.clear();
+            aiState.entities.clear();
+            aiState.sentimentScores = [];
+            aiState.actionItemsList = [];
+            
+            // Reset displays
+            updateTranscriptDisplay();
+            updateSpeakerList();
+            document.getElementById('summaryContent').innerHTML = 'AI-generated summary will appear here...';
+            document.getElementById('keyPoints').innerHTML = '<li class="key-point"><div class="point-icon">💡</div><span>Key insights will be extracted automatically</span></li>';
+            updateActionItems();
+            document.getElementById('recordTimer').textContent = '00:00:00';
+        }
+
+        // Update interim display
+        function updateInterimDisplay() {
+            const container = document.getElementById('transcriptContent');
+            let indicator = container.querySelector('.live-indicator');
+            
+            if (!indicator && aiState.currentSegment) {
+                // Remove empty state if present
+                const emptyState = container.querySelector('.empty-state');
+                if (emptyState) {
+                    emptyState.remove();
+                }
+                
+                // Create live indicator
+                indicator = document.createElement('div');
+                indicator.className = 'live-indicator';
+                container.appendChild(indicator);
+            }
+            
+            if (indicator) {
+                const speaker = aiState.speakers.get(aiState.currentSegment.speakerId);
+                const displayText = aiState.currentSegment.text + 
+                                  (aiState.currentSegment.text ? ' ' : '') + 
+                                  aiState.interimText;
+                
+                indicator.innerHTML = `
+                    <div class="typing-indicator">
+                        <div class="typing-dot"></div>
+                        <div class="typing-dot"></div>
+                        <div class="typing-dot"></div>
+                    </div>
+                    <span style="color: var(--text-secondary); font-style: italic;">
+                        ${speaker ? `${speaker.name}: ` : ''}${displayText}
+                    </span>
+                `;
+                
+                container.scrollTop = container.scrollHeight;
+            }
+        }
+
+        // Initialize the app
+        function initialize() {
+            initializeWaveform();
+            initializeEventListeners();
+            updateUI('stopped');
+            
+            // Check browser support
+            if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+                updateAIStatus('Speech recognition not supported', 'error');
+                document.getElementById('recordBtn').disabled = true;
+            }
+        }
+
+        // Start the app
+        initialize();
+    </script>
+</body>
+</html>>
                         <div class="summary-section">
                             <div class="summary-title">Key Points</div>
                             <ul class="key-points" id="keyPoints">
